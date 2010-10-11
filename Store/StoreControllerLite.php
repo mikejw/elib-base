@@ -80,8 +80,10 @@ class StoreControllerLite extends AuthedController
 	$sql .= ' AND category_id IN'.$p->buildUnionString($cats);
       }
 
-
-    $sql .= ' ORDER BY id DESC';
+    $sql .= ' AND t1.vendor_id = t2.id';
+    $sql .= ' AND t2.verified IS NOT NULL';
+    
+    $sql .= ' ORDER BY t1.id DESC';
 
     if($page < 1)
       {
@@ -89,8 +91,10 @@ class StoreControllerLite extends AuthedController
       }
         
     $per_page = 4;
-    $products = $p->getAllCustomPaginate(Model::getTable('ProductItem'), $sql, $page, $per_page);
-    $p_nav = $p->getPaginatePages(Model::getTable('ProductItem'), $sql, $page, $per_page); 
+    $select = '*';
+
+    $products = $p->getAllCustomPaginateSimpleJoin($select, Model::getTable('ProductItem'), Model::getTable('Vendor'), $sql, $page, $per_page);
+    $p_nav = $p->getPaginatePagesSimpleJoin($select, Model::getTable('ProductItem'), Model::getTable('Vendor'), $sql, $page, $per_page); 
 
     $this->assign('products', $products);      
     $this->assign('p_nav', $p_nav);
