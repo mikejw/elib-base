@@ -91,7 +91,7 @@ class StoreControllerLite extends EController
       }
         
     $per_page = 4;
-    $select = '*';
+    $select = 't1.id,t1.image,t1.name,t1.min_price';
 
     $products = $p->getAllCustomPaginateSimpleJoin($select, Model::getTable('ProductItem'), Model::getTable('Vendor'), $sql, $page, $per_page);
     $p_nav = $p->getPaginatePagesSimpleJoin($select, Model::getTable('ProductItem'), Model::getTable('Vendor'), $sql, $page, $per_page); 
