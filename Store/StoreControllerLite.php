@@ -9,7 +9,7 @@ use ELib\EController;
 use ELib\User\CurrentUser;
 use Empathy\Session;
 
-class StoreControllerLite extends AuthedController
+class StoreControllerLite extends EController
 {
   public function __construct($boot)
   {
