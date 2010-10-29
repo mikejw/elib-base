@@ -503,7 +503,7 @@ class Store
       $d = array(
 		 array('l_', 450, 450),
 		 array('tn_', 100, 100),
-		 array('mid_', 400, 276)
+		 array('mid_', 280, 280)
 		 );
       $u = new ImageUpload('products', true, $d);
       
