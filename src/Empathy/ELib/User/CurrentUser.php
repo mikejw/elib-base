@@ -3,7 +3,6 @@
 namespace Empathy\ELib\User;
 
 use Empathy\ELib\Model,
-    Empathy\ELib\Store\Access,
     Empathy\MVC\Session;
 
 
@@ -22,7 +21,8 @@ class CurrentUser
             self::$u->load();
             $c->assign('current_user', self::$u->username);
             $c->assign('user_id', self::$u->id);
-            $c->assign('user_is_vendor', (self::$u->auth == Access::VENDOR));
+
+            //$c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
         }
     }
 
