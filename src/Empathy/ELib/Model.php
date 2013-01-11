@@ -6,8 +6,8 @@ use Empathy\MVC\Model as EmpModel;
 
 class Model extends EmpModel
 {
-    private static $elib_model_prefix = "Empathy\ELib\Storage\\";
-    private static $app_model_prefix = "Empathy\MVC\Model\\";
+    private static $elib_model_prefix = 'Empathy\ELib\Storage\\';
+    private static $app_model_prefix = 'Empathy\MVC\Model\\';
 
 
     public static function load($model, $host = null, $connect=true)
