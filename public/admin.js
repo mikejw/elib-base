@@ -296,7 +296,7 @@ $(document).ready(function(){
 		    paste_preprocess : function(pl, o) {
 		    // Content string containing the HTML from the clipboard
 		    //alert(o.content);
-		    //o.content = o.content.replace(/(<([^>]+)>)/gi, '');
+		    o.content = o.content.replace(/(<([^>]+)>)/gi, '');
 		}
 	    });
     }
