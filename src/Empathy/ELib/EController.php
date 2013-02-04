@@ -8,7 +8,7 @@ use Empathy\ELib\User\CurrentUser,
 
 class EController extends CustomController
 {
-    protected $elib_tpl_dirs = [];
+    protected $elib_tpl_dirs = array();
 
 
     public function __construct($boot)
