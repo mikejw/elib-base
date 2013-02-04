@@ -8,6 +8,9 @@ use Empathy\ELib\User\CurrentUser,
 
 class EController extends CustomController
 {
+    protected $elib_tpl_dirs = [];
+
+
     public function __construct($boot)
     {
         parent::__construct($boot);
@@ -18,17 +21,17 @@ class EController extends CustomController
     private function assignELibTemplateDir()
     {
         // assuming 'non-system' mode
-        $elib_tpl_dirs = array();
+        $this->elib_tpl_dirs = array();
         $composer_installed = DOC_ROOT.'/vendor/composer/installed.json';
         if(file_exists($composer_installed)) {
             
             $installed = json_decode(file_get_contents($composer_installed));
             foreach($installed as $i) { 
-                if(strpos($i->name, 'elib')) {
-                    $elib_tpl_dirs[] = DOC_ROOT.'/vendor/'.$i->name.'/tpl';
+                if(strpos($i->name, 'mikejw/elib') === 0) {
+                    $this->elib_tpl_dirs[] = DOC_ROOT.'/vendor/'.$i->name.'/tpl';
                 }
             }
-            $this->assign('elibtpl_arr', $elib_tpl_dirs);
+            $this->assign('elibtpl_arr', $this->elib_tpl_dirs);
         } else {   
             $tpl_loc = Util::getLocation().'/tpl';       
             $this->assign('elibtpl', $tpl_loc);

@@ -18,6 +18,23 @@ class AdminController extends EController
         $this->detectHelp();
     }
 
+
+    private function tplInLib($help_file) {
+        $exists = false;
+        $i = 0;
+        while(!$exists && $i < sizeof($this->elib_tpl_dirs)) {
+            
+            $file = $this->elib_tpl_dirs[$i].'/'.$help_file;
+
+            if(file_exists($file)) {
+                $exists = true;
+            }
+            $i++;
+        }
+        return $exists;
+    }
+
+
     protected function detectHelp()
     {
         if (!Session::get('help_shown')) {
@@ -27,8 +44,9 @@ class AdminController extends EController
         $this->presenter->assign('help_shown', Session::get('help_shown'));
 
         $help_file = 'admin_help/'.$this->class.'_'.$this->event.'.tpl';
+
         if(file_exists(DOC_ROOT.'/presentation/'.$help_file)
-           || file_exists(Util::getLocation().'/tpl/'.$help_file))
+           || $this->tplInLib($help_file))
         {
             $help_file = 'elib:/'.$help_file;
             $this->presenter->assign('help_file', $help_file);
