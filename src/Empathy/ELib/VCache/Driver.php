@@ -20,6 +20,9 @@ abstract class Driver
 
     abstract public function set($key, $value);
 
+    abstract public function delete($key);
+
+
     /*
       abstract public function put($job);
 

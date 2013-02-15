@@ -246,6 +246,24 @@ var radios = function()
 $(document).ready(function(){
 
 
+
+    $('#data p').bind("click", function(){
+
+      
+        var $this = $(this);
+        var data = $this.parent().find('pre');
+        if(data.css('display') == 'none') {
+
+            $('#data .item pre').hide();
+            data.show();
+
+        } else {
+            data.hide();
+        }
+        return false;
+    });
+
+
 	if($('ul#tree').length > 0)
 	    {
 		tree();

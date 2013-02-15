@@ -10,12 +10,12 @@ class DriverManager
         $driver = null;
 
         if ($name === null) {
-            $name = \ELib\VCache::DEFAULT_DRIVER;
+            $name = \Empathy\ELib\VCache::DEFAULT_DRIVER;
         }
 
         switch ($name) {
         case 'memcached':
-            $driver_name = 'ELib\VCache\Driver'.ucfirst($name);
+            $driver_name = 'Empathy\ELib\VCache\Driver'.ucfirst($name);
             $driver = new $driver_name($driver_name);
 
             $driver->load($h, $p);
