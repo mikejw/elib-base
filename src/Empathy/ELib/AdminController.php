@@ -102,14 +102,17 @@ class AdminController extends EController
 
     public function toggle_help()
     {
-        $help_shown = Session::get('help_shown');
-        if ($help_shown) {
-            Session::set('help_shown', false);
-        } else {
-            Session::set('help_shown', true);
+        if($this->isXMLHttpRequest()) {
+            $help_shown = Session::get('help_shown');
+            if ($help_shown) {
+                Session::set('help_shown', false);
+            } else {
+                Session::set('help_shown', true);
+            }           
+            header('Content-type: application/json');
+            echo json_encode(1);
+            exit();
         }
-        echo json_encode(1);
-        exit();
     }
 
 }
