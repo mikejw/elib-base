@@ -3,7 +3,6 @@
 namespace Empathy\ELib\User;
 
 use Empathy\ELib\Model,
-    Empathy\ELib\Store\Access,
     Empathy\MVC\Session;
 
 
@@ -12,7 +11,7 @@ class CurrentUser
     private static $u;
     private static $user_id;
 
-    public static function detectUser($c)
+    public static function detectUser($c=null)
     {
         self::$u = Model::load('UserItem');
         self::$user_id = Session::get('user_id');
@@ -20,9 +19,12 @@ class CurrentUser
         if (is_numeric(self::$user_id) && self::$user_id > 0) {
             self::$u->id = self::$user_id;
             self::$u->load();
-            $c->assign('current_user', self::$u->username);
-            $c->assign('user_id', self::$u->id);
-            $c->assign('user_is_vendor', (self::$u->auth == Access::VENDOR));
+
+            if($c !== null) {
+                $c->assign('current_user', self::$u->username);
+                $c->assign('user_id', self::$u->id);
+            }
+            //$c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
         }
     }
 

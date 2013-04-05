@@ -90,6 +90,7 @@ form p .error { position: absolute; right: 0; width: 210px;
 
 form input:focus, form select:focus, form textarea:focus { border: 1px solid #999; }
 form textarea { height: 400px; padding: 0 0 0 0.3em; }
+form textarea.raw { height: 100px; }
 form button { 
 	      margin: 0 0 0 0.3em;	
 	      -moz-border-radius: 5px;     
@@ -386,6 +387,38 @@ padding: 5px;
 }
 
 
+#data {
+    
+    overflow: hidden;
+}
+
+
+#data p {
+    padding: 5px;
+    line-height: 2em;
+    background-color: #fafafa;
+    margin: 5px;
+}
+
+#data .item {
+  }
+
+#data .item > p a:hover {
+   
+}
+
+#data .item > p a {
+
+}
+
+#data pre {
+    height: 200px;
+    overflow-y: scroll;
+    padding: 20px;
+    display: none;
+    font-family: monospace;
+    line-height: 1em;
+}
 
 /* typography */
 
@@ -451,4 +484,15 @@ a#help_tab { text-decoration: none; font-size: 0.9em; }
 
 
 form p .error { color: #c00;
+}
+
+
+
+
+
+#data p a {
+    text-decoration: none;
+    color: #666;
+    font-size: 1.2em;
+    font-weight: bold;
 }

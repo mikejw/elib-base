@@ -1,12 +1,12 @@
 {
-    "name": "mikejw/elib",
+    "name": "mikejw/elib-base",
     "type": "library",
-    "description": "Miscellaneous library for Empathy PHP Framework",
+    "description": "Base component library for the Empathy PHP Framework",
     "keywords": [
         "lib"
     ],
     "homepage": "http://empathyphp.co.uk",
-    "license": "GPL3",
+    "license": "LGPL3",
     "authors": [
         {
             "name": "Mike Whiting",

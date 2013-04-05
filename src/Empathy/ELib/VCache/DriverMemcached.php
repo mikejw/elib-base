@@ -22,10 +22,15 @@ class DriverMemcached extends Driver
         return $this->m->get($key);
     }
 
-    public function set($key, $value, $timeout=60)
+    public function set($key, $value, $timeout=0)
     {
         $this->m->set($key, $value, $timeout);
 
+    }
+
+    public function delete($key)
+    {
+        return $this->m->delete($key);
     }
 
     /*
