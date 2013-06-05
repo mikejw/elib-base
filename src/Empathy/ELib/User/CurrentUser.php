@@ -33,7 +33,7 @@ class CurrentUser
         $ua = Model::load('UserAccess', null, false);
         if (self::$u->id < 1 || self::$u->getAuth(self::$u->id) < $ua->getLevel('admin')) {
             Session::down();
-            $c->redirect("user/login");
+            throw new \Exception('Authorisation error.');
         }
     }
 
