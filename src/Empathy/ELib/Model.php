@@ -9,9 +9,13 @@ class Model extends EmpModel
     private static $elib_model_prefix = 'Empathy\ELib\Storage\\';
     private static $app_model_prefix = 'Empathy\MVC\Model\\';
 
-
-    public static function load($model, $id=null, $params=array(), $host=null)
+    
+    public static function load($model, $id=null, $params=null, $host=null)
     {
+        if($params === null || !is_array($params)) {
+            $params = array();
+        }
+
         $storage_object = null;
         $file = $model.'.php';
         $app_file = DOC_ROOT.'/storage/'.$file;
