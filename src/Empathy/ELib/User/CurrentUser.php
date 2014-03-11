@@ -30,7 +30,7 @@ class CurrentUser
 
     public static function assertAdmin($c)
     {
-        $ua = Model::load('UserAccess', null, false);
+        $ua = Model::load('UserAccess');
         if (self::$u->id < 1 || self::$u->getAuth(self::$u->id) < $ua->getLevel('admin')) {
             Session::down();
             $c->redirect("user/login");
