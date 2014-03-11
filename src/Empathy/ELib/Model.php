@@ -10,12 +10,8 @@ class Model extends EmpModel
     private static $app_model_prefix = 'Empathy\MVC\Model\\';
 
     
-    public static function load($model, $id=null, $params=null, $host=null)
+    public static function load($model, $id=null, $params=array(), $host=null)
     {
-        if($params === null || !is_array($params)) {
-            $params = array();
-        }
-
         $storage_object = null;
         $file = $model.'.php';
         $app_file = DOC_ROOT.'/storage/'.$file;
@@ -30,7 +26,11 @@ class Model extends EmpModel
         }
 
         $reflect  = new \ReflectionClass($class);
-        $storage_object = $reflect->newInstanceArgs($params);
+        if(sizeof($params)) {
+            $storage_object = $reflect->newInstanceArgs($params);
+        } else {
+            $storage_object = $reflect->newInstanceArgs();
+        }
 
          if(get_parent_class($storage_object) == 'Empathy\MVC\Entity') {
             self::connectModel($storage_object, $host);
