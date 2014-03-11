@@ -47,7 +47,7 @@ class Controller extends EController
                     $n->id = $user_id;
                     $n->load();
 
-                    $ua = Model::load('UserAccess', null, false);
+                    $ua = Model::load('UserAccess');
 
                     $this->loginSuccess($n);
 
