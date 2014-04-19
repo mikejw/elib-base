@@ -26,13 +26,15 @@ class Model extends EmpModel
         }
 
         $reflect  = new \ReflectionClass($class);
+
+
         if(sizeof($params)) {
             $storage_object = $reflect->newInstanceArgs($params);
         } else {
             $storage_object = $reflect->newInstanceArgs();
         }
 
-         if(get_parent_class($storage_object) == 'Empathy\MVC\Entity') {
+        if(in_array('Empathy\MVC\Entity', class_parents($storage_object))) {
             self::connectModel($storage_object, $host);
             $storage_object->init();
         }
