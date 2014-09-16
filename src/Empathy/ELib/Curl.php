@@ -37,6 +37,8 @@ class Curl
         curl_setopt($this->ch, CURLOPT_URL, $this->url);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 
+
+
         //    curl_setopt($this->ch, CURLOPT_HTTPHEADER, array());
 
         //    curl_setopt($this->ch, CURLOPT_USERPWD, $auth);
@@ -52,11 +54,11 @@ class Curl
     public function fetch($disconnect=true)
     {
         $this->response = curl_exec($this->ch);
-        $this->success = (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) == 200);
+        $code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+        $this->success = ($code == 200);
         if($disconnect === true) {
             curl_close($this->ch);
         }
-
         return $this->success;
     }
 
