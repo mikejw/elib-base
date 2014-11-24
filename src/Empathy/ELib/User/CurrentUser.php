@@ -34,6 +34,7 @@ class CurrentUser
         if (self::$u->id < 1 || self::$u->getAuth(self::$u->id) < $ua->getLevel('admin')) {
             Session::down();
             $c->redirect("user/login");
+	    exit();
         }
     }
 
