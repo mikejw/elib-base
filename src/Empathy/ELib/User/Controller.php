@@ -22,9 +22,11 @@ class Controller extends EController
         //
     }
 
+    // must return true
+    // to carry on with default behaviour
     protected function logoutSuccess($u)
     {
-        //
+        return true; 
     }
 
     public function login()
@@ -49,12 +51,13 @@ class Controller extends EController
 
                     $ua = Model::load('UserAccess');
 
-                    $this->loginSuccess($n);
+                    if ($this->loginSuccess($n)) {
 
-                    if (!($n->getAuth($n->id) < $ua->getLevel('admin'))) {
-                        $this->redirect('admin');
-                    } else {
-                        $this->redirect('');
+                        if (!($n->getAuth($n->id) < $ua->getLevel('admin'))) {
+                            $this->redirect('admin');
+                        } else {
+                            $this->redirect('');
+                        }
                     }
                 } else {
                     $n->addValError('Wrong username/password combination.', 'success');
