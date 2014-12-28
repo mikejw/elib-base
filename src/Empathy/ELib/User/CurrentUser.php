@@ -60,7 +60,7 @@ class CurrentUser
 
     public static function isAuthLevel($level)
     {
-        return (self::$u->auth == $level);
+        return (self::$u->auth >= $level);
     }
 
 }
