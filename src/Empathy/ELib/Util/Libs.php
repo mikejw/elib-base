@@ -5,6 +5,7 @@ namespace Empathy\ELib\Util;
 class Libs
 {
     private static $installed_libs;
+    private static $store_active = false;
 
     public static function detect()
     {        
@@ -15,6 +16,9 @@ class Libs
             foreach($installed as $i) { 
                 if(strpos($i->name, 'mikejw/elib') === 0) {
                     $tpl_dirs[] = DOC_ROOT.'/vendor/'.$i->name.'/tpl';
+                    if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
+                        self::$store_active = true;
+                    }
                     self::$installed_libs[] = $i->name;
                 }
             }
@@ -29,5 +33,10 @@ class Libs
     public static function getInstalled()
     {
         return self::$installed_libs;
+    }
+
+    public static function getStoreActive()
+    {
+        return self::$store_active;
     }
 }
