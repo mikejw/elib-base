@@ -17,7 +17,10 @@ class Config
         foreach ($config as $index => $item) {
             if (!is_array($item)) {
                 $index = 'ELIB_'.$index;
-                define(strtoupper($index), $item);
+                if (!defined(strtoupper($index))) {
+                    define(strtoupper($index), $item);    
+                }
+                
             }
         }
     }
