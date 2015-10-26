@@ -17,10 +17,27 @@ class REST extends Curl
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
     }
 
-    public function configure_post()
+    private function assign_post_params()
     {
-        curl_setopt($this->ch, CURLOPT_POST, 1);
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, http_build_query($this->post_fields));
     }
 
+
+    public function configure_post()
+    {
+        curl_setopt($this->ch, CURLOPT_POST, 1);
+        $this->assign_post_params();
+    }
+
+
+    public function configure_put()
+    {    
+        curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        $this->assign_post_params();
+    }
+
+
+
 }
+
+
