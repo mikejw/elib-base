@@ -36,6 +36,12 @@ class REST extends Curl
         $this->assign_post_params();
     }
 
+    public function configure_delete()
+    {    
+        curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        $this->assign_post_params();
+    }
+
 
 
 }
