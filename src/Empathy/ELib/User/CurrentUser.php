@@ -2,8 +2,8 @@
 
 namespace Empathy\ELib\User;
 
-use Empathy\ELib\Model,
-    Empathy\MVC\Session;
+use Empathy\ELib\Model;
+use Empathy\MVC\Session;
 
 
 class CurrentUser
@@ -11,7 +11,7 @@ class CurrentUser
     private static $u;
     private static $user_id;
 
-    public static function detectUser($c=null)
+    public static function detectUser($c = NULL, $store_active = false)
     {
         self::$u = Model::load('UserItem');
         self::$user_id = Session::get('user_id');
@@ -24,16 +24,20 @@ class CurrentUser
                 $c->assign('current_user', self::$u->username);
                 $c->assign('user_id', self::$u->id);
             }
-            //$c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
+
+            if ($store_active) {
+                $c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
+            }
         }
     }
 
     public static function assertAdmin($c)
     {
-        $ua = Model::load('UserAccess', null, false);
+        $ua = Model::load('UserAccess');
         if (self::$u->id < 1 || self::$u->getAuth(self::$u->id) < $ua->getLevel('admin')) {
             Session::down();
             $c->redirect("user/login");
+	    exit();
         }
     }
 
@@ -59,7 +63,7 @@ class CurrentUser
 
     public static function isAuthLevel($level)
     {
-        return (self::$u->auth == $level);
+        return (self::$u->auth >= $level);
     }
 
 }

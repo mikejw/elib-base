@@ -17,14 +17,17 @@ class Controller extends EController
         $this->redirect('');
     }
 
+
+    // must return true
+    // to carry on with default behaviour
     protected function loginSuccess($u)
     {
-        //
+        return true;
     }
 
     protected function logoutSuccess($u)
     {
-        //
+        return true; 
     }
 
     public function login()
@@ -47,14 +50,15 @@ class Controller extends EController
                     $n->id = $user_id;
                     $n->load();
 
-                    $ua = Model::load('UserAccess', null, false);
+                    $ua = Model::load('UserAccess');
 
-                    $this->loginSuccess($n);
-
-                    if (!($n->getAuth($n->id) < $ua->getLevel('admin'))) {
-                        $this->redirect('admin');
-                    } else {
-                        $this->redirect('');
+                    if ($this->loginSuccess($n)) {
+                        if (!($n->getAuth($n->id) < $ua->getLevel('admin'))) {
+                            $this->redirect('admin');
+                        } else {
+                            $this->redirect('');
+                        }
+                        return false;
                     }
                 } else {
                     $n->addValError('Wrong username/password combination.', 'success');
@@ -74,8 +78,11 @@ class Controller extends EController
         if (1 || isset($_POST['logout'])) {
             $u = CurrentUser::getUser();
             Session::down();
-            $this->logoutSuccess($u);
-            $this->redirect('');
+            if ($this->logoutSuccess($u)) {
+                $this->redirect('');
+                return false;              
+            }
+
         }
     }
 
@@ -147,17 +154,21 @@ class Controller extends EController
                     $v->insert(Model::getTable('Vendor'), 1, array(), 0);
                 }
 
-                $message = "\nHi ___,\n\n"
-                    ."Thanks for registering with ".ELIB_EMAIL_ORGANISATION."\n\nBefore we can let you"
-                    ." know your password for using the site, please confirm your email address"
-                    ." by clicking the following link:\n\n"
-                    ."http://".WEB_ROOT.PUBLIC_DIR."/user/confirm_reg/?code=".$reg_code
-                    ."\n\nCheers\n\n";
+                if (defined('ELIB_EMAIL_ORGANISATION') &&
+                    defined('ELIB_EMAIL_FROM')) {
 
-                $r[0]['alias'] = $u->username;
-                $r[0]['address'] = $u->email;
+                    $message = "\nHi ___,\n\n"
+                        ."Thanks for registering with ".ELIB_EMAIL_ORGANISATION."\n\nBefore we can let you"
+                        ." know your password for using the site, please confirm your email address"
+                        ." by clicking the following link:\n\n"
+                        ."http://".WEB_ROOT.PUBLIC_DIR."/user/confirm_reg/?code=".$reg_code
+                        ."\n\nCheers\n\n";
 
-                $m = new Mailer($r, 'You have been registered with '.ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+                    $r[0]['alias'] = $u->username;
+                    $r[0]['address'] = $u->email;
+
+                    $m = new Mailer($r, 'You have been registered with '.ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+                }
 
                 //$this->postRegister($s->user_id);
 

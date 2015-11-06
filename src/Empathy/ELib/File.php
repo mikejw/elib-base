@@ -60,7 +60,7 @@ class File
 
     public function create()
     {
-        $this->orig = imagecreatefromjpeg($this->target);
+        $this->orig = \imagecreatefromjpeg($this->target);
         $this->origX = imagesx($this->orig);
         $this->origY = imagesy($this->orig);
     }

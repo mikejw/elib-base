@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>{$TITLE}</title>
-<link rel="stylesheet" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/css/init.css" type="text/css" media="all" />
+<link rel="stylesheet" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/init.min.css" type="text/css" media="all" />
 
 <link rel="stylesheet" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/admin.css" type="text/css" media="all" />
 
