@@ -2,9 +2,9 @@
 
 namespace Empathy\ELib;
 
-use Empathy\ELib\Model,
-    Empathy\ELib\User\CurrentUser,
-    Empathy\MVC\Session;
+use Empathy\ELib\Model;
+use Empathy\ELib\User\CurrentUser;
+use Empathy\MVC\Session;
 
 
 class AdminController extends EController
