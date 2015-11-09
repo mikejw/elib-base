@@ -5,6 +5,7 @@
 
 namespace Empathy\ELib;
 use Empathy\ELib\VCache\DriverManager;
+use Empathy\MVC\Config as EmpConfig;
 
 class VCache
 {
@@ -45,7 +46,7 @@ class VCache
 
     private function add_prefix($key)
     {        
-        return NAME.'_'.$key;
+        return EmpConfig::get('NAME').'_'.$key;
     }
 
 
