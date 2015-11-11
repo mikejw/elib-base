@@ -2,6 +2,8 @@
 
 namespace Empathy\ELib\Queue;
 
+use Empathy\MVC\Config;
+
 class Worker
 {
     const DEF_MEM_LIMIT = 10000000;
@@ -36,7 +38,7 @@ class Worker
         if ($this->display_log) {
             echo $txt."\n";
         } else {
-            file_put_contents(DOC_ROOT.'/logs/worker_'.$this->tube.'.txt', $txt."\n", FILE_APPEND);
+            file_put_contents(Config::get('DOC_ROOT').'/logs/worker_'.$this->tube.'.txt', $txt."\n", FILE_APPEND);
         }
     }
 
