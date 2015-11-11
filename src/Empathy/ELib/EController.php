@@ -4,7 +4,6 @@ namespace Empathy\ELib;
 
 use Empathy\ELib\User\CurrentUser;
 use Empathy\MVC\Controller\CustomController;
-use Empathy\MVC\Config as EmpConfig;
 
 
 
@@ -16,6 +15,8 @@ class EController extends CustomController
     {        
         parent::__construct($boot);
 
+
+        CurrentUser::detectUser($this);
         $this->elib_tpl_dirs = Util\Libs::detect();
         if (sizeof($this->elib_tpl_dirs) > 1) {
             $this->assign('elibtpl_arr', $this->elib_tpl_dirs);

@@ -2,6 +2,9 @@
 
 namespace Empathy\ELib\Util;
 
+use Empathy\ELib\Util as UtilClass;
+use Empathy\MVC\Config;
+
 class Libs
 {
     private static $installed_libs;
@@ -10,12 +13,12 @@ class Libs
     public static function detect()
     {        
         $tpl_dirs = array();
-        $composer_installed = DOC_ROOT.'/vendor/composer/installed.json';
+        $composer_installed = Config::get('DOC_ROOT').'/vendor/composer/installed.json';
         if(file_exists($composer_installed)) {
             $installed = json_decode(file_get_contents($composer_installed));
             foreach($installed as $i) { 
                 if(strpos($i->name, 'mikejw/elib') === 0) {
-                    $tpl_dirs[] = DOC_ROOT.'/vendor/'.$i->name.'/tpl';
+                    $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name.'/tpl';
                     if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
                     }
@@ -24,7 +27,7 @@ class Libs
             }
         } else {
             // support for older monolithic 'system mode' elib directory
-            $tpl_dirs[] = Empathy\ELib\Util::getLocation().'/tpl';            
+            $tpl_dirs[] = UtilClass::getLocation().'/tpl';            
         }
         return $tpl_dirs;
     }
