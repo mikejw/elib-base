@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "mikejw/empathy": "0.9.7"
+        "mikejw/empathy": "dev-develop"
     },
     "autoload": {
         "psr-0": {
