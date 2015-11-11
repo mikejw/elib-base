@@ -5,7 +5,7 @@ namespace Empathy\ELib;
 use Empathy\ELib\Model;
 use Empathy\ELib\User\CurrentUser;
 use Empathy\MVC\Session;
-use Empathy\MVC\Config;
+use Empathy\MVC\Config as EmpConfig;
 
 class AdminController extends EController
 {
@@ -46,7 +46,7 @@ class AdminController extends EController
 
         $help_file = 'admin_help/'.$this->class.'_'.$this->event.'.tpl';
 
-        if(file_exists(Config::get('DOC_ROOT').'/presentation/'.$help_file)
+        if(file_exists(EmpConfig::get('DOC_ROOT').'/presentation/'.$help_file)
            || $this->tplInLib($help_file))
         {
             $help_file = 'elib:/'.$help_file;
