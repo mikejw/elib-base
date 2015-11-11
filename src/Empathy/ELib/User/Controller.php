@@ -3,11 +3,12 @@
 namespace Empathy\ELib\User;
 
 
-use Empathy\ELib\EController,
-    Empathy\ELib\Model,
-    Empathy\ELib\Country\Country,
-    Empathy\ELib\Mailer,
-    Empathy\MVC\Session;
+use Empathy\ELib\EController;
+use Empathy\ELib\Model;
+use Empathy\ELib\Country\Country;
+use Empathy\ELib\Mailer;
+use Empathy\MVC\Session;
+use Emathhy\MVC\Config;
 
 
 class Controller extends EController
@@ -161,7 +162,7 @@ class Controller extends EController
                         ."Thanks for registering with ".ELIB_EMAIL_ORGANISATION."\n\nBefore we can let you"
                         ." know your password for using the site, please confirm your email address"
                         ." by clicking the following link:\n\n"
-                        ."http://".WEB_ROOT.PUBLIC_DIR."/user/confirm_reg/?code=".$reg_code
+                        ."http://".Config::get('WEB_ROOT').Config::get('PUBLIC_DIR')."/user/confirm_reg/?code=".$reg_code
                         ."\n\nCheers\n\n";
 
                     $r[0]['alias'] = $u->username;
