@@ -7,8 +7,10 @@ use Empathy\ELib\Model,
     Empathy\MVC\Validate;
 
 
+if (!defined('SALT')) {
+  define('SALT', 'DRAGONFLY');
+}
 
-define('SALT', 'DRAGONFLY');
 
 class UserItem extends Entity
 {
