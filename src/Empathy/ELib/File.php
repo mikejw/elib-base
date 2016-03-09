@@ -3,7 +3,7 @@
 namespace Empathy\ELib;
 
 use Empathy\ELib\File\Image;
-use Empathy\MVC\Config;
+use Empathy\MVC\Config as EConfig;
 
 class File
 {
@@ -27,9 +27,9 @@ class File
         $this->gallery = $gallery;
         if ($this->gallery != '') {
             //$this->target_dir = DOC_ROOT."/public_html/img/$this->gallery/";
-            $this->target_dir = Config::get('DOC_ROOT')."/public_html/uploads/";
+            $this->target_dir = EConfig::get('DOC_ROOT')."/public_html/uploads/";
         } else {
-            $this->target_dir = Config::get('DOC_ROOT')."/public_html/uploads/";
+            $this->target_dir = EConfig::get('DOC_ROOT')."/public_html/uploads/";
         }
 
         if (sizeof($deriv) < 1) {
