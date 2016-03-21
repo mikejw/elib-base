@@ -73,7 +73,7 @@ class Worker
     public function updateStats()
     {
         $stats = $this->driver->info();
-        Stats::store('stats', $stats);
+        //Stats::store('stats', $stats);
     }
 
 }

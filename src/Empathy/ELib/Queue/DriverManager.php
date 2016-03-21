@@ -9,12 +9,12 @@ class DriverManager
         $driver = null;
 
         if ($name === null) {
-            $name = \ELib\Queue::DEFAULT_DRIVER;
+            $name = \Empathy\ELib\Queue::DEFAULT_DRIVER;
         }
 
         switch ($name) {
         case 'pheanstalk':
-            $driver_name = 'ELib\Queue\Driver'.ucfirst($name);
+            $driver_name = 'Empathy\ELib\Queue\Driver'.ucfirst($name);
             $driver = new $driver_name($driver_name);
 
             $driver->load($h);
