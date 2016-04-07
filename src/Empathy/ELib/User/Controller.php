@@ -8,7 +8,7 @@ use Empathy\ELib\Model;
 use Empathy\ELib\Country\Country;
 use Empathy\ELib\Mailer;
 use Empathy\MVC\Session;
-use Emathhy\MVC\Config;
+use Empathy\MVC\Config;
 
 
 class Controller extends EController
@@ -172,7 +172,6 @@ class Controller extends EController
                 }
 
                 //$this->postRegister($s->user_id);
-
                 $this->redirect('user/thanks/1');
             }
         }
