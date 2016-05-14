@@ -4,7 +4,7 @@ namespace Empathy\ELib;
 
 use Empathy\ELib\User\CurrentUser;
 use Empathy\MVC\Controller\CustomController;
-use Empathy\MVC\Config;
+use Empathy\MVC\Config as EConfig;
 
 
 class EController extends CustomController
@@ -24,9 +24,9 @@ class EController extends CustomController
             $this->assign('elibtpl', $this->elib_tpl_dirs[0]);
         }
 
-        if (Config::get('SUBDOMAIN')) {
+        if (EConfig::get('SUBDOMAIN')) {
 
-            $this->assign('elibtplsub', Config::get('SUBDOMAIN'));
+            $this->assign('elibtplsub', EConfig::get('SUBDOMAIN'));
         }
 
         if (Util\Libs::getStoreActive()) {
