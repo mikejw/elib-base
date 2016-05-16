@@ -11,7 +11,11 @@ class Libs
     private static $store_active = false;
 
     public static function detect()
-    {        
+    {                
+        if (Config::get('DOC_ROOT') === false) {
+            die("Initialise new app (directory structure) before running this command.\n");
+        }
+
         $tpl_dirs = array();
         $composer_installed = Config::get('DOC_ROOT').'/vendor/composer/installed.json';
         if(file_exists($composer_installed)) {
