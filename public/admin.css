@@ -208,6 +208,9 @@ ul#tree { float: left; width: 30%; margin: 0; padding: 0; background-color: #faf
 
 ul#tree ul { padding: 0 0 0 22px; margin: 0; clear: both; }
 ul#tree li, ul#tree ul li { list-style: none; clear: both; padding: 0; margin: 0;
+height: auto;
+overflow-y: visible;
+
 /*height: 22px;*/ /* causing problems in ie */
 }
 /*
@@ -220,6 +223,7 @@ ul#tree li a.toggle, ul#tree ul li a.toggle { width: 16px; float: left; padding:
 ul#tree li img, ul#tree ul li img { float: left; }
 ul#tree li span.label, ul#tree ul li span.label { float: left; margin: 0 0 0 0.5em; padding: 0.22em 0 0 0; }
 .hidden_sections { display: none; }
+
 
 
 #right { float: right; width: 65%; }

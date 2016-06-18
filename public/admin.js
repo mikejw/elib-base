@@ -218,6 +218,26 @@ var tree = function()
         var $this = $(this);
         toggle($this);
     });
+
+
+    $('ul#tree, ul#tree ul').sortable({
+        placeholder: "highlight",
+        axis: 'y',
+        update: function (event, ui) {
+            var data = $(this).sortable('serialize');
+
+            console.log(data);
+
+            $.ajax({
+                data: data,
+                type: 'POST',
+                url: "http://"+WEB_ROOT+PUBLIC_DIR+"/admin/dsection/sort"
+            })
+            .done(function(data){
+                //console.log(data);
+            });
+        }
+    });
 };
 
 
