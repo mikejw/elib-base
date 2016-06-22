@@ -1,15 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>{$TITLE}</title>
-<link rel="stylesheet" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/init.min.css" type="text/css" media="all" />
-<link rel="stylesheet" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/elib.css" type="text/css" media="all" />
-<script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/jquery-1.4.2.min.js"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Sign in</title>
+    <link href="http://{$WEB_ROOT}{$PUBLIC_DIR}/vendor/css.css" rel="stylesheet">    
+    <link href="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/login.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
 </head>
 
 <body>
 
-<div id="page">
-<div id="page_inner">
+<div class="container">
