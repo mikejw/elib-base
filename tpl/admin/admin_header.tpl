@@ -8,7 +8,7 @@
     <title>Empathy Admin</title>
 
     <link href="http://{$WEB_ROOT}{$PUBLIC_DIR}/vendor/css.css" rel="stylesheet">
-    <link href="navbar.css" rel="stylesheet">
+    <link href="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/navbar.css" rel="stylesheet">
   </head>
 
   <body>
