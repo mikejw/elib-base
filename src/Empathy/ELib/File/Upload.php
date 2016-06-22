@@ -3,6 +3,20 @@
 namespace Empathy\ELib\File;
 use Empathy\MVC\Config;
 
+
+
+// overrides for testing purposes
+if (defined('MVC_TEST_MODE')) {
+
+    function is_uploaded_file($filename) {
+        return file_exists($filename);
+    }
+    function move_uploaded_file($filename, $destination) {
+        return copy($filename, $destination);
+    }
+}
+
+
 class Upload
 {
   
@@ -11,13 +25,15 @@ class Upload
     public $target_dir;
     public $file;
   
-    public function __construct()
+    public function __construct($upload=true)
     {
         $this->file = '';
         $this->error = '';
         $this->target = '';
         $this->target_dir = Config::get('DOC_ROOT').'/public_html/episodes/';
-        $this->upload();
+        if ($upload) {
+            $this->upload();
+        }
     }
 
     public function getFile()
@@ -119,7 +135,7 @@ class Upload
         }    
         else
         {
-            $success = true;
+            $success = sizeof($success_arr);
         }
         return $success;
     }  
