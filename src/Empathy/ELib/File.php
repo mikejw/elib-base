@@ -204,7 +204,7 @@ class File
                 }
                 $this->filename = substr($this->target, strlen($this->target_dir));
 
-                if (!@move_uploaded_file($_FILES['file']['tmp_name'], $this->target)) {
+                if (!move_uploaded_file($_FILES['file']['tmp_name'], $this->target)) {
                     $this->error .= "Internal error";
                 }
             }
