@@ -21,6 +21,7 @@ if (!function_exists('loadClass')) {
 
 
 
+
 ESuite\Util\Config::init();
 
 if (ESuite\Util\Config::get('set_test_mode')) {

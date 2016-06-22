@@ -5,6 +5,20 @@ namespace Empathy\ELib;
 use Empathy\ELib\File\Image;
 use Empathy\MVC\Config as EConfig;
 
+
+// overrides for testing purposes
+if (defined('MVC_TEST_MODE')) {
+
+    function is_uploaded_file($filename) {
+        return file_exists($filename);
+    }
+    function move_uploaded_file($filename, $destination) {
+        return copy($filename, $destination);
+    }
+}
+
+
+
 class File
 {
     public $error;
@@ -19,6 +33,7 @@ class File
     public $gallery;
     private $fs_depth;
     private $fs_dpeth_prefix;
+
 
     public function __construct($gallery, $upload, $deriv, $fs_depth=0)
     {
@@ -54,8 +69,11 @@ class File
         }
     }
 
-    public function destroy($image)
+    public function destroy($image=null)
     {
+        if ($image === null) {
+            $image = $this->orig;
+        }
         imageDestroy($image);
     }
 
@@ -121,7 +139,7 @@ class File
 
         foreach ($files as $file) {
             if ($file != '') {
-                $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));
+                $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));                
             }
         }
         foreach ($all_files as $file) {
@@ -130,7 +148,7 @@ class File
         if (in_array(false, $success_arr)) {
             $success = false;
         } else {
-            $success = true;
+            $success = sizeof($success_arr);
         }
 
         return $success;
@@ -207,5 +225,11 @@ class File
     {
         return $this->fs_depth;
     }
+
+
+    public function getError() {
+        return $this->error;
+    }
+
 
 }
