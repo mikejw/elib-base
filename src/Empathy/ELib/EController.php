@@ -18,6 +18,9 @@ class EController extends CustomController
 
         CurrentUser::detectUser($this);
         $this->elib_tpl_dirs = Util\Libs::detect();
+
+
+
         if (sizeof($this->elib_tpl_dirs) > 1) {
             $this->assign('elibtpl_arr', $this->elib_tpl_dirs);
         } else {
@@ -32,5 +35,9 @@ class EController extends CustomController
         if (Util\Libs::getStoreActive()) {
             CurrentUser::detectUser($this, true);
         }
+
+
+        $this->assign('installed_libs', Util\Libs::getMappedLibNames());
+
     }
 }

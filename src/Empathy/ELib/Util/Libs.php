@@ -46,4 +46,25 @@ class Libs
     {
         return self::$store_active;
     }
+
+
+    public static function getMappedLibNames() {
+
+        $mapped = array();
+        foreach (self::$installed_libs as $lib)  {
+            switch ($lib) {
+                case 'mikejw/elib-cms':#
+                    $mapped['dsection'] = 'Generic Sections';
+                    break;
+                case 'mikejw/elib-siteinfo':
+                    $mapped['settings'] = 'Settings';
+                    break;
+                default:
+                    break;
+            }
+        } 
+        return $mapped;
+    }
+
+
 }
