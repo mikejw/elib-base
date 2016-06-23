@@ -285,7 +285,7 @@ $(document).ready(function(){
 
 
     if($('ul#tree').length > 0)
-        {
+        {            
         tree();
         }
 
@@ -321,7 +321,8 @@ $(document).ready(function(){
 
     if($('textarea.raw').length < 1)
     {
-        tinyMCE.init({
+        //tinyMCE.init({
+        $('textarea.raw').tinymce({
             convert_urls: false,
             mode: "textareas",
             theme: "advanced",
@@ -338,5 +339,11 @@ $(document).ready(function(){
             }
         });
     }
-    
+   
+
+    // new - disable buttons
+    $('body').on('click', 'a.disabled', function(event) {
+        event.preventDefault();
+    });
+
 });

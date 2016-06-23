@@ -2,7 +2,7 @@
 
 
 
-
+{*
 {if isset($help_file)}
 
 <div class="jumbotron">
@@ -10,13 +10,14 @@
     {include file=$help_file}
 </div>
 {/if}
-
+*}
 
 
 
 
 </div>
-
+<script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/js/common.js"></script>
 <script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/vendor/js.js"></script>
+<script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/admin.js"></script>
 </body>
 </html>
