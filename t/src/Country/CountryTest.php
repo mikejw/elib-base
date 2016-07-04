@@ -2,7 +2,7 @@
 
 namespace ESuite\Country;
 
-use ESuite\ESuiteTest;
+use Empathy\MVC\Util\Testing\ESuiteTest;
 
 
 class CountryTest extends ESuiteTest

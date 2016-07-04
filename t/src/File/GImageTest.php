@@ -2,7 +2,7 @@
 
 namespace ESuite;
 
-use ESuite\ESuiteTest;
+use Empathy\MVC\Util\Testing\ESuiteTest;
 use Empathy\MVC\Config;
 
 class GImageTest extends ESuiteTest
