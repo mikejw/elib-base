@@ -62,6 +62,9 @@ class Libs
                 case 'mikejw/elib-blog':
                     $mapped['blog'] = 'Blog';
                     break;
+                case 'mikejw/elib-events':
+                    $mapped['events'] = 'Events';
+                    break;
                 default:
                     break;
             }
