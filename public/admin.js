@@ -323,23 +323,24 @@ $(document).ready(function(){
     {
 
         tinymce.init({
-        //$('textarea.raw').tinymce({
+            
             selector: 'textarea',
             convert_urls: false,
             mode: "textareas",
             theme: "modern",
-            //theme_advanced_buttons1: "formatselect,bold,italic,link,unlink,code",
-            //theme_advanced_buttons2: "",
-            //theme_advanced_blockformats: "p,h2,h3,h4",
-            //theme_advanced_toolbar_location: "top",
-            //plugins: "paste,inlinepopups",
-            plugins: "paste",
+           
             paste_remove_styles: true,
             paste_preprocess: function(pl, o) {
                 // Content string containing the HTML from the clipboard
                 //alert(o.content);
                 o.content = o.content.replace(/(<([^>]+)>)/gi, '');
-            }
+            },
+
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table contextmenu paste code'
+            ]
         });
     }
    
