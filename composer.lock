@@ -63,12 +63,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikejw/empathy.git",
-                "reference": "002ffeaaf075df68312e424e805fabc6544d84ab"
+                "reference": "c58422e0baa724dd18968975f15d90a6d59cba2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikejw/empathy/zipball/002ffeaaf075df68312e424e805fabc6544d84ab",
-                "reference": "002ffeaaf075df68312e424e805fabc6544d84ab",
+                "url": "https://api.github.com/repos/mikejw/empathy/zipball/c58422e0baa724dd18968975f15d90a6d59cba2d",
+                "reference": "c58422e0baa724dd18968975f15d90a6d59cba2d",
                 "shasum": ""
             },
             "require": {
@@ -114,7 +114,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-09-17 12:34:57"
+            "time": "2016-09-17 13:57:10"
         },
         {
             "name": "mustangostang/spyc",
