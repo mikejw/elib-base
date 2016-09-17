@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5cfc767d38b418860e66c8d8bc15d44f",
-    "content-hash": "8867cf2e6e158b605203461d3ba2b88f",
+    "hash": "c8025dc3198c706dcd61d870fd56c7de",
+    "content-hash": "64089eee71fd01bd9393226ea334517e",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -59,16 +59,16 @@
         },
         {
             "name": "mikejw/empathy",
-            "version": "dev-di",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikejw/empathy.git",
-                "reference": "a8f013b001859f17fd5201bafbb2708d5ad6d224"
+                "reference": "002ffeaaf075df68312e424e805fabc6544d84ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikejw/empathy/zipball/a8f013b001859f17fd5201bafbb2708d5ad6d224",
-                "reference": "a8f013b001859f17fd5201bafbb2708d5ad6d224",
+                "url": "https://api.github.com/repos/mikejw/empathy/zipball/002ffeaaf075df68312e424e805fabc6544d84ab",
+                "reference": "002ffeaaf075df68312e424e805fabc6544d84ab",
                 "shasum": ""
             },
             "require": {
@@ -79,9 +79,9 @@
                 "wp-cli/php-cli-tools": "dev-master"
             },
             "require-dev": {
-                "covex-nn/phpcb": "1.0.*@dev",
+                "mayflower/php-codebrowser": "dev-master",
                 "mockery/mockery": "dev-master",
-                "nelmio/alice": "dev-master",
+                "nelmio/alice": "2.2.2",
                 "pdepend/pdepend": "2.0.6",
                 "phploc/phploc": "2.1.*@dev",
                 "phpmd/phpmd": "dev-master",
@@ -114,7 +114,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-07-02 19:48:10"
+            "time": "2016-09-17 12:34:57"
         },
         {
             "name": "mustangostang/spyc",
@@ -165,16 +165,16 @@
         },
         {
             "name": "php-di/invoker",
-            "version": "1.3.2",
+            "version": "1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/Invoker.git",
-                "reference": "4140c38ca17268adc500b1e5c85c4055e48608d2"
+                "reference": "1f4ca63b9abc66109e53b255e465d0ddb5c2e3f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/Invoker/zipball/4140c38ca17268adc500b1e5c85c4055e48608d2",
-                "reference": "4140c38ca17268adc500b1e5c85c4055e48608d2",
+                "url": "https://api.github.com/repos/PHP-DI/Invoker/zipball/1f4ca63b9abc66109e53b255e465d0ddb5c2e3f7",
+                "reference": "1f4ca63b9abc66109e53b255e465d0ddb5c2e3f7",
                 "shasum": ""
             },
             "require": {
@@ -204,26 +204,26 @@
                 "invoke",
                 "invoker"
             ],
-            "time": "2016-06-12 09:09:55"
+            "time": "2016-07-14 13:09:58"
         },
         {
             "name": "php-di/php-di",
-            "version": "5.3.x-dev",
+            "version": "5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "adb8426b7a0430a7254db0b3d4f9a3a6726471ce"
+                "reference": "e348393488fa909e4bc0707ba5c9c44cd602a1cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/adb8426b7a0430a7254db0b3d4f9a3a6726471ce",
-                "reference": "adb8426b7a0430a7254db0b3d4f9a3a6726471ce",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/e348393488fa909e4bc0707ba5c9c44cd602a1cb",
+                "reference": "e348393488fa909e4bc0707ba5c9c44cd602a1cb",
                 "shasum": ""
             },
             "require": {
                 "container-interop/container-interop": "~1.0",
                 "php": ">=5.5.0",
-                "php-di/invoker": "^1.1.1",
+                "php-di/invoker": "^1.3.2",
                 "php-di/phpdoc-reader": "^2.0.1"
             },
             "provide": {
@@ -264,7 +264,7 @@
                 "dependency injection",
                 "di"
             ],
-            "time": "2016-06-01 20:13:39"
+            "time": "2016-08-23 20:18:00"
         },
         {
             "name": "php-di/phpdoc-reader",
@@ -309,12 +309,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/php-cli-tools.git",
-                "reference": "10cfa5bd978889c8050cd48d70d179d775c31827"
+                "reference": "28880df59f3c8c64db758f8e93cf5feaf3ddb310"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/php-cli-tools/zipball/10cfa5bd978889c8050cd48d70d179d775c31827",
-                "reference": "10cfa5bd978889c8050cd48d70d179d775c31827",
+                "url": "https://api.github.com/repos/wp-cli/php-cli-tools/zipball/28880df59f3c8c64db758f8e93cf5feaf3ddb310",
+                "reference": "28880df59f3c8c64db758f8e93cf5feaf3ddb310",
                 "shasum": ""
             },
             "require": {
@@ -351,7 +351,7 @@
                 "cli",
                 "console"
             ],
-            "time": "2016-03-30 11:55:36"
+            "time": "2016-07-11 15:47:20"
         }
     ],
     "packages-dev": [
@@ -415,12 +415,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hamcrest/hamcrest-php.git",
-                "reference": "8bfb4013724c1f62dc267af0e998207ac3fdc226"
+                "reference": "b7a5e18824117d8b65942e9aa77425d9b7dd7ff8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hamcrest/hamcrest-php/zipball/8bfb4013724c1f62dc267af0e998207ac3fdc226",
-                "reference": "8bfb4013724c1f62dc267af0e998207ac3fdc226",
+                "url": "https://api.github.com/repos/hamcrest/hamcrest-php/zipball/b7a5e18824117d8b65942e9aa77425d9b7dd7ff8",
+                "reference": "b7a5e18824117d8b65942e9aa77425d9b7dd7ff8",
                 "shasum": ""
             },
             "require": {
@@ -455,7 +455,7 @@
             "keywords": [
                 "test"
             ],
-            "time": "2016-04-21 19:47:43"
+            "time": "2016-07-22 14:03:17"
         },
         {
             "name": "mockery/mockery",
@@ -463,12 +463,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "ec1ca8266d9f8220cb0f90bbb84735137d180c90"
+                "reference": "812fcbd1c40cb5cd33e7ab48ffcf2ce8d202c74e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/ec1ca8266d9f8220cb0f90bbb84735137d180c90",
-                "reference": "ec1ca8266d9f8220cb0f90bbb84735137d180c90",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/812fcbd1c40cb5cd33e7ab48ffcf2ce8d202c74e",
+                "reference": "812fcbd1c40cb5cd33e7ab48ffcf2ce8d202c74e",
                 "shasum": ""
             },
             "require": {
@@ -520,7 +520,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2016-06-02 10:51:58"
+            "time": "2016-09-15 18:44:18"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -674,12 +674,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "58a8137754bc24b25740d4281399a4a3596058e0"
+                "reference": "d883566b83ae601a50b38b249e92450dc57cf875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/58a8137754bc24b25740d4281399a4a3596058e0",
-                "reference": "58a8137754bc24b25740d4281399a4a3596058e0",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/d883566b83ae601a50b38b249e92450dc57cf875",
+                "reference": "d883566b83ae601a50b38b249e92450dc57cf875",
                 "shasum": ""
             },
             "require": {
@@ -728,7 +728,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2016-06-07 08:13:47"
+            "time": "2016-07-19 16:08:43"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1223,12 +1223,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "622c5dc0a8036cfc4ccd73c7b1b668a431e69d96"
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/622c5dc0a8036cfc4ccd73c7b1b668a431e69d96",
-                "reference": "622c5dc0a8036cfc4ccd73c7b1b668a431e69d96",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/be2c607e43ce4c89ecd60e75c6a85c126e754aea",
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea",
                 "shasum": ""
             },
             "require": {
@@ -1265,7 +1265,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-06-11 08:21:19"
+            "time": "2016-08-18 05:49:44"
         },
         {
             "name": "sebastian/exporter",
@@ -1479,12 +1479,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "b69648974b39cc6f76aea9d3aee8212cd0c0d75d"
+                "reference": "46b44cb89d05e691f2719d468fd476d57487b487"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/b69648974b39cc6f76aea9d3aee8212cd0c0d75d",
-                "reference": "b69648974b39cc6f76aea9d3aee8212cd0c0d75d",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/46b44cb89d05e691f2719d468fd476d57487b487",
+                "reference": "46b44cb89d05e691f2719d468fd476d57487b487",
                 "shasum": ""
             },
             "require": {
@@ -1526,7 +1526,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-01 16:08:10"
+            "time": "2016-09-14 23:17:14"
         },
         {
             "name": "webmozart/assert",
@@ -1534,16 +1534,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "3a8e045064f294992a13966b6c892fb9d64853a3"
+                "reference": "8444f2ac9f86342665cdae47b6d3ea6e07794456"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/3a8e045064f294992a13966b6c892fb9d64853a3",
-                "reference": "3a8e045064f294992a13966b6c892fb9d64853a3",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/8444f2ac9f86342665cdae47b6d3ea6e07794456",
+                "reference": "8444f2ac9f86342665cdae47b6d3ea6e07794456",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.3|^7.0"
+                "php": "^5.3.3 || ^7.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.6",
@@ -1552,7 +1552,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.2-dev"
                 }
             },
             "autoload": {
@@ -1576,7 +1576,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-03-04 13:27:44"
+            "time": "2016-08-18 09:30:53"
         }
     ],
     "aliases": [],

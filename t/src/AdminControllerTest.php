@@ -26,28 +26,31 @@ class AdminControllerTest extends ESuiteTest
 
 		// fake the module 
 		$_GET['module'] = 'default_event';
-		$this->bootstrap->dispatch(false, '\Empathy\ELib\AdminController');
+		$this->bootstrap->dispatch(true, '\Empathy\ELib\AdminController');
 
 		$controller = $this->bootstrap->getController();
 		$this->assertInstanceOf('\Empathy\ELib\AdminController', $controller);
 	}
 
 
-	public function testPassword() {
+	// public function testPassword() {
 		
-		$this->expectOutputRegex('/session start/');
+	// 	$this->expectOutputRegex('/session start/');
 
-		// fake the module
-		$_GET['module'] = 'default_event';
-		$this->bootstrap->dispatch(false, '\Empathy\ELib\AdminController');
+	// 	// fake the module
+	// 	$_GET['module'] = 'default_event';
+	// 	$this->bootstrap->dispatch(false, '\Empathy\ELib\AdminController');
 
-		$controller = $this->bootstrap->getController();
+	// 	$controller = $this->bootstrap->getController();
 
-		$_POST['submit'] = true;
+	// 	$_POST['submit'] = true;
+	// 	$_POST['old_password'] = '';
+	// 	$_POST['password1'] = '123';
+	// 	$_POST['password2'] = '123';
 
 
-		$controller->password();
+	// 	$controller->password();
 
-	}
+	// }
 
 }
