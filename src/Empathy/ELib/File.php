@@ -139,12 +139,15 @@ class File
 
         foreach ($files as $file) {
             if ($file != '') {
+                $file = urldecode($file);
                 $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));                
             }
         }
+
         foreach ($all_files as $file) {
             array_push($success_arr, @unlink($file));
         }
+
         if (in_array(false, $success_arr)) {
             $success = false;
         } else {
