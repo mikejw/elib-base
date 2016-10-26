@@ -161,13 +161,12 @@ class File
     public function getMimeType()
     {
         $imgInfo = getImageSize($_FILES['file']['tmp_name']);
-
         return $imgInfo['mime'];
     }
 
     public function upload()
     {
-        if ($_FILES['file']['name'] == '') {
+        if ($_FILES['file']['name'] == '' || $_FILES['file']['error'] == 1) {
             $this->error .= "Problem uploading file. Empty file?";
         } else {
             $name_array = explode('.', $_FILES['file']['name']);
