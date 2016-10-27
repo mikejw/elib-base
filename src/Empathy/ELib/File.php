@@ -35,6 +35,26 @@ class File
     private $fs_dpeth_prefix;
 
 
+    // taken from http://php.net/manual/en/features.file-upload.multiple.php
+    public static function reArrayFiles(&$file_post) {
+
+
+        $file_ary = array();
+        $file_count = count($file_post['name']);
+        $file_keys = array_keys($file_post);
+
+        for ($i=0; $i<$file_count; $i++) {
+
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $file_post[$key][$i];
+            }
+        }
+
+        return $file_ary;
+    }
+
+
+
     public function __construct($gallery, $upload, $deriv, $fs_depth=0)
     {
         $this->fs_depth = $fs_depth;
