@@ -35,6 +35,26 @@ class File
     private $fs_dpeth_prefix;
 
 
+    // taken from http://php.net/manual/en/features.file-upload.multiple.php
+    public static function reArrayFiles(&$file_post) {
+
+
+        $file_ary = array();
+        $file_count = count($file_post['name']);
+        $file_keys = array_keys($file_post);
+
+        for ($i=0; $i<$file_count; $i++) {
+
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $file_post[$key][$i];
+            }
+        }
+
+        return $file_ary;
+    }
+
+
+
     public function __construct($gallery, $upload, $deriv, $fs_depth=0)
     {
         $this->fs_depth = $fs_depth;
@@ -139,12 +159,15 @@ class File
 
         foreach ($files as $file) {
             if ($file != '') {
+                $file = urldecode($file);
                 $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));                
             }
         }
+
         foreach ($all_files as $file) {
             array_push($success_arr, @unlink($file));
         }
+
         if (in_array(false, $success_arr)) {
             $success = false;
         } else {
@@ -158,13 +181,12 @@ class File
     public function getMimeType()
     {
         $imgInfo = getImageSize($_FILES['file']['tmp_name']);
-
         return $imgInfo['mime'];
     }
 
     public function upload()
     {
-        if ($_FILES['file']['name'] == '') {
+        if ($_FILES['file']['name'] == '' || $_FILES['file']['error'] == 1) {
             $this->error .= "Problem uploading file. Empty file?";
         } else {
             $name_array = explode('.', $_FILES['file']['name']);
@@ -174,7 +196,7 @@ class File
             /* check for jpeg */
             $mimeType = $this->getMimeType();
 
-            if (!preg_match('/jpg|jpeg/', $ext) || $mimeType != 'image/jpeg') {
+            if (!preg_match('/jpg|jpeg|JPG|JPEG/', $ext) || $mimeType != 'image/jpeg') {
                 $this->error .= "Invalid file format.";
             } else {
                 $name = '';

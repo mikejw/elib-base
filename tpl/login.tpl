@@ -1,39 +1,35 @@
 {include file="elib://login_header.tpl"}
 
-<div id="content_inner">
-
-<h2>Please enter login details for <span>{$NAME}</span>.</h2>
 
 
-<div id="user_form">
-
-<form action="" method="post">
-<fieldset>
-<legend>Login</legend>
-<p><label for="username">Username{if isset($errors.username)}<span class="error">{$errors.username}</span>{/if}</label>
-<input id="username" type="text" name="username"
-{if isset($username)}
-value="{$username}"{/if} /></p>
-<p><label for="password">Password{if isset($errors.password)}<span class="error">{$errors.password}</span>{/if}</label>
-<input id="password" type="password" name="password"
-{if isset($password)}
-value="{$password}"{/if} /></p>
-</fieldset>
-<p><label>&nbsp;</label><button type="submit" name="login">Sign in</button>
-</p>
-</form>
-
-{if isset($errors.success)}
-<ul id="error">
-<li>{$errors.success}</li>
-</ul>
-{/if}
+   <form action="" method="post" class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Username</label>
+        <input name="username" type="text" id="inputEmail" class="form-control" placeholder="Email address" autofocus />
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" />
+        <div class="checkbox">
+         <!--  <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label> -->
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" name="login" type="submit">Sign in</button>
+    </form>
 
 
-</div>
+    {if isset($errors)}
+
+	<div class="alert alert-danger alert-dismissible" role="alert">
+  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  	<strong>Error!</strong>
+  		{foreach from=$errors item=e} 
+  			<p>{$e}</p>
+  		{/foreach}
+	</div>
+
+    {/if}
 
 
 
-</div>
 
 {include file="elib://login_footer.tpl"}

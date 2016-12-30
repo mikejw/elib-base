@@ -86,13 +86,6 @@ form p .error { position: absolute; right: 0; width: 210px;
 
 
 
-
-form p input {
-    background-image: url("./background2.png");
-}
-
-
-
 form fieldset legend {
     display: none;
 }
