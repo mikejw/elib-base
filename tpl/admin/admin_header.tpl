@@ -52,3 +52,17 @@
 	{include file="elib://admin/comp_admin_breadcrumb.tpl"}
 
 
+  {if isset($help_file)}
+  <div id="help_wrapper1">
+    <div id="help_wrapper2">
+      <div class="grey{if $help_shown eq true} shown{/if}" id="help">
+        <a href="#" id="help_tab"><span>Help</span></a>
+        <div id="help_inner"><div>
+            {include file=$help_file}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="line-height: 0.5em;">&nbsp;</p>
+{/if}

@@ -1,3 +1,10 @@
+
+/* this file represents
+ * old styles carried across from the old theme?
+ */
+
+
+
 body {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -6,6 +13,39 @@ body {
 .navbar {
   margin-bottom: 20px;
 }
+
+
+#help_wrapper1 { position: relative; padding-bottom: 1em; }
+
+#help { padding: 0.25em 0; position: relative;
+    background-color: #fff; }
+
+#help.grey { border: 1px solid #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#help_inner { display: none;
+    padding: 1em 1em 1em 1em; }
+
+#help.shown #help_inner { display: block; }
+
+#help_inner div { filter:alpha(opacity=0); opacity:0; }
+
+#help.shown #help_inner div { filter:alpha(opacity=1); opacity:1; }
+
+a#help_tab { position: absolute; display: block; background-color: #eee;
+    height: 2em; bottom: -2.2em; width: 4em; line-height: 2em; z-index: 30;
+    right: 1em; text-align: center;
+    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-radius-bottomleft: 5px;
+    border-radius-bottomleft: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -webkit-border-radius-bottomright: 5px;
+    border-radius-bottomright: 5px;
+}
+a#help_tab { padding-top: 0.2em; }
 
 
 
