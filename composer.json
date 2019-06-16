@@ -6,15 +6,15 @@
         "lib"
     ],
     "homepage": "http://empathyphp.co.uk",
-    "license": "LGPL3",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Mike Whiting",
-            "email": "mail@mikejw.co.uk"
+            "email": "mikejw3@gmail.com"
         }
     ],
     "require": {
-        "mikejw/empathy": "0.9.7"
+        "mikejw/empathy": "0.9.8"
     },
     "autoload": {
         "psr-0": {
