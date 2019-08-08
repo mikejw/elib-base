@@ -32,7 +32,7 @@ var help = new function()
     this.toggle = function()
     {
         $.ajax({
-            url: "http://"+WEB_ROOT+PUBLIC_DIR+"/admin/toggle_help",
+            url: "//"+WEB_ROOT+PUBLIC_DIR+"/admin/toggle_help",
             timeout: 5000,
             type: 'GET',
             dataType: 'json',
@@ -81,7 +81,7 @@ var toggle = function(link)
         link.append('-');
         if(!/data/.test(img.attr('src')))
         {
-            img.attr('src', 'http://'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_open.gif');
+            img.attr('src', '//'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_open.gif');
         }
     }
     else
@@ -91,7 +91,7 @@ var toggle = function(link)
         link.append('+');
         if(!/data/.test(img.attr('src')))
         {                             
-            img.attr('src', 'http://'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_closed.gif');
+            img.attr('src', '//'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_closed.gif');
         }
     }
 };
@@ -231,7 +231,7 @@ var tree = function()
             $.ajax({
                 data: data,
                 type: 'POST',
-                url: "http://"+WEB_ROOT+PUBLIC_DIR+"/admin/dsection/sort"
+                url: "//"+WEB_ROOT+PUBLIC_DIR+"/admin/dsection/sort"
             })
             .done(function(data){
                 //console.log(data);
