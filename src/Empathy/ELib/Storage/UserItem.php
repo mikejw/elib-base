@@ -169,7 +169,7 @@ class UserItem extends Entity
         return $user_id;
     }
 
-    private function activeUser()
+    protected function activeUser()
     {
         $active = 0;
         $sql = 'SELECT id FROM '.Model::getTable('UserItem').' WHERE email = \''.$this->email.'\''
@@ -186,7 +186,7 @@ class UserItem extends Entity
         return $active;
     }
 
-    private function usernameExists()
+    protected function usernameExists()
     {
         $exists = 0;
         $sql = 'SELECT id FROM '.Model::getTable('UserItem').' WHERE username = \''.$this->username.'\'';
