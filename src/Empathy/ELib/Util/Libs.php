@@ -59,10 +59,10 @@ class Libs
         foreach (self::$installed_libs as $lib)  {
             switch ($lib) {
                 case 'mikejw/elib-cms':#
-                    $mapped['dsection'] = 'Generic Sections';
+                    $mapped['dsection'] = 'CMS';
                     break;
                 case 'mikejw/elib-siteinfo':
-                    $mapped['settings'] = 'Settings';
+                    $mapped['settings'] = 'SEO Settings';
                     break;
                 case 'mikejw/elib-blog':
                     $mapped['blog'] = 'Blog';

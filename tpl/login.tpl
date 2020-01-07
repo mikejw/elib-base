@@ -1,35 +1,37 @@
-{include file="elib://login_header.tpl"}
-
+{include file="elib:/admin/admin_header.tpl"}
 
 
    <form action="" method="post" class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Username</label>
-        <input name="username" type="text" id="inputEmail" class="form-control" placeholder="Email address" autofocus />
+
+        <img class="mb-4" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/img/empathy.png" alt="" width="70" height="70">
+
+        <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input name="username" type="text" id="inputUsername" class="form-control" placeholder="Username" autofocus />
         <label for="inputPassword" class="sr-only">Password</label>
         <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" />
         <div class="checkbox">
-         <!--  <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label> -->
+        <!--  <label>
+        <input type="checkbox" value="remember-me"> Remember me
+        </label> -->
         </div>
-        <button class="btn btn-lg btn-primary btn-block" name="login" type="submit">Sign in</button>
+        <button class="btn btn-sm btn-primary btn-block" name="login" type="submit">Sign in</button>
+
+       {if isset($errors)}
+
+           <p>&nbsp;</p>
+           <div class="alert alert-danger alert-dismissible fade show" role="alert">
+               <strong>Error!</strong>
+               {foreach from=$errors item=e}
+                   <p>{$e}</p>
+               {/foreach}
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+       {/if}
     </form>
 
 
-    {if isset($errors)}
 
-	<div class="alert alert-danger alert-dismissible" role="alert">
-  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  	<strong>Error!</strong>
-  		{foreach from=$errors item=e} 
-  			<p>{$e}</p>
-  		{/foreach}
-	</div>
-
-    {/if}
-
-
-
-
-{include file="elib://login_footer.tpl"}
+{include file="elib:/admin/admin_footer.tpl"}

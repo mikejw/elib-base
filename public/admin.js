@@ -71,27 +71,23 @@ var help = new function()
 var toggle = function(link)
 {              
     var item = link.parent();
-    var img = item.find('> img');
+    var img = item.find('> i');
     link.empty();       
     var list = item.find('> ul');
-    if(list.css('display') == 'none')
-    {
+    if (list.css('display') === 'none') {
         list.removeClass();
         //list.show(200);
         link.append('-');
-        if(!/data/.test(img.attr('src')))
-        {
-            img.attr('src', '//'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_open.gif');
+        if (!/file/.test(img.attr('class'))) {
+            img.attr('class', 'far fa-folder-open');
         }
     }
-    else
-    {
+    else {
         list.addClass('hidden_sections');
         //list.hide(200);
         link.append('+');
-        if(!/data/.test(img.attr('src')))
-        {                             
-            img.attr('src', '//'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_closed.gif');
+        if (!/file/.test(img.attr('class'))) {
+            img.attr('class', 'far fa-folder');
         }
     }
 };
@@ -149,14 +145,14 @@ var edit_box = new function()
     };
 
     this.enter = function()
-    {        
+    {
         self.locked = 1;
         self.parent_element.empty().append('<input type="text" id="'+self.field+'_'+self.id+'" value="'+self.current_text+'" />');          
         var input = self.parent_element.find('input');
         input.focus();
         input.bind('blur', function(e){
             var $this = $(this);
-            self.current_text = $this.attr('value');
+            self.current_text = $this.val();
             
             if(self.current_text == self.old_text)
             {
@@ -321,13 +317,10 @@ $(document).ready(function(){
 
     if($('textarea.raw').length < 1)
     {
-
         tinymce.init({
-            
             selector: 'textarea',
             convert_urls: false,
-            mode: "textareas",
-            theme: "modern",
+            theme: "silver",
            
             paste_remove_styles: true,
             paste_preprocess: function(pl, o) {
@@ -335,12 +328,15 @@ $(document).ready(function(){
                 //alert(o.content);
                 o.content = o.content.replace(/(<([^>]+)>)/gi, '');
             },
-
+            external_plugins: {
+                blogImages: '//' + WEB_ROOT + PUBLIC_DIR + '/vendor/js/blogImages.js'
+            },
             plugins: [
                 'advlist autolink lists link image charmap print preview anchor',
                 'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table contextmenu paste code'
-            ]
+                'insertdatetime media table paste code help'
+            ],
+            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | blogimage'
         });
     }
    

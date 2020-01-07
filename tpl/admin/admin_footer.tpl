@@ -1,23 +1,11 @@
 
 
 
-
-{*
-{if isset($help_file)}
-
-<div class="jumbotron">
-    <h1>Help</h1>
-    {include file=$help_file}
+{if !($module eq 'user' && $class eq 'user' && $event eq 'login')}
 </div>
 {/if}
-*}
 
-
-
-
-</div>
 <script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/js/common.js"></script>
-<script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/vendor/js.js"></script>
-<script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/elib/admin.js"></script>
+<script type="text/javascript" src="http://{$WEB_ROOT}{$PUBLIC_DIR}/vendor/js/main.min.js"></script>
 </body>
 </html>

@@ -160,7 +160,7 @@ class File
         foreach ($files as $file) {
             if ($file != '') {
                 $file = urldecode($file);
-                $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));                
+                $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));
             }
         }
 
@@ -172,6 +172,11 @@ class File
             $success = false;
         } else {
             $success = sizeof($success_arr);
+        }
+
+        // no files found to remove
+        if (sizeof($files) && !sizeof($all_files)) {
+            $success = 1;
         }
 
         return $success;
@@ -253,5 +258,8 @@ class File
         return $this->error;
     }
 
+    public function getDimensions() {
+        return [$this->origX, $this->origY];
+    }
 
 }
