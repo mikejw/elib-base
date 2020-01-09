@@ -10,6 +10,7 @@
   </head>
   <body>
 
+
   {if !($module eq 'user' && $class eq 'user' && $event eq 'login')}
   <div class="container">
 
@@ -26,6 +27,14 @@
 
           <ul class="navbar-nav">
             <li class="nav-item">
+              <a class="nav-link {if !isset($help_file)}}disabled{/if}" href="#"
+                 data-toggle="modal" data-target="#exampleModalLong"
+              >
+                Help
+                <i class="far fa-question-circle"></i>
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/user/logout">Logout {$current_user}</a>
             </li>
           </ul>
@@ -36,18 +45,27 @@
 
 
     {if isset($help_file)}
-    <div id="help_wrapper1">
-      <div id="help_wrapper2">
-        <div class="grey{if $help_shown eq true} shown{/if}" id="help">
-          <a href="#" id="help_tab"><span>Help</span></a>
-          <div id="help_inner"><div>
+      <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">
+                Help
+                <i class="far fa-question-circle"></i>
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
               {include file=$help_file}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <p style="line-height: 0.5em;">&nbsp;</p>
-    {/if}
 
+    {/if}
   {/if}
