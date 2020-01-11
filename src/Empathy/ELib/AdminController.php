@@ -77,6 +77,8 @@ class AdminController extends EController
     {
         $this->setTemplate('elib:/admin/password.tpl');
         if (isset($_POST['submit'])) {
+
+
             $errors = array();
             $old_password = md5(SALT.$_POST['old_password'].SALT);
             $password1 = $_POST['password1'];
@@ -103,7 +105,7 @@ class AdminController extends EController
                 $u->save(Model::getTable('UserItem'), array(), 0);
                 $this->redirect('admin');
             } else {
-                $this->presenter->assign('error', $errors);
+                $this->presenter->assign('errors', $errors);
             }
         } elseif (isset($_POST['cancel'])) {
             $this->redirect('admin');

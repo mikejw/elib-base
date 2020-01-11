@@ -19,7 +19,6 @@
 
        {if isset($errors)}
 
-           <div class="container">
            <p>&nbsp;</p>
            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                <strong>Error!</strong>
@@ -30,8 +29,6 @@
                    <span aria-hidden="true">&times;</span>
                </button>
            </div>
-           </div>
-
        {/if}
     </form>
 
