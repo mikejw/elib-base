@@ -71,17 +71,17 @@ var help = new function()
 var toggle = function(link)
 {              
     var item = link.parent();
-    var img = item.find('> img');
+    var img = item.find('> i');
     link.empty();       
     var list = item.find('> ul');
-    if(list.css('display') == 'none')
+    if(list.css('display') === 'none')
     {
         list.removeClass();
         //list.show(200);
         link.append('-');
-        if(!/data/.test(img.attr('src')))
+        if(!/file/.test(img.attr('class')))
         {
-            img.attr('src', '//'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_open.gif');
+            img.attr('class', 'far fa-folder-open');
         }
     }
     else
@@ -89,9 +89,9 @@ var toggle = function(link)
         list.addClass('hidden_sections');
         //list.hide(200);
         link.append('+');
-        if(!/data/.test(img.attr('src')))
+        if(!/data/.test(img.attr('class')))
         {                             
-            img.attr('src', '//'+WEB_ROOT+PUBLIC_DIR+'/elib/t_folder_closed.gif');
+            img.attr('class', 'far fa-folder');
         }
     }
 };

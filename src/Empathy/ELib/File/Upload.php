@@ -48,8 +48,6 @@ class Upload
 
     public function upload()
     {
-
-
         if (!isset($_FILES['file']['name']) || ($_FILES['file']['name'] == ''))
         {
             $this->error .= "Problem uploading file. Empty file?";		       
