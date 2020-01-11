@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="{if $module eq 'user' && $class eq 'user' && $event eq 'login'}login{/if}">
+<html lang="en" class="{if $centerpage}centerpage{/if}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

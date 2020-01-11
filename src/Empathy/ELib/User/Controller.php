@@ -33,6 +33,7 @@ class Controller extends EController
 
     public function login()
     {
+        $this->assign('centerpage', true);
         $this->setTemplate('elib:/login.tpl');
 
         if (isset($_POST['login'])) {
