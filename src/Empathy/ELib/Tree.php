@@ -28,7 +28,6 @@ class Tree
                 $desc = preg_replace('/\W$/', '', $desc).'...';
             }
         }
-
         return $desc;
     }
 

@@ -149,14 +149,14 @@ var edit_box = new function()
     };
 
     this.enter = function()
-    {        
+    {
         self.locked = 1;
         self.parent_element.empty().append('<input type="text" id="'+self.field+'_'+self.id+'" value="'+self.current_text+'" />');          
         var input = self.parent_element.find('input');
         input.focus();
         input.bind('blur', function(e){
             var $this = $(this);
-            self.current_text = $this.attr('value');
+            self.current_text = $this.val();
             
             if(self.current_text == self.old_text)
             {
