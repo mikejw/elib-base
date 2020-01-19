@@ -74,23 +74,19 @@ var toggle = function(link)
     var img = item.find('> i');
     link.empty();       
     var list = item.find('> ul');
-    if(list.css('display') === 'none')
-    {
+    if (list.css('display') === 'none') {
         list.removeClass();
         //list.show(200);
         link.append('-');
-        if(!/file/.test(img.attr('class')))
-        {
+        if (!/file/.test(img.attr('class'))) {
             img.attr('class', 'far fa-folder-open');
         }
     }
-    else
-    {
+    else {
         list.addClass('hidden_sections');
         //list.hide(200);
         link.append('+');
-        if(!/data/.test(img.attr('class')))
-        {                             
+        if (!/file/.test(img.attr('class'))) {
             img.attr('class', 'far fa-folder');
         }
     }
