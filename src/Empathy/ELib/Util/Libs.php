@@ -20,6 +20,11 @@ class Libs
         $composer_installed = Config::get('DOC_ROOT').'/vendor/composer/installed.json';
         if(file_exists($composer_installed)) {
             $installed = json_decode(file_get_contents($composer_installed));
+
+            if (isset($installed->packages)) {
+                $installed = $installed->packages;
+            }
+
             foreach($installed as $i) { 
                 if(strpos($i->name, 'mikejw/elib') === 0) {
                     $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name.'/tpl';
