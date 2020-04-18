@@ -65,4 +65,9 @@ class CurrentUser
         return (self::$u->auth >= $level);
     }
 
+    public static function setUserID($id)
+    {
+        self::$u->id = $id;
+    }
+
 }
