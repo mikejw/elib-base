@@ -103,10 +103,10 @@ class Controller extends EController
             $p->fullname = $_POST['fullname'];
             $p->validates();
 
-            $s = Model::load('ShippingAddress');
-
             $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1)? 1: 0;
             if ($supply_address == 1) {
+
+                $s = Model::load('ShippingAddress');
                 $saving_address = true;
 
                 if ($p->fullname != '') {
@@ -128,14 +128,19 @@ class Controller extends EController
                 $s->validates();
             }
 
-            if ($u->hasValErrors() || $s->hasValErrors() || $p->hasValErrors()) {
+            if ($u->hasValErrors() || $p->hasValErrors() || (isset($s) && $s->hasValErrors())) {
                 $this->presenter->assign('user', $u);
-                $this->presenter->assign('address', $s);
                 $this->presenter->assign('profile', $p);
 
-                $this->presenter->assign('errors', array_merge($u->getValErrors(), $s->getValErrors(), $p->getValErrors()));
+                $errors =  array_merge($u->getValErrors(), $p->getValErrors());
+                if (isset($s)) {
+                    $this->presenter->assign('address', $s);
+                    array_push($errors, $s->getValErrors());
+                }
+
+                $this->presenter->assign('errors', $errors);
             } else {
-                $password = exec(MAKEPASSWD.' --chars=8');
+                $password = exec(MAKEPASSWD.' --chars=8', $output, $output);
                 $reg_code = exec(MAKEPASSWD.' --chars=16');
 
                 $u->password = $password;
@@ -144,12 +149,10 @@ class Controller extends EController
                 $u->active = 0;
                 $u->registered = 'MYSQLTIME';
                 $u->popups = 'DEFAULT';
-
                 $u->user_profile_id = $p->insert(Model::getTable('UserProfile'), 1, array(), 0);
 
-                $s->user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
-
                 if ($saving_address) {
+                    $s->user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
                     $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
                     $v = Model::load('Vendor');
                     $v->user_id = $s->user_id;
