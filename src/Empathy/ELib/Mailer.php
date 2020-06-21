@@ -1,48 +1,57 @@
 <?php
 
 namespace Empathy\ELib;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class Mailer
 {
-    public $recipients;
-    public $subject;
-    public $message;
-    public $header;
+    private $recipients;
+    private $subject;
+    private $message;
+    private $from;
+    private $mailer;
     public $result;
-    public $from;
 
     public function __construct($r, $s, $m, $f)
     {
-        $this->header = 'From: '.$f."\r\n"
-            .'Reply-To: '.$f."\r\n"
-            .'X-Mailer: PHP/'.phpversion();
+        $this->mailer = new PHPMailer(true); // allow exceptions
+        $this->mailer->IsSMTP();
+        $this->mailer->CharSet = 'UTF-8';
+        $this->mailer->Host = ELIB_EMAIL_HOST;
+        $this->mailer->Username = ELIB_EMAIL_USER;
+        $this->mailer->Password = ELIB_EMAIL_PASSWORD;
+        $this->mailer->setFrom(ELIB_EMAIL_FROM, 'Mike Whiting');
+        $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
+        $this->mailer->SMTPAuth = true;
+        $this->mailer->Port = 25;
+        $this->mailer->isHTML(false);
+        $this->mailer->Subject = $this->subject;
+        $this->mailer->Body = $this->message;
+        $this->mailer->AltBody = 'This is the body in plain text for non-HTML mail clients';
+        $this->mailer->addReplyTo(ELIB_EMAIL_FROM, 'Mike whiting');
 
         $this->recipients = $r;
         $this->subject = $s;
         $this->message = $m;
-        $this->result = 0;
+        $this->result = 1;
         $this->from = $f;
         $this->send();
+        
     }
 
     public function send()
     {
-        $result = array();
-        $message = '';
-        $i = 0;
-        foreach ($this->recipients as $index => $r) {
-            $message = str_replace('___', $r['alias'], $this->message);
-            $result[$i] = mail($r['address'], $this->subject, $message, $this->header, '-f'.$this->from);
-            $i++;
-        }
-
-        print_r($result);
-        exit();
-
-        if (in_array(0, $result)) {
+        try {
+            foreach ($this->recipients as $index => $r) {
+                $this->message = str_replace('___', $r['alias'], $this->message);
+                $this->mailer->addAddress($r['address'], $r['alias']);
+                $this->mailer->send();
+            }
+        } catch(Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$this->mailer->ErrorInfo}";
             $this->result = 0;
-        } else {
-            $this->result = 1;
         }
     }
 }
