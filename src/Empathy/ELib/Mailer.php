@@ -36,6 +36,9 @@ class Mailer
             $i++;
         }
 
+        print_r($result);
+        exit();
+
         if (in_array(0, $result)) {
             $this->result = 0;
         } else {
