@@ -92,6 +92,7 @@ class Controller extends EController
     {
         $supply_address = 0;
         $saving_address = false;
+        $errors = array();
 
         if (isset($_POST['submit'])) {
             $u = Model::load('UserItem');
@@ -103,7 +104,7 @@ class Controller extends EController
             $p->fullname = $_POST['fullname'];
             $p->validates();
 
-            $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1)? 1: 0;
+            $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1) ? 1 : 0;
             if ($supply_address == 1) {
 
                 $s = Model::load('ShippingAddress');
@@ -119,7 +120,7 @@ class Controller extends EController
                 }
 
                 $s->address1 = $_POST['address1'];
-                $s->address2  = $_POST['address2'];
+                $s->address2 = $_POST['address2'];
                 $s->city = $_POST['city'];
                 $s->state = $_POST['state'];
                 $s->zip = strtoupper($_POST['zip']);
@@ -132,17 +133,15 @@ class Controller extends EController
                 $this->presenter->assign('user', $u);
                 $this->presenter->assign('profile', $p);
 
-                $errors =  array_merge($u->getValErrors(), $p->getValErrors());
+                $errors = array_merge($u->getValErrors(), $p->getValErrors());
                 if (isset($s)) {
                     $this->presenter->assign('address', $s);
                     array_push($errors, $s->getValErrors());
                 }
 
-                $this->presenter->assign('errors', $errors);
             } else {
-                $password = exec(MAKEPASSWD.' --chars=8', $output, $output);
-                $reg_code = exec(MAKEPASSWD.' --chars=16');
-
+                $password = exec(MAKEPASSWD . ' --chars=8');
+                $reg_code = exec(MAKEPASSWD . ' --chars=16');
                 $u->password = $password;
                 $u->reg_code = md5($reg_code);
                 $u->auth = 0;
@@ -163,16 +162,16 @@ class Controller extends EController
                     defined('ELIB_EMAIL_FROM')) {
 
                     $message = "\nHi ___,\n\n"
-                        ."Thanks for registering with ".ELIB_EMAIL_ORGANISATION."\n\nBefore we can let you"
-                        ." know your password for using the site, please confirm your email address"
-                        ." by clicking the following link:\n\n"
-                        ."http://".Config::get('WEB_ROOT').Config::get('PUBLIC_DIR')."/user/confirm_reg/?code=".$reg_code
-                        ."\n\nCheers\n\n";
+                        . "Thanks for registering with " . ELIB_EMAIL_ORGANISATION . "\n\nBefore we can let you"
+                        . " know your password for using the site, please confirm your email address"
+                        . " by clicking the following link:\n\n"
+                        . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
+                        . "\n\nCheers\n\n";
 
                     $r[0]['alias'] = $u->username;
                     $r[0]['address'] = $u->email;
 
-                    $m = new Mailer($r, 'You have been registered with '.ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+                    $m = new Mailer($r, 'You have been registered with ' . ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
                 }
 
                 //$this->postRegister($s->user_id);
@@ -181,14 +180,12 @@ class Controller extends EController
         }
 
         $titles = array('Mr', 'Mrs', 'Miss', 'Ms', 'Dr');
-        $this->presenter->assign('titles', $titles);
-
         $countries = Country::build();
-        $this->presenter->assign('countries', $countries);
-        $this->presenter->assign('sc', 'GB');
-
+        $this->assign('errors', $errors);
+        $this->assign('titles', $titles);
+        $this->assign('countries', $countries);
+        $this->assign('sc', 'GB');
         $this->assign('supply_address', $supply_address);
-
         $this->setTemplate('elib://register.tpl');
     }
 
