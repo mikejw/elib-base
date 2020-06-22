@@ -93,6 +93,9 @@ class Controller extends EController
         $supply_address = 0;
         $saving_address = false;
         $errors = array();
+        $u = null;
+        $p = null;
+
 
         if (isset($_POST['submit'])) {
             $u = Model::load('UserItem');
@@ -106,7 +109,6 @@ class Controller extends EController
 
             $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1) ? 1 : 0;
             if ($supply_address == 1) {
-
                 $s = Model::load('ShippingAddress');
                 $saving_address = true;
 
@@ -149,9 +151,10 @@ class Controller extends EController
                 $u->registered = 'MYSQLTIME';
                 $u->popups = 'DEFAULT';
                 $u->user_profile_id = $p->insert(Model::getTable('UserProfile'), 1, array(), 0);
+                $user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
 
                 if ($saving_address) {
-                    $s->user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
+                    $s->user_id = $user_id;
                     $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
                     $v = Model::load('Vendor');
                     $v->user_id = $s->user_id;
@@ -174,7 +177,7 @@ class Controller extends EController
                     $m = new Mailer($r, 'You have been registered with ' . ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
                 }
 
-                //$this->postRegister($s->user_id);
+                $this->postRegister($user_id);
                 $this->redirect('user/thanks/1');
             }
         }
