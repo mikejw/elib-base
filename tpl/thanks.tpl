@@ -1,6 +1,7 @@
-{include file="header.tpl"}
+{include file="$EMPATHY_DIR/tpl/eheader.tpl"}
 
-<div id="content_inner">
+<div class="container">
+<p>&nbsp;</p>
 
 <h2>Thanks...</h2>
 {if $id eq 1}
@@ -19,4 +20,4 @@ in your cart you can now go through the <a href="http://{$WEB_ROOT}{$PUBLIC_DIR}
 </div>
 
 
-{include file="footer.tpl"}
+{include file="$EMPATHY_DIR/tpl/efooter.tpl"}
