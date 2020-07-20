@@ -9,6 +9,8 @@ use Empathy\ELib\Country\Country;
 use Empathy\ELib\Mailer;
 use Empathy\MVC\Session;
 use Empathy\MVC\Config;
+use Empathy\ELib\Config as ELibConfig;
+
 
 
 class Controller extends EController
@@ -161,11 +163,13 @@ class Controller extends EController
                     $v->insert(Model::getTable('Vendor'), 1, array(), 0);
                 }
 
-                if (defined('ELIB_EMAIL_ORGANISATION') &&
-                    defined('ELIB_EMAIL_FROM')) {
+                if (
+                    ELibConfig::get('EMAIL_ORGANISATION') &&
+                    ELibConfig::get('EMAIL_FROM')
+                ) {
 
                     $message = "\nHi ___,\n\n"
-                        . "Thanks for registering with " . ELIB_EMAIL_ORGANISATION . "\n\nBefore we can let you"
+                        . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
                         . " know your password for using the site, please confirm your email address"
                         . " by clicking the following link:\n\n"
                         . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
@@ -174,7 +178,7 @@ class Controller extends EController
                     $r[0]['alias'] = $u->username;
                     $r[0]['address'] = $u->email;
 
-                    $m = new Mailer($r, 'You have been registered with ' . ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+                    $m = new Mailer($r, 'You have been registered with ' . ELibConfig::get('EMAIL_ORGANISATION'), $message);
                 }
 
                 $this->postRegister($user_id);
@@ -215,13 +219,13 @@ class Controller extends EController
             Session::set('user_id',$u->id);
 
             $message = "\nHi ___,\n\n"
-                ."Thanks for confirming your registration. You can now log in to the ".ELIB_EMAIL_ORGANISATION." website using your username "
+                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
                 ." '___' and the password '".$password."'.\n\nCheers\n\n";
 
             $r[0]['alias'] = $u->username;
             $r[0]['address'] = $u->email;
 
-            $m = new Mailer($r, 'Welcome to '.ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+            $m = new Mailer($r, 'Welcome to '.ELibConfig::get('EMAIL_ORGANISATION'), $message);
             $this->redirect('user/thanks/2');
         } else {
             throw new \Exception('Unable to activate user.');

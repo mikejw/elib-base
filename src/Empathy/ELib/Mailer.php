@@ -1,6 +1,7 @@
 <?php
 
 namespace Empathy\ELib;
+use Empathy\ELib\Config;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -12,15 +13,18 @@ class Mailer
     private $message;
     private $from;
     private $mailer;
+    private $html;
     public $result;
 
-    public function __construct($r, $s, $m, $f)
+
+    public function __construct($r, $s, $m, $f=null, $html=false)
     {
         $this->recipients = $r;
         $this->subject = $s;
         $this->message = $m;
         $this->result = 1;
         $this->from = $f;
+        $this->html = $html;
         $this->send();
     }
 
@@ -29,17 +33,23 @@ class Mailer
         $this->mailer = new PHPMailer(true); // allow exceptions
         $this->mailer->IsSMTP();
         $this->mailer->CharSet = 'UTF-8';
-        $this->mailer->Host = ELIB_EMAIL_HOST;
-        $this->mailer->Username = ELIB_EMAIL_USER;
-        $this->mailer->Password = ELIB_EMAIL_PASSWORD;
-        $this->mailer->setFrom(ELIB_EMAIL_FROM, 'Mike Whiting');
+        $this->mailer->Host = Config::get('EMAIL_HOST');
+        $this->mailer->Username = Config::get('EMAIL_USER');
+        $this->mailer->Password = Config::get('EMAIL_PASSWORD');
         $this->mailer->SMTPDebug = SMTP::DEBUG_OFF;
         $this->mailer->SMTPAuth = true;
         $this->mailer->Port = 25;
-        $this->mailer->isHTML(false);
+        $this->mailer->isHTML($this->html);
         $this->mailer->Subject = $this->subject;
         $this->mailer->AltBody = 'This is the body in plain text for non-HTML mail clients';
-        $this->mailer->addReplyTo(ELIB_EMAIL_FROM, 'Mike whiting');
+
+        if ($this->from === null) {
+            $this->mailer->setFrom(Config::get('EMAIL_FROM'), 'Mike Whiting');
+            $this->mailer->addReplyTo(Config::get('EMAIL_FROM'), 'Mike whiting');
+        } else {
+            $this->mailer->setFrom($this->from['address'], $this->from['alias']);
+            $this->mailer->addReplyTo($this->from['address'], $this->from['alias']);
+        }
     }
 
     public function send()
