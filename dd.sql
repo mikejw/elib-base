@@ -23,3 +23,14 @@ registered              TIMESTAMP               NULL,
 activated               TIMESTAMP               NULL,
 FOREIGN KEY (user_profile_id) REFERENCES user_profile(id)) ENGINE=InnoDB;
 
+
+
+CREATE TABLE contact(
+id                      INT(11)                 AUTO_INCREMENT PRIMARY KEY,
+message                 TINYINT(1)              NOT NULL DEFAULT 0,
+subject                 VARCHAR(255)            NULL,
+body                    TEXT                    NULL,
+email                   VARCHAR(255)            NOT NULL,
+first_name              VARCHAR(255)            NOT NULL,
+last_name               VARCHAR(255)            NOT NULL,
+submitted               TIMESTAMP               NULL) ENGINE=InnoDB;
