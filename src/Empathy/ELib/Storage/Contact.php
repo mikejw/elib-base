@@ -16,7 +16,6 @@ class Contact extends Entity
     public $last_name;
     public $submitted;
 
-
     const TABLE = "contact";
 
     /**
@@ -27,19 +26,15 @@ class Contact extends Entity
         if (!isset($this->message) || !($this->message === 0 || $this->message === 1)) {
             $this->addValError("Message field should be boolean, 1 or 0.");
         }
-
         $this->doValType(Validate::TEXT, 'first_name', $this->first_name, false);
         $this->doValType(Validate::TEXT, 'last_name', $this->last_name, false);
         $this->doValtype(Validate::EMAIL, 'email', $this->email, false);
 
         if ($this->message === 1) {
-
             $this->doValtype(Validate::TEXT, 'subject', $this->subject, true);
-
             if ($this->body == '') {
                 $this->addValError('Please provide a message body.', 'body');
             }
-
 
             $this->body = htmlspecialchars($this->body);
             $this->body = str_replace(array("\r\n", "\r", "\n"), "<br />", $this->body);
