@@ -1,51 +1,38 @@
 {include file="elib:/admin/admin_header.tpl"}
 
+<p>&nbsp;</p>
 
-<div class="grey_top">
-<div class="top_right">
-<div class="top_left"></div>
-</div>
-</div>
-
-<div class="grey clear">
-
-
-{if $error neq ''}
-<ul id="error">
-{foreach from=$error item=i}
-<li>{$i}</li>
-{/foreach}
-</ul>
+{if is_array($errors) && sizeof($errors)}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong>
+        {foreach from=$errors item=e}
+            <p>{$e}</p>
+        {/foreach}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 {/if}
 
+<h4>Change Password</h4>
 <form action="" method="post">
-<p>
-<label>Existing Password</label>
-<input type="password" name="old_password" value="" />
-</p>
-<p>
-<label>New Password</label>
-<input type="password" name="password1" value="" />
-</p>
-<p>
-<label>New Password (Confirmation)</label>
-<input type="password" name="password2" value="" />
-</p>
-<p>
-<label>&nbsp;</label>
-<button type="submit" name="submit">Submit</button>
-<button type="submit" name="cancel">Cancel</button>
-</p>
+    <div class="form-group">
+        <label for="old_password">Exisiting Password:</label>
+        <input name="old_password" type="password" class="form-control" id="old_password">
+    </div>
+    <div class="form-group">
+        <label for="password1">New Password:</label>
+        <input name="password1" type="password" class="form-control" id="password1">
+    </div>
+    <div class="form-group">
+        <label for="password2">Password (Confirmation):</label>
+        <input name="password2" type="password" class="form-control" id="password2">
+    </div>
+    <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" name="cancel" class="btn btn-primary">Cancel</button>
 </form>
 
-
-</div>
-<div class="grey_bottom">
-<div class="bottom_right">
-<div class="bottom_left"></div>
-</div>
-</div>
-
+<p>&nbsp;</p>
 
 
 
