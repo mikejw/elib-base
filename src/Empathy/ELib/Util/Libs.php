@@ -2,20 +2,32 @@
 
 namespace Empathy\ELib\Util;
 
+use Empathy\ELib\Util as UtilClass;
+use Empathy\MVC\Config;
+
 class Libs
 {
     private static $installed_libs;
     private static $store_active = false;
 
     public static function detect()
-    {        
+    {                
+        if (Config::get('DOC_ROOT') === false) {
+            die("Initialise new app (directory structure) before running this command.\n");
+        }
+
         $tpl_dirs = array();
-        $composer_installed = DOC_ROOT.'/vendor/composer/installed.json';
+        $composer_installed = Config::get('DOC_ROOT').'/vendor/composer/installed.json';
         if(file_exists($composer_installed)) {
             $installed = json_decode(file_get_contents($composer_installed));
+
+            if (isset($installed->packages)) {
+                $installed = $installed->packages;
+            }
+
             foreach($installed as $i) { 
                 if(strpos($i->name, 'mikejw/elib') === 0) {
-                    $tpl_dirs[] = DOC_ROOT.'/vendor/'.$i->name.'/tpl';
+                    $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name.'/tpl';
                     if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
                     }
@@ -24,7 +36,7 @@ class Libs
             }
         } else {
             // support for older monolithic 'system mode' elib directory
-            $tpl_dirs[] = Empathy\ELib\Util::getLocation().'/tpl';            
+            $tpl_dirs[] = UtilClass::getLocation().'/tpl';            
         }
         return $tpl_dirs;
     }
@@ -39,4 +51,31 @@ class Libs
     {
         return self::$store_active;
     }
+
+
+    public static function getMappedLibNames() {
+
+        $mapped = array();
+        foreach (self::$installed_libs as $lib)  {
+            switch ($lib) {
+                case 'mikejw/elib-cms':#
+                    $mapped['dsection'] = 'CMS';
+                    break;
+                case 'mikejw/elib-siteinfo':
+                    $mapped['settings'] = 'SEO Settings';
+                    break;
+                case 'mikejw/elib-blog':
+                    $mapped['blog'] = 'Blog';
+                    break;
+                case 'mikejw/elib-events':
+                    $mapped['events'] = 'Events';
+                    break;
+                default:
+                    break;
+            }
+        } 
+        return $mapped;
+    }
+
+
 }

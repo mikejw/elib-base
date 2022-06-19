@@ -3,6 +3,7 @@
 namespace Empathy\ELib;
 
 use Empathy\MVC\Model as EmpModel;
+use Empathy\MVC\Config as EmpConfig;
 
 class Model extends EmpModel
 {
@@ -13,7 +14,7 @@ class Model extends EmpModel
     private static function getClass($model)
     {
         $file = $model.'.php';
-        $app_file = DOC_ROOT.'/storage/'.$file;
+        $app_file = EmpConfig::get('DOC_ROOT').'/storage/'.$file;
 
         if (!file_exists($app_file)) {
             $class = self::$elib_model_prefix.$model;

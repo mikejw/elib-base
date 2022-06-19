@@ -5,16 +5,14 @@ namespace Empathy\ELib;
 use Empathy\ELib\Model;
 use Empathy\ELib\User\CurrentUser;
 use Empathy\MVC\Session;
-
+use Empathy\MVC\Config as EmpConfig;
 
 class AdminController extends EController
 {
     public function __construct($boot)
     {
         parent::__construct($boot);
-
         CurrentUser::assertAdmin($this);
-
         $this->detectHelp();
     }
 
@@ -23,9 +21,7 @@ class AdminController extends EController
         $exists = false;
         $i = 0;
         while(!$exists && $i < sizeof($this->elib_tpl_dirs)) {
-            
             $file = $this->elib_tpl_dirs[$i].'/'.$help_file;
-
             if(file_exists($file)) {
                 $exists = true;
             }
@@ -35,21 +31,35 @@ class AdminController extends EController
     }
 
 
+    protected function findHelp()
+    {
+        $help_file = 'admin_help/'.$this->class.'_'.$this->event.'.tpl';
+        if (
+            file_exists(
+                EmpConfig::get('DOC_ROOT').'/presentation/'.$help_file
+            )
+            || $this->tplInLib($help_file)
+        ) {
+            return $help_file;
+        }
+        $help_file = 'admin_help/'.$this->class.'.tpl';
+        if (
+            file_exists(
+                EmpConfig::get('DOC_ROOT').'/presentation/'.$help_file
+            )
+            || $this->tplInLib($help_file)
+        ) {
+            return $help_file;
+        }
+        return false;
+    }
+
+
     protected function detectHelp()
     {
-        if (!Session::get('help_shown')) {
-            Session::set('help_shown', false);
-        }
-
-        $this->presenter->assign('help_shown', Session::get('help_shown'));
-
-        $help_file = 'admin_help/'.$this->class.'_'.$this->event.'.tpl';
-
-        if(file_exists(DOC_ROOT.'/presentation/'.$help_file)
-           || $this->tplInLib($help_file))
-        {
-            $help_file = 'elib:/'.$help_file;
-            $this->presenter->assign('help_file', $help_file);
+        $help_file = $this->findHelp();
+        if ($help_file) {
+            $this->presenter->assign('help_file', 'elib:/'.$help_file);
         }
     }
 
@@ -67,6 +77,8 @@ class AdminController extends EController
     {
         $this->setTemplate('elib:/admin/password.tpl');
         if (isset($_POST['submit'])) {
+
+
             $errors = array();
             $old_password = md5(SALT.$_POST['old_password'].SALT);
             $password1 = $_POST['password1'];
@@ -93,7 +105,7 @@ class AdminController extends EController
                 $u->save(Model::getTable('UserItem'), array(), 0);
                 $this->redirect('admin');
             } else {
-                $this->presenter->assign('error', $errors);
+                $this->presenter->assign('errors', $errors);
             }
         } elseif (isset($_POST['cancel'])) {
             $this->redirect('admin');

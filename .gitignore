@@ -1,0 +1,6 @@
+/.idea
+/build
+/vendor
+/t/tmp
+*~
+

@@ -21,16 +21,16 @@ class Stats
 
     public static function getHandle()
     {
-        self::$semaphore = sem_get(self::SEMAPHORE_ID, 1, 0644);
+        self::$semaphore = \sem_get(self::SEMAPHORE_ID, 1, 0644);
 
         if (self::$semaphore === false) {
             die('Failed to create semaphore.');
         }
 
-        if (!sem_acquire(self::$semaphore)) {
+        if (!\sem_acquire(self::$semaphore)) {
             die("Can't acquire semaphore");
         }
-        self::$handle = shm_attach(self::SEGMENT_ID, 16384, 0600);
+        self::$handle = \shm_attach(self::SEGMENT_ID, 16384, 0600);
 
         if (self::$handle === false) {
             die('Failed to attach shared memory');
@@ -39,16 +39,16 @@ class Stats
 
     public static function release()
     {
-        shm_detach(self::$handle);
-        sem_release(self::$semaphore);
+        \shm_detach(self::$handle);
+        \sem_release(self::$semaphore);
     }
 
     public static function store($key, $value)
     {
         self::getHandle();
-        if (!shm_put_var(self::$handle, self::getVarKey($key), $value)) {
-            sem_remove(self::$semaphore);
-            shm_remove(self::$handle);
+        if (!\shm_put_var(self::$handle, self::getVarKey($key), $value)) {
+            \sem_remove(self::$semaphore);
+            \shm_remove(self::$handle);
             die('couldn\'t write to shared memory.');
         }
         self::release();
@@ -57,7 +57,7 @@ class Stats
     public static function retrieve($key)
     {
         self::getHandle();
-        $data = shm_get_var(self::$handle, self::getVarKey($key));
+        $data = \shm_get_var(self::$handle, self::getVarKey($key));
         self::release();
 
         return $data;

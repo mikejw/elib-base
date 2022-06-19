@@ -3,11 +3,14 @@
 namespace Empathy\ELib\User;
 
 
-use Empathy\ELib\EController,
-    Empathy\ELib\Model,
-    Empathy\ELib\Country\Country,
-    Empathy\ELib\Mailer,
-    Empathy\MVC\Session;
+use Empathy\ELib\EController;
+use Empathy\ELib\Model;
+use Empathy\ELib\Country\Country;
+use Empathy\ELib\Mailer;
+use Empathy\MVC\Session;
+use Empathy\MVC\Config;
+use Empathy\ELib\Config as ELibConfig;
+
 
 
 class Controller extends EController
@@ -32,6 +35,7 @@ class Controller extends EController
 
     public function login()
     {
+        $this->assign('centerpage', true);
         $this->setTemplate('elib:/login.tpl');
 
         if (isset($_POST['login'])) {
@@ -90,6 +94,10 @@ class Controller extends EController
     {
         $supply_address = 0;
         $saving_address = false;
+        $errors = array();
+        $u = null;
+        $p = null;
+
 
         if (isset($_POST['submit'])) {
             $u = Model::load('UserItem');
@@ -101,10 +109,9 @@ class Controller extends EController
             $p->fullname = $_POST['fullname'];
             $p->validates();
 
-            $s = Model::load('ShippingAddress');
-
-            $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1)? 1: 0;
+            $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1) ? 1 : 0;
             if ($supply_address == 1) {
+                $s = Model::load('ShippingAddress');
                 $saving_address = true;
 
                 if ($p->fullname != '') {
@@ -117,7 +124,7 @@ class Controller extends EController
                 }
 
                 $s->address1 = $_POST['address1'];
-                $s->address2  = $_POST['address2'];
+                $s->address2 = $_POST['address2'];
                 $s->city = $_POST['city'];
                 $s->state = $_POST['state'];
                 $s->zip = strtoupper($_POST['zip']);
@@ -126,65 +133,66 @@ class Controller extends EController
                 $s->validates();
             }
 
-            if ($u->hasValErrors() || $s->hasValErrors() || $p->hasValErrors()) {
+            if ($u->hasValErrors() || $p->hasValErrors() || (isset($s) && $s->hasValErrors())) {
                 $this->presenter->assign('user', $u);
-                $this->presenter->assign('address', $s);
                 $this->presenter->assign('profile', $p);
 
-                $this->presenter->assign('errors', array_merge($u->getValErrors(), $s->getValErrors(), $p->getValErrors()));
-            } else {
-                $password = exec(MAKEPASSWD.' --chars=8');
-                $reg_code = exec(MAKEPASSWD.' --chars=16');
+                $errors = array_merge($u->getValErrors(), $p->getValErrors());
+                if (isset($s)) {
+                    $this->presenter->assign('address', $s);
+                    array_push($errors, $s->getValErrors());
+                }
 
+            } else {
+                $password = exec(MAKEPASSWD . ' --chars=8');
+                $reg_code = exec(MAKEPASSWD . ' --chars=16');
                 $u->password = $password;
                 $u->reg_code = md5($reg_code);
                 $u->auth = 0;
                 $u->active = 0;
                 $u->registered = 'MYSQLTIME';
                 $u->popups = 'DEFAULT';
-
                 $u->user_profile_id = $p->insert(Model::getTable('UserProfile'), 1, array(), 0);
-
-                $s->user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
+                $user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
 
                 if ($saving_address) {
+                    $s->user_id = $user_id;
                     $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
                     $v = Model::load('Vendor');
                     $v->user_id = $s->user_id;
                     $v->insert(Model::getTable('Vendor'), 1, array(), 0);
                 }
 
-                if (defined('ELIB_EMAIL_ORGANISATION') &&
-                    defined('ELIB_EMAIL_FROM')) {
+                if (
+                    ELibConfig::get('EMAIL_ORGANISATION') &&
+                    ELibConfig::get('EMAIL_FROM')
+                ) {
 
                     $message = "\nHi ___,\n\n"
-                        ."Thanks for registering with ".ELIB_EMAIL_ORGANISATION."\n\nBefore we can let you"
-                        ." know your password for using the site, please confirm your email address"
-                        ." by clicking the following link:\n\n"
-                        ."http://".WEB_ROOT.PUBLIC_DIR."/user/confirm_reg/?code=".$reg_code
-                        ."\n\nCheers\n\n";
+                        . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
+                        . " know your password for using the site, please confirm your email address"
+                        . " by clicking the following link:\n\n"
+                        . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
+                        . "\n\nCheers\n\n";
 
                     $r[0]['alias'] = $u->username;
                     $r[0]['address'] = $u->email;
 
-                    $m = new Mailer($r, 'You have been registered with '.ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+                    $m = new Mailer($r, 'You have been registered with ' . ELibConfig::get('EMAIL_ORGANISATION'), $message);
                 }
 
-                //$this->postRegister($s->user_id);
-
+                $this->postRegister($user_id);
                 $this->redirect('user/thanks/1');
             }
         }
 
         $titles = array('Mr', 'Mrs', 'Miss', 'Ms', 'Dr');
-        $this->presenter->assign('titles', $titles);
-
         $countries = Country::build();
-        $this->presenter->assign('countries', $countries);
-        $this->presenter->assign('sc', 'GB');
-
+        $this->assign('errors', $errors);
+        $this->assign('titles', $titles);
+        $this->assign('countries', $countries);
+        $this->assign('sc', 'GB');
         $this->assign('supply_address', $supply_address);
-
         $this->setTemplate('elib://register.tpl');
     }
 
@@ -211,13 +219,13 @@ class Controller extends EController
             Session::set('user_id',$u->id);
 
             $message = "\nHi ___,\n\n"
-                ."Thanks for confirming your registration. You can now log in to the ".ELIB_EMAIL_ORGANISATION." website using your username "
+                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
                 ." '___' and the password '".$password."'.\n\nCheers\n\n";
 
             $r[0]['alias'] = $u->username;
             $r[0]['address'] = $u->email;
 
-            $m = new Mailer($r, 'Welcome to '.ELIB_EMAIL_ORGANISATION, $message, ELIB_EMAIL_FROM);
+            $m = new Mailer($r, 'Welcome to '.ELibConfig::get('EMAIL_ORGANISATION'), $message);
             $this->redirect('user/thanks/2');
         } else {
             throw new \Exception('Unable to activate user.');

@@ -19,7 +19,7 @@ class AuthedController extends EController
     }
 
     protected function authFailed()
-    {
+    {       
         $this->redirect('');
     }
 

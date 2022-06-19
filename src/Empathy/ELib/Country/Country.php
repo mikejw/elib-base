@@ -72,7 +72,7 @@ class Country
         }
 
         foreach ($country['code'] as $index => $value) {
-            $built[preg_replace('/[^\w]/', '', $value)] = $country['name'][$index];
+            $built[preg_replace('/[^\w]/', '', $value)] = trim($country['name'][$index]);
         }
 
         return $built;

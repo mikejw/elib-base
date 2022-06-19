@@ -10,7 +10,7 @@ class DriverPheanstalk extends Driver
 
     public function load($h)
     {
-        $this->d = new \Pheanstalk($h);
+        $this->d = new \Pheanstalk\Pheanstalk($h);
     }
 
     public function put($job)

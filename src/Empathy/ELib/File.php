@@ -3,6 +3,21 @@
 namespace Empathy\ELib;
 
 use Empathy\ELib\File\Image;
+use Empathy\MVC\Config as EConfig;
+
+
+// overrides for testing purposes
+if (defined('MVC_TEST_MODE')) {
+
+    function is_uploaded_file($filename) {
+        return file_exists($filename);
+    }
+    function move_uploaded_file($filename, $destination) {
+        return copy($filename, $destination);
+    }
+}
+
+
 
 class File
 {
@@ -19,6 +34,27 @@ class File
     private $fs_depth;
     private $fs_dpeth_prefix;
 
+
+    // taken from http://php.net/manual/en/features.file-upload.multiple.php
+    public static function reArrayFiles(&$file_post) {
+
+
+        $file_ary = array();
+        $file_count = count($file_post['name']);
+        $file_keys = array_keys($file_post);
+
+        for ($i=0; $i<$file_count; $i++) {
+
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $file_post[$key][$i];
+            }
+        }
+
+        return $file_ary;
+    }
+
+
+
     public function __construct($gallery, $upload, $deriv, $fs_depth=0)
     {
         $this->fs_depth = $fs_depth;
@@ -26,9 +62,9 @@ class File
         $this->gallery = $gallery;
         if ($this->gallery != '') {
             //$this->target_dir = DOC_ROOT."/public_html/img/$this->gallery/";
-            $this->target_dir = DOC_ROOT."/public_html/uploads/";
+            $this->target_dir = EConfig::get('DOC_ROOT')."/public_html/uploads/";
         } else {
-            $this->target_dir = DOC_ROOT."/public_html/uploads/";
+            $this->target_dir = EConfig::get('DOC_ROOT')."/public_html/uploads/";
         }
 
         if (sizeof($deriv) < 1) {
@@ -53,8 +89,11 @@ class File
         }
     }
 
-    public function destroy($image)
+    public function destroy($image=null)
     {
+        if ($image === null) {
+            $image = $this->orig;
+        }
         imageDestroy($image);
     }
 
@@ -120,16 +159,24 @@ class File
 
         foreach ($files as $file) {
             if ($file != '') {
+                $file = urldecode($file);
                 $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));
             }
         }
+
         foreach ($all_files as $file) {
             array_push($success_arr, @unlink($file));
         }
+
         if (in_array(false, $success_arr)) {
             $success = false;
         } else {
-            $success = true;
+            $success = sizeof($success_arr);
+        }
+
+        // no files found to remove
+        if (sizeof($files) && !sizeof($all_files)) {
+            $success = 1;
         }
 
         return $success;
@@ -139,13 +186,12 @@ class File
     public function getMimeType()
     {
         $imgInfo = getImageSize($_FILES['file']['tmp_name']);
-
         return $imgInfo['mime'];
     }
 
     public function upload()
     {
-        if ($_FILES['file']['name'] == '') {
+        if ($_FILES['file']['name'] == '' || $_FILES['file']['error'] == 1) {
             $this->error .= "Problem uploading file. Empty file?";
         } else {
             $name_array = explode('.', $_FILES['file']['name']);
@@ -155,7 +201,7 @@ class File
             /* check for jpeg */
             $mimeType = $this->getMimeType();
 
-            if (!preg_match('/jpg|jpeg/', $ext) || $mimeType != 'image/jpeg') {
+            if (!preg_match('/jpg|jpeg|JPG|JPEG/', $ext) || $mimeType != 'image/jpeg') {
                 $this->error .= "Invalid file format.";
             } else {
                 $name = '';
@@ -185,7 +231,7 @@ class File
                 }
                 $this->filename = substr($this->target, strlen($this->target_dir));
 
-                if (!@move_uploaded_file($_FILES['file']['tmp_name'], $this->target)) {
+                if (!move_uploaded_file($_FILES['file']['tmp_name'], $this->target)) {
                     $this->error .= "Internal error";
                 }
             }
@@ -205,6 +251,15 @@ class File
     public function getFsDepth()
     {
         return $this->fs_depth;
+    }
+
+
+    public function getError() {
+        return $this->error;
+    }
+
+    public function getDimensions() {
+        return [$this->origX, $this->origY];
     }
 
 }
