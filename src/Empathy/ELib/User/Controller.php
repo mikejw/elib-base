@@ -10,7 +10,7 @@ use Empathy\ELib\Mailer;
 use Empathy\MVC\Session;
 use Empathy\MVC\Config;
 use Empathy\ELib\Config as ELibConfig;
-
+use Empathy\MVC\DI;
 
 
 class Controller extends EController
@@ -97,17 +97,19 @@ class Controller extends EController
         $errors = array();
         $u = null;
         $p = null;
+        $submitted = false;
 
 
         if (isset($_POST['submit'])) {
+            $submitted = true;
+
             $u = Model::load('UserItem');
             $u->username = $_POST['username'];
             $u->email = $_POST['email'];
             $u->validates();
 
             $p = Model::load('UserProfile');
-            $p->fullname = $_POST['fullname'];
-            $p->validates();
+            $p->fullname = $_POST['fullname'] ?? '';
 
             $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1) ? 1 : 0;
             if ($supply_address == 1) {
@@ -121,6 +123,10 @@ class Controller extends EController
                         array_pop($fullname_arr);
                         $s->first_name = implode(' ', $fullname_arr);
                     }
+                } else {
+                    $s->first_name = $_POST['first_name'];
+                    $s->last_name = $_POST['last_name'];
+                    $p->fullname = $s->first_name.' '.$s->last_name;
                 }
 
                 $s->address1 = $_POST['address1'];
@@ -132,6 +138,7 @@ class Controller extends EController
                 $s->default_address = 1;
                 $s->validates();
             }
+            $p->validates();
 
             if ($u->hasValErrors() || $p->hasValErrors() || (isset($s) && $s->hasValErrors())) {
                 $this->presenter->assign('user', $u);
@@ -140,7 +147,7 @@ class Controller extends EController
                 $errors = array_merge($u->getValErrors(), $p->getValErrors());
                 if (isset($s)) {
                     $this->presenter->assign('address', $s);
-                    array_push($errors, $s->getValErrors());
+                    $errors = array_merge($errors, $s->getValErrors());
                 }
 
             } else {
@@ -158,27 +165,29 @@ class Controller extends EController
                 if ($saving_address) {
                     $s->user_id = $user_id;
                     $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
-                    $v = Model::load('Vendor');
-                    $v->user_id = $s->user_id;
-                    $v->insert(Model::getTable('Vendor'), 1, array(), 0);
+
+                    // vendor stuff disabled - see elib-store for more
+                    // $v = Model::load('Vendor');
+                    // $v->user_id = $s->user_id;
+                    // $v->insert(Model::getTable('Vendor'), 1, array(), 0);
                 }
 
                 if (
                     ELibConfig::get('EMAIL_ORGANISATION') &&
                     ELibConfig::get('EMAIL_FROM')
                 ) {
-
-                    $message = "\nHi ___,\n\n"
+                    $_POST['body'] = "\nHi ___,\n\n"
                         . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
                         . " know your password for using the site, please confirm your email address"
                         . " by clicking the following link:\n\n"
                         . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
                         . "\n\nCheers\n\n";
 
-                    $r[0]['alias'] = $u->username;
-                    $r[0]['address'] = $u->email;
-
-                    $m = new Mailer($r, 'You have been registered with ' . ELibConfig::get('EMAIL_ORGANISATION'), $message);
+                   $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
+                    $service =  DI::getContainer()->get('Contact');
+                    $service->prepareDispatch($user_id);
+                    $service->dispatchEmail($p->fullname);
+                    $service->persist();                              
                 }
 
                 $this->postRegister($user_id);
@@ -194,6 +203,7 @@ class Controller extends EController
         $this->assign('sc', 'GB');
         $this->assign('supply_address', $supply_address);
         $this->setTemplate('elib://register.tpl');
+        $this->assign('submitted', $submitted);
     }
 
     protected function postRegister($registration_id)

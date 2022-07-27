@@ -20,7 +20,7 @@ class Contact
     
     public function signUp()
     {
-        $this->entity->assignFromPost(array('submitted', 'message', 'subject', 'body'));
+        $this->entity->assignFromPost(array('submitted', 'message', 'subject', 'body', 'user_id'));
         $this->entity->message = 0;
         $this->entity->submitted = 'MYSQLTIME';
         $this->entity->validates();
@@ -40,7 +40,7 @@ class Contact
     
     public function email()
     {
-        $this->entity->assignFromPost(array('message', 'submitted'));
+        $this->entity->assignFromPost(array('message', 'submitted', 'user_id'));
         $this->entity->message = 1;
         $this->entity->submitted = 'MYSQLTIME';
         $this->entity->validates();
@@ -69,6 +69,29 @@ class Contact
         }
     }
     
+
+    public function prepareDispatch($user_id) {
+        $this->entity->assignFromPost(array('submitted', 'message', 'user_id'));
+        $this->entity->message = 1;
+        $this->entity->submitted = 'MYSQLTIME';
+        $this->entity->user_id = $user_id;
+        $this->entity->validates();
+        return !$this->entity->hasValErrors();
+    }
+
+    public function dispatchEmail($name) {
+        if (
+            Config::get('EMAIL_ORGANISATION') &&
+            Config::get('EMAIL_FROM')
+        ) {        
+            $r[0]['alias'] = $name;
+            $r[0]['address'] = $this->entity->email;
+            $m = new Mailer($r, $this->entity->subject, $this->entity->body, null, true);
+        } else {
+            throw new \Exception('Email service config not set in elib.yml');
+        }
+    }
+
     public function getContact()
     {
         return $this->entity;
