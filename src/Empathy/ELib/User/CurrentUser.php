@@ -10,24 +10,28 @@ class CurrentUser
 {
     private static $u;
     private static $user_id;
+    private static $checked = false;
 
     public static function detectUser($c = NULL, $store_active = false)
     {
-        self::$u = Model::load('UserItem');
-        self::$user_id = Session::get('user_id');
+        if (!self::$checked) {
+            self::$u = Model::load('UserItem');
+            self::$user_id = Session::get('user_id');
 
-        if (is_numeric(self::$user_id) && self::$user_id > 0) {
-            self::$u->id = self::$user_id;
-            self::$u->load();
+            if (is_numeric(self::$user_id) && self::$user_id > 0) {
+                self::$u->id = self::$user_id;
+                self::$u->load();
 
-            if($c !== null) {
-                $c->assign('current_user', self::$u->username);
-                $c->assign('user_id', self::$u->id);
+                if($c !== null) {
+                    $c->assign('current_user', self::$u->username);
+                    $c->assign('user_id', self::$u->id);
+                }
+
+                if ($store_active) {
+                    $c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
+                }
             }
-
-            if ($store_active) {
-                $c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
-            }
+            self::$checked = true;
         }
     }
 

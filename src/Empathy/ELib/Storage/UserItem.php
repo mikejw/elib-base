@@ -2,9 +2,9 @@
 
 namespace Empathy\ELib\Storage;
 
-use Empathy\ELib\Model,
-    Empathy\MVC\Entity,
-    Empathy\MVC\Validate;
+use Empathy\ELib\Model;
+use Empathy\MVC\Entity;
+use Empathy\MVC\Validate;
 
 
 if (!defined('SALT')) {

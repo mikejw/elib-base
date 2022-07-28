@@ -9,10 +9,13 @@ use Empathy\MVC\Config as EmpConfig;
 
 class AdminController extends EController
 {
-    public function __construct($boot)
+    public function __construct($boot, $assertAdmin = true)
     {
         parent::__construct($boot);
-        CurrentUser::assertAdmin($this);
+        if ($assertAdmin) {
+            CurrentUser::assertAdmin($this);    
+        }
+        
         $this->detectHelp();
     }
 
