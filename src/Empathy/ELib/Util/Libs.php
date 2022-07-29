@@ -10,12 +10,9 @@ class Libs
     private static $installed_libs;
     private static $store_active = false;
 
-    public static function detect()
-    {                
-        if (Config::get('DOC_ROOT') === false) {
-            die("Initialise new app (directory structure) before running this command.\n");
-        }
 
+    public static function findAll() 
+    {
         $tpl_dirs = array();
         $composer_installed = Config::get('DOC_ROOT').'/vendor/composer/installed.json';
         if(file_exists($composer_installed)) {
@@ -27,7 +24,7 @@ class Libs
 
             foreach($installed as $i) { 
                 if(strpos($i->name, 'mikejw/elib') === 0) {
-                    $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name.'/tpl';
+                    $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name;
                     if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
                     }
@@ -36,9 +33,20 @@ class Libs
             }
         } else {
             // support for older monolithic 'system mode' elib directory
-            $tpl_dirs[] = UtilClass::getLocation().'/tpl';            
+            $tpl_dirs[] = UtilClass::getLocation();            
         }
         return $tpl_dirs;
+
+    }
+
+
+    public static function detect()
+    {               
+        $libs = self::findAll();
+        foreach ($libs as &$item) {
+            $item .= '/tpl';
+        }
+        return $libs;
     }
 
 
