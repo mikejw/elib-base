@@ -2,9 +2,9 @@
 
 namespace Empathy\ELib;
 
-use Empathy\ELib\User\CurrentUser;
 use Empathy\MVC\Controller\CustomController;
 use Empathy\MVC\Config as EConfig;
+use Empathy\MVC\DI;
 
 
 class EController extends CustomController
@@ -16,7 +16,7 @@ class EController extends CustomController
         parent::__construct($boot);
 
 
-        CurrentUser::detectUser($this);
+        DI::getContainer()->get('CurrentUser')->detectUser($this);
         $this->elib_tpl_dirs = Util\Libs::detect();
 
 
@@ -33,7 +33,7 @@ class EController extends CustomController
         }
 
         if (Util\Libs::getStoreActive()) {
-            CurrentUser::detectUser($this, true);
+            DI::getContainer()->get('CurrentUser')->detectUser($this, true);
         }
 
 

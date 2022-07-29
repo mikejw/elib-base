@@ -8,70 +8,69 @@ use Empathy\MVC\Session;
 
 class CurrentUser
 {
-    private static $u;
-    private static $user_id;
-    private static $checked = false;
+    private $u;
+    private $user_id;
+    private $checked = false;
 
-    public static function detectUser($c = NULL, $store_active = false)
+    public function detectUser($c = NULL, $store_active = false)
     {
-        if (!self::$checked) {
-            self::$u = Model::load('UserItem');
-            self::$user_id = Session::get('user_id');
+        if (!$this->checked) {
+            $this->u = Model::load('UserItem');
+            $this->user_id = Session::get('user_id');
 
-            if (is_numeric(self::$user_id) && self::$user_id > 0) {
-                self::$u->id = self::$user_id;
-                self::$u->load();
+            if (is_numeric($this->user_id) && $this->user_id > 0) {
+                $this->u->id = $this->user_id;
+                $this->u->load();
 
                 if($c !== null) {
-                    $c->assign('current_user', self::$u->username);
-                    $c->assign('user_id', self::$u->id);
+                    $c->assign('current_user', $this->u->username);
+                    $c->assign('user_id', $this->u->id);
                 }
 
                 if ($store_active) {
-                    $c->assign('user_is_vendor', (self::$u->auth == \Empathy\ELib\Store\Access::VENDOR));
+                    $c->assign('user_is_vendor', ($this->u->auth == \Empathy\ELib\Store\Access::VENDOR));
                 }
             }
-            self::$checked = true;
+            $this->checked = true;
         }
     }
 
-    public static function assertAdmin($c)
+    public function assertAdmin($c)
     {        
         $ua = Model::load('UserAccess');
-        if (self::$u->id < 1 || self::$u->getAuth(self::$u->id) < $ua->getLevel('admin')) {
+        if ($this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
             $c->redirect("user/login");
         }
     }
 
-    public static function getUserID()
+    public function getUserID()
     {
-        return self::$u->id;
+        return $this->u->id;
     }
 
-    public static function loggedIn()
+    public function loggedIn()
     {
-        return (self::getUserID() > 0);
+        return ($this->getUserID() > 0);
     }
 
-    public static function getProfileID()
+    public function getProfileID()
     {
-        return self::$u->user_profile_id;
+        return $this->u->user_profile_id;
     }
 
-    public static function getUser()
+    public function getUser()
     {
-        return self::$u;
+        return $this->u;
     }
 
     public static function isAuthLevel($level)
     {
-        return (self::$u->auth >= $level);
+        return ($this->u->auth >= $level);
     }
 
     public static function setUserID($id)
     {
-        self::$u->id = $id;
+        $this->u->id = $id;
     }
-
 }

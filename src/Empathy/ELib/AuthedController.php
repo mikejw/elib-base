@@ -1,8 +1,8 @@
 <?php
 
 namespace Empathy\ELib;
+use Empathy\MVC\DI;
 
-use Empathy\ELib\User\CurrentUser;
 
 /*
   user has logged in to be here...
@@ -13,7 +13,7 @@ class AuthedController extends EController
     public function __construct($boot)
     {
         parent::__construct($boot);
-        if (!CurrentUser::loggedIn()) {
+        if (!DI::getContainer()->get('CurrentUser')->loggedIn()) {
             $this->authFailed();
         }
     }

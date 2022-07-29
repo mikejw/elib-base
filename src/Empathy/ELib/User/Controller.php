@@ -15,6 +15,15 @@ use Empathy\MVC\DI;
 
 class Controller extends EController
 {
+    private $currentUser;
+
+    public function __construct($boot) 
+    {
+        parent::__construct($boot);
+        $this->currentUser = DI::getContainer()->get('CurrentUser');
+    }
+
+
     public function default_event()
     {
         $this->redirect('');
@@ -80,7 +89,7 @@ class Controller extends EController
     public function logout()
     {
         if (1 || isset($_POST['logout'])) {
-            $u = CurrentUser::getUser();
+            $u = $this->currentUser->getUser();
             Session::down();
             if ($this->logoutSuccess($u)) {
                 $this->redirect('');

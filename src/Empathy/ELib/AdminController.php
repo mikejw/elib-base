@@ -3,9 +3,9 @@
 namespace Empathy\ELib;
 
 use Empathy\ELib\Model;
-use Empathy\ELib\User\CurrentUser;
 use Empathy\MVC\Session;
 use Empathy\MVC\Config as EmpConfig;
+use Empathy\MVC\DI;
 
 class AdminController extends EController
 {
@@ -13,7 +13,7 @@ class AdminController extends EController
     {
         parent::__construct($boot);
         if ($assertAdmin) {
-            CurrentUser::assertAdmin($this);    
+            DI::getContainer()->get('CurrentUser')->assertAdmin($this);    
         }
         
         $this->detectHelp();
