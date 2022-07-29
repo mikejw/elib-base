@@ -23,7 +23,6 @@ class Controller extends EController
         $this->currentUser = DI::getContainer()->get('CurrentUser');
     }
 
-
     public function default_event()
     {
         $this->redirect('');
@@ -41,6 +40,12 @@ class Controller extends EController
     {
         return true; 
     }
+
+    protected function postRegister($u)
+    {
+        return true;
+    }
+
 
     public function login()
     {
@@ -169,10 +174,10 @@ class Controller extends EController
                 $u->registered = 'MYSQLTIME';
                 $u->popups = 'DEFAULT';
                 $u->user_profile_id = $p->insert(Model::getTable('UserProfile'), 1, array(), 0);
-                $user_id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
+                $u->id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
 
                 if ($saving_address) {
-                    $s->user_id = $user_id;
+                    $s->user_id = $u->id;
                     $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
 
                     // vendor stuff disabled - see elib-store for more
@@ -181,26 +186,30 @@ class Controller extends EController
                     // $v->insert(Model::getTable('Vendor'), 1, array(), 0);
                 }
 
-                if (
-                    ELibConfig::get('EMAIL_ORGANISATION') &&
-                    ELibConfig::get('EMAIL_FROM')
-                ) {
-                    $_POST['body'] = "\nHi ___,\n\n"
-                        . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
-                        . " know your password for using the site, please confirm your email address"
-                        . " by clicking the following link:\n\n"
-                        . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
-                        . "\n\nCheers\n\n";
+                if ($this->postRegister($u)) {
+                    if (
+                        ELibConfig::get('EMAIL_ORGANISATION') &&
+                        ELibConfig::get('EMAIL_FROM')
+                    ) {
+                        $_POST['body'] = "\nHi ___,\n\n"
+                            . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
+                            . " know your password for using the site, please confirm your email address"
+                            . " by clicking the following link:\n\n"
+                            . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
+                            . "\n\nCheers\n\n";
 
-                   $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
-                    $service =  DI::getContainer()->get('Contact');
-                    $service->prepareDispatch($user_id);
-                    $service->dispatchEmail($p->fullname);
-                    $service->persist();                              
+                        $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
+                        $service =  DI::getContainer()->get('Contact');
+                        $service->prepareDispatch($u->id);
+                        $service->dispatchEmail($p->fullname);
+                        $service->persist();                              
+                    }
+
+                    $this->redirect('user/thanks/1');    
+                } else {
+                    throw new \Exception('Could not complete registration');
                 }
-
-                $this->postRegister($user_id);
-                $this->redirect('user/thanks/1');
+                
             }
         }
 
@@ -213,11 +222,6 @@ class Controller extends EController
         $this->assign('supply_address', $supply_address);
         $this->setTemplate('elib://register.tpl');
         $this->assign('submitted', $submitted);
-    }
-
-    protected function postRegister($registration_id)
-    {
-        //
     }
 
     public function confirm_reg()
