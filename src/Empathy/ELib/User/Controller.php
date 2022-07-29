@@ -29,187 +29,88 @@ class Controller extends EController
     }
 
 
-    // must return true
-    // to carry on with default behaviour
-    protected function loginSuccess($u)
-    {
-        return true;
-    }
-
-    protected function logoutSuccess($u)
-    {
-        return true; 
-    }
-
-    protected function postRegister($u)
-    {
-        return true;
-    }
-
-
     public function login()
     {
         $this->assign('centerpage', true);
         $this->setTemplate('elib:/login.tpl');
+        $errors = array();
 
         if (isset($_POST['login'])) {
-            $n = Model::load('UserItem');
-            $n->username = $_POST['username'];
-            $n->password = $_POST['password'];
+            list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password']);
 
-            //      $n->sanitize();
-            $n->validateLogin();
-
-            if (!$n->hasValErrors()) {
-                $user_id = $n->login();
-                if ($user_id > 0) {
-                    session_regenerate_id();
-                    Session::set('user_id', $user_id);
-                    $n->id = $user_id;
-                    $n->load();
-
-                    $ua = Model::load('UserAccess');
-
-                    if ($this->loginSuccess($n)) {
-                        if (!($n->getAuth($n->id) < $ua->getLevel('admin'))) {
-                            $this->redirect('admin');
-                        } else {
-                            $this->redirect('');
-                        }
-                        return false;
-                    }
+            if (!sizeof($errors)) {
+                $ua = Model::load('UserAccess');
+                if (!($n->auth < $ua->getLevel('admin'))) {
+                    $this->redirect('admin');
                 } else {
-                    $n->addValError('Wrong username/password combination.', 'success');
-                }
-            }
-
-            if ($n->hasValErrors() || $user_id < 1) {
+                    $this->redirect('');
+                }    
+            } else {
                 $this->presenter->assign('errors', $n->getValErrors());
                 $this->presenter->assign("username", $_POST['username']);
-                $this->presenter->assign("password", $_POST['password']);
+                $this->presenter->assign("password", $_POST['password']);    
             }
         }
     }
 
     public function logout()
     {
-        if (1 || isset($_POST['logout'])) {
-            $u = $this->currentUser->getUser();
-            Session::down();
-            if ($this->logoutSuccess($u)) {
-                $this->redirect('');
-                return false;              
-            }
+        if (!$this->currentUser->doLogout()) {
+            throw new \Exception('Could not logout');
+        } else {
+            $this->redirect('');
+            return false;    
+        }
+    }
 
+    private function nullify(&$var) {
+        if (isset($var) && $var === '') {
+            $var = null;
         }
     }
 
     public function register()
-    {
-        $supply_address = 0;
-        $saving_address = false;
+    {   
         $errors = array();
-        $u = null;
-        $p = null;
         $submitted = false;
 
-
         if (isset($_POST['submit'])) {
-            $submitted = true;
+            $this->nullify($_POST['first_name']);
+            $this->nullify($_POST['last_name']);
+            $_POST['first_name'] = $_POST['first_name'] ?? 'Not provided';
+            $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
-            $u = Model::load('UserItem');
-            $u->username = $_POST['username'];
-            $u->email = $_POST['email'];
-            $u->validates();
+            $submitted = true;                
+            list($errors, $user, $profile, $address) = $this->currentUser->doRegister(
+                $_POST['supply_address'],
+                $_POST['username'],
+                $_POST['email'],
+                $_POST['fullname'] ?? '',
+                $_POST['first_name'],
+                $_POST['last_name'],
+                $_POST['address1'],
+                $_POST['address2'],
+                $_POST['city'],
+                $_POST['state'],
+                $_POST['zip'],
+                $_POST['country']
+            );            
 
-            $p = Model::load('UserProfile');
-            $p->fullname = $_POST['fullname'] ?? '';
-
-            $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] == 1) ? 1 : 0;
-            if ($supply_address == 1) {
-                $s = Model::load('ShippingAddress');
-                $saving_address = true;
-
-                if ($p->fullname != '') {
-                    $fullname_arr = explode(' ', $p->fullname);
-                    if (sizeof($fullname_arr) > 1) {
-                        $s->last_name = $fullname_arr[sizeof($fullname_arr) - 1];
-                        array_pop($fullname_arr);
-                        $s->first_name = implode(' ', $fullname_arr);
-                    }
-                } else {
-                    $s->first_name = $_POST['first_name'];
-                    $s->last_name = $_POST['last_name'];
-                    $p->fullname = $s->first_name.' '.$s->last_name;
-                }
-
-                $s->address1 = $_POST['address1'];
-                $s->address2 = $_POST['address2'];
-                $s->city = $_POST['city'];
-                $s->state = $_POST['state'];
-                $s->zip = strtoupper($_POST['zip']);
-                $s->country = $_POST['country'];
-                $s->default_address = 1;
-                $s->validates();
-            }
-            $p->validates();
-
-            if ($u->hasValErrors() || $p->hasValErrors() || (isset($s) && $s->hasValErrors())) {
-                $this->presenter->assign('user', $u);
-                $this->presenter->assign('profile', $p);
-
-                $errors = array_merge($u->getValErrors(), $p->getValErrors());
-                if (isset($s)) {
-                    $this->presenter->assign('address', $s);
-                    $errors = array_merge($errors, $s->getValErrors());
-                }
-
+            if (!sizeof($errors)) {
+               $this->redirect('user/thanks/1'); 
             } else {
-                $password = exec(MAKEPASSWD . ' --chars=8');
-                $reg_code = exec(MAKEPASSWD . ' --chars=16');
-                $u->password = $password;
-                $u->reg_code = md5($reg_code);
-                $u->auth = 0;
-                $u->active = 0;
-                $u->registered = 'MYSQLTIME';
-                $u->popups = 'DEFAULT';
-                $u->user_profile_id = $p->insert(Model::getTable('UserProfile'), 1, array(), 0);
-                $u->id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
+                $address->first_name = (
+                    isset($address->first_name) && 
+                    $address->first_name === 'Not provided'
+                ) ? '' : $address->first_name ?? '';
+                $address->last_name = (
+                    isset($address->last_name) && 
+                    $address->last_name === 'Not provided'
+                ) ? '' : $address->last_name ?? '';
 
-                if ($saving_address) {
-                    $s->user_id = $u->id;
-                    $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
-
-                    // vendor stuff disabled - see elib-store for more
-                    // $v = Model::load('Vendor');
-                    // $v->user_id = $s->user_id;
-                    // $v->insert(Model::getTable('Vendor'), 1, array(), 0);
-                }
-
-                if ($this->postRegister($u)) {
-                    if (
-                        ELibConfig::get('EMAIL_ORGANISATION') &&
-                        ELibConfig::get('EMAIL_FROM')
-                    ) {
-                        $_POST['body'] = "\nHi ___,\n\n"
-                            . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
-                            . " know your password for using the site, please confirm your email address"
-                            . " by clicking the following link:\n\n"
-                            . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
-                            . "\n\nCheers\n\n";
-
-                        $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
-                        $service =  DI::getContainer()->get('Contact');
-                        $service->prepareDispatch($u->id);
-                        $service->dispatchEmail($p->fullname);
-                        $service->persist();                              
-                    }
-
-                    $this->redirect('user/thanks/1');    
-                } else {
-                    throw new \Exception('Could not complete registration');
-                }
-                
+                $this->assign('user', $user);
+                $this->assign('profile', $profile);
+                $this->assign('address', $address);       
             }
         }
 
@@ -219,7 +120,6 @@ class Controller extends EController
         $this->assign('titles', $titles);
         $this->assign('countries', $countries);
         $this->assign('sc', 'GB');
-        $this->assign('supply_address', $supply_address);
         $this->setTemplate('elib://register.tpl');
         $this->assign('submitted', $submitted);
     }
@@ -227,28 +127,7 @@ class Controller extends EController
     public function confirm_reg()
     {
         $reg_code = $_GET['code'];
-        $u = Model::load('UserItem');
-        $id = $u->findUserForActivation($reg_code);
-
-        if ($id > 0) {
-            $u->id = $id;
-            $u->load();
-            $password = $u->password;
-            $u->password = md5(SALT.$password.SALT);
-            $u->active = 1;
-            $u->activated = 'MYSQLTIME';
-            $u->save(Model::getTable('UserItem'), array(), 0);
-
-            Session::set('user_id',$u->id);
-
-            $message = "\nHi ___,\n\n"
-                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
-                ." '___' and the password '".$password."'.\n\nCheers\n\n";
-
-            $r[0]['alias'] = $u->username;
-            $r[0]['address'] = $u->email;
-
-            $m = new Mailer($r, 'Welcome to '.ELibConfig::get('EMAIL_ORGANISATION'), $message);
+        if ($this->currentUser->doConfirmReg($reg_code)) {
             $this->redirect('user/thanks/2');
         } else {
             throw new \Exception('Unable to activate user.');

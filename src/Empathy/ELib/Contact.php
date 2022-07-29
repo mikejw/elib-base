@@ -86,6 +86,7 @@ class Contact
         ) {        
             $r[0]['alias'] = $name;
             $r[0]['address'] = $this->entity->email;
+
             $m = new Mailer($r, $this->entity->subject, $this->entity->body, null, true);
         } else {
             throw new \Exception('Email service config not set in elib.yml');

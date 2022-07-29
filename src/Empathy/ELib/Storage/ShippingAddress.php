@@ -25,8 +25,16 @@ class ShippingAddress extends Entity
 
     public function validates()
     {
-        $this->doValType(Validate::TEXT, 'first_name', $this->first_name, false);
-        $this->doValType(Validate::TEXT, 'last_name', $this->last_name, false);
+        if ($this->doValType(Validate::TEXT, 'first_name', $this->first_name, false)) {
+            if ($this->first_name === 'Not provided') {
+                $this->addValError('This is a required field', 'first_name');
+            }
+        }
+        if ($this->doValType(Validate::TEXT, 'last_name', $this->last_name, false)) {
+             if ($this->last_name === 'Not provided') {
+                $this->addValError('This is a required field', 'last_name');
+            }
+        }
         $this->doValType(Validate::TEXT, 'address1', $this->address1, false);
         $this->doValType(Validate::TEXT, 'address2', $this->address2, true);
         $this->doValType(Validate::TEXT, 'city', $this->city, false);
