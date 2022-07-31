@@ -13,7 +13,6 @@ class CurrentUser
 {
     private $u;
     private $user_id;
-    private $checked = false;
 
 
     // must return true
@@ -33,26 +32,27 @@ class CurrentUser
         return true;
     }
 
-    public function detectUser($c = NULL, $store_active = false)
+    public function detectUser($c = NULL, $store_active = false, $user_id = null)
     {
-        if (!$this->checked) {
-            $this->u = Model::load('UserItem');
-            $this->user_id = Session::get('user_id');
+        if ($user_id === null) {
+            $user_id = Session::get('user_id');
+        }
 
-            if (is_numeric($this->user_id) && $this->user_id > 0) {
-                $this->u->id = $this->user_id;
-                $this->u->load();
+        $this->u = Model::load('UserItem');
+        $this->user_id = $user_id;
 
-                if($c !== null) {
-                    $c->assign('current_user', $this->u->username);
-                    $c->assign('user_id', $this->u->id);
-                }
+        if (is_numeric($this->user_id) && $this->user_id > 0) {
+            $this->u->id = $this->user_id;
+            $this->u->load();
 
-                if ($store_active) {
-                    $c->assign('user_is_vendor', ($this->u->auth == \Empathy\ELib\Store\Access::VENDOR));
-                }
+            if($c !== null) {
+                $c->assign('current_user', $this->u->username);
+                $c->assign('user_id', $this->u->id);
             }
-            $this->checked = true;
+
+            if ($store_active) {
+                $c->assign('user_is_vendor', ($this->u->auth == \Empathy\ELib\Store\Access::VENDOR));
+            }
         }
     }
 
