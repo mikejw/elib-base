@@ -40,7 +40,7 @@ class Controller extends EController
 
             if (!sizeof($errors)) {
                 $ua = Model::load('UserAccess');
-                if (!($n->auth < $ua->getLevel('admin'))) {
+                if (!($user->auth < $ua->getLevel('admin'))) {
                     $this->redirect('admin');
                 } else {
                     $this->redirect('');
