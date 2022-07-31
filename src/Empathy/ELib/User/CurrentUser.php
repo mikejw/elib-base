@@ -95,7 +95,7 @@ class CurrentUser
         $this->u->id = $id;
     }
 
-    public function doLogin($username, $password)
+    public function doLogin($username, $password, $initSession = true)
     {
         $user = Model::load('UserItem');
         $user->username = $username;
@@ -107,13 +107,18 @@ class CurrentUser
         if (!$user->hasValErrors()) {
             $user_id = $user->login();
             if ($user_id > 0) {
-                session_regenerate_id();
-                Session::set('user_id', $user_id);
+
+                if ($initSession) {
+                    session_regenerate_id();
+                    Session::set('user_id', $user_id);                    
+                }
                 $user->id = $user_id;
                 $user->load();
 
                 if (!$this->loginSuccess($user)) {
                     throw new \Exception('Could not process post login');
+                } else {
+                    $this->u = $user;
                 }
             } else {
                 $user->addValError('Wrong username/password combination.', 'success');

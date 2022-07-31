@@ -11,19 +11,23 @@ class Libs
     private static $store_active = false;
 
 
-    public static function findAll() 
+    public static function findAll($doc_root = null) 
     {
+        if ($doc_root === null) {
+            $doc_root = Config::get('DOC_ROOT');
+        }
+
         $tpl_dirs = array();
-        $composer_installed = Config::get('DOC_ROOT').'/vendor/composer/installed.json';
+        $composer_installed = $doc_root.'/vendor/composer/installed.json';
+
         if(file_exists($composer_installed)) {
             $installed = json_decode(file_get_contents($composer_installed));
 
             if (isset($installed->packages)) {
                 $installed = $installed->packages;
             }
-
-            foreach($installed as $i) { 
-                if(strpos($i->name, 'mikejw/elib') === 0) {
+            foreach($installed as $i) {
+                if(strpos($i->name, 'mikejw/elib-') === 0) {
                     $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name;
                     if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
