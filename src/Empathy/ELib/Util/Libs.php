@@ -4,6 +4,7 @@ namespace Empathy\ELib\Util;
 
 use Empathy\ELib\Util as UtilClass;
 use Empathy\MVC\Config;
+use Empathy\MVC\FileContentsCache;
 
 class Libs
 {
@@ -21,8 +22,10 @@ class Libs
         $composer_installed = $doc_root.'/vendor/composer/installed.json';
 
         if(file_exists($composer_installed)) {
-            $installed = json_decode(file_get_contents($composer_installed));
-
+            $installed = FileContentsCache::cachedCallback($composer_installed, function ($data) {
+                return json_decode($data);
+            });
+            
             if (isset($installed->packages)) {
                 $installed = $installed->packages;
             }

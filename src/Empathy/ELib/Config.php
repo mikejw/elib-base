@@ -1,6 +1,9 @@
 <?php
 
 namespace Empathy\ELib;
+use Empathy\MVC\FileContentsCache;
+use Empathy\MVC\DI;
+
 
 /*
  * Modified to have the same "static interface"
@@ -53,11 +56,11 @@ class Config
     public static function load($config_dir)
     {
         $config_file = $config_dir.'/elib.yml';
-        if (!file_exists($config_file)) {
-            die('Config error: '.$config_file.' does not exist');
-        }
+        
+        $config = FileContentsCache::cachedCallback($config_file, function($data) {
+            return DI::getContainer()->get('Spyc')->YamlLoadString($data);
+        });
 
-        $config = YAML::load($config_file);
         foreach ($config as $index => $item) {
             if (!is_array($item)) {
                 self::store(strtoupper($index), $item);
