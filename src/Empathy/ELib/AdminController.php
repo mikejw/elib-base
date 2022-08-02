@@ -80,10 +80,7 @@ class AdminController extends EController
     {
         $this->setTemplate('elib:/admin/password.tpl');
         if (isset($_POST['submit'])) {
-
-
             $errors = array();
-            $old_password = md5(SALT.$_POST['old_password'].SALT);
             $password1 = $_POST['password1'];
             $password2 = $_POST['password2'];
 
@@ -91,7 +88,7 @@ class AdminController extends EController
             $u->id = Session::get('user_id');
             $u->load();
 
-            if ($old_password != $u->password) {
+            if (!password_verify($_POST['old_password'], $u->password)) {
                 array_push($errors, 'The existing password you have entered is not correct');
             }
 
@@ -104,7 +101,7 @@ class AdminController extends EController
             }
 
             if (sizeof($errors) < 1) {
-                $u->password = md5(SALT.$password1.SALT);
+                $u->password = password_hash($password1, PASSWORD_DEFAULT);
                 $u->save(Model::getTable('UserItem'), array(), 0);
                 $this->redirect('admin');
             } else {
