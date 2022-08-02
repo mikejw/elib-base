@@ -264,7 +264,7 @@ class CurrentUser
             $u->id = $id;
             $u->load();
             $password = $u->password;
-            $u->password = md5(SALT.$password.SALT);
+            $u->password = password_hash($password, PASSWORD_DEFAULT);
             $u->active = 1;
             $u->activated = 'MYSQLTIME';
             $u->save(Model::getTable('UserItem'), array(), 0);

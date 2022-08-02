@@ -46,7 +46,7 @@ class Controller extends EController
                     $this->redirect('');
                 }    
             } else {
-                $this->presenter->assign('errors', $n->getValErrors());
+                $this->presenter->assign('errors', $user->getValErrors());
                 $this->presenter->assign("username", $_POST['username']);
                 $this->presenter->assign("password", $_POST['password']);    
             }

@@ -7,11 +7,6 @@ use Empathy\MVC\Entity;
 use Empathy\MVC\Validate;
 
 
-if (!defined('SALT')) {
-  define('SALT', 'DRAGONFLY');
-}
-
-
 class UserItem extends Entity
 {
     const TABLE = 'e_user';
@@ -119,23 +114,26 @@ class UserItem extends Entity
         return $user_id;
     }
 
+    /**
+     * Do login.
+     * User should not need to know exact casing of username (like twitter).
+     * This is handled by DB.  
+     */
     public function login()
     {
         $user_id = 0;
-        $sql = 'SELECT * FROM '.Model::getTable('UserItem')
-            //.' WHERE username = BINARY \''.$this->username.'\''
-            // user should not need to know exact casing of username (like twitter)
+        $sql = 'SELECT id, password FROM '.Model::getTable('UserItem')
             .' WHERE username = \''.$this->username.'\''
-            .' AND password = \''.md5(SALT.$this->password.SALT).'\''
             .' AND active = 1';
-        $error = "Could not login.";
+        $error = "Could not get user for login.";
         $result = $this->query($sql, $error);
         $rows = $result->rowCount();
         if ($rows == 1) {
             $row = $result->fetch();
-            $user_id = $row['id'];
+            if (password_verify($this->password, $row['password'])) {
+                $user_id = $row['id'];    
+            }
         }
-
         return $user_id;
     }
 
