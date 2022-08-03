@@ -5,6 +5,7 @@ namespace Empathy\ELib\Storage;
 use Empathy\ELib\Model;
 use Empathy\MVC\Entity;
 use Empathy\MVC\Validate;
+use Empathy\ELib\Country\Country;
 
 
 class ShippingAddress extends Entity
@@ -40,7 +41,11 @@ class ShippingAddress extends Entity
         $this->doValType(Validate::TEXT, 'city', $this->city, false);
         $this->doValType(Validate::TEXT, 'state', $this->state, false);
         $this->doValType(Validate::TEXT, 'zip', $this->zip, false);
-        $this->doValType(Validate::TEXT, 'country', $this->country, false);
+        if ($this->doValType(Validate::TEXT, 'country', $this->country, false)) {
+            if (!in_array($this->country, array_keys(Country::build()))) {
+                $this->addValError('Not a valid country', 'country');
+            }
+        }
     }
 
     public function setDefault($user_id, $address_id)

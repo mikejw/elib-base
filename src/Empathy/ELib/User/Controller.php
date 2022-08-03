@@ -75,12 +75,12 @@ class Controller extends EController
         $submitted = false;
 
         if (isset($_POST['submit'])) {
+            $submitted = true; 
             $this->nullify($_POST['first_name']);
             $this->nullify($_POST['last_name']);
             $_POST['first_name'] = $_POST['first_name'] ?? 'Not provided';
             $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
-            $submitted = true;                
             list($errors, $user, $address) = $this->currentUser->doRegister(
                 $_POST['supply_address'],
                 $_POST['username'],
@@ -118,7 +118,7 @@ class Controller extends EController
         $this->assign('errors', $errors);
         $this->assign('titles', $titles);
         $this->assign('countries', $countries);
-        $this->assign('sc', 'GB');
+        $this->assign('sc', $submitted ? $address->country : 'GB');
         $this->setTemplate('elib://register.tpl');
         $this->assign('submitted', $submitted);
     }
