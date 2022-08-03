@@ -81,7 +81,7 @@ class Controller extends EController
             $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
             $submitted = true;                
-            list($errors, $user, $profile, $address) = $this->currentUser->doRegister(
+            list($errors, $user, $address) = $this->currentUser->doRegister(
                 $_POST['supply_address'],
                 $_POST['username'],
                 $_POST['email'],
@@ -109,7 +109,6 @@ class Controller extends EController
                 ) ? '' : $address->last_name ?? '';
 
                 $this->assign('user', $user);
-                $this->assign('profile', $profile);
                 $this->assign('address', $address);       
             }
         }

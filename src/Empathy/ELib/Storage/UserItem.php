@@ -9,10 +9,9 @@ use Empathy\MVC\Validate;
 
 class UserItem extends Entity
 {
-    const TABLE = 'e_user';
+    const TABLE = 'user';
 
     public $id;
-    public $user_profile_id;
     public $email;
     public $auth;
     public $username;
@@ -21,6 +20,9 @@ class UserItem extends Entity
     public $active;
     public $registered;
     public $activated;
+    public $fullname;
+    public $picture;
+    public $about;
 
     public function validates($email_check=true)
     {
@@ -36,6 +38,13 @@ class UserItem extends Entity
                 }
             }
         }
+        if ($this->doValType(Validate::TEXT, 'fullname', $this->fullname, false)) {
+            if (!strpos($this->fullname, ' ')) {
+                $this->addValError('Must have space(s)', 'fullname');
+            }
+        }
+        $this->doValType(Validate::TEXT, 'picture', $this->picture, true);
+        $this->doValType(Validate::TEXT, 'about', $this->about, true);
     }
 
     public function validateLogin()
@@ -96,13 +105,11 @@ class UserItem extends Entity
             $this->active = 1;
             $this->registered = 'MYSQLTIME';
             $this->activated = 'MYSQLTIME';
+            $this->fullname = $name;
+            $this->picture = $image;
+            $this->about = '';
             $this->validates(false);
             if (!$this->hasValErrors()) {
-                $up = Model::load('UserProfile');
-                $up->fullname = $name;
-                $up->picture = $image;
-                $up->about = '';
-                $this->user_profile_id = $up->insert(Model::getTable('UserProfile'), true, array(), 0);
                 $this->id = $this->insert(self::TABLE, true, array(), 0);
                 $user_id = $this->id;
             } else {

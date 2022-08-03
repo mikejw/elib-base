@@ -9,7 +9,7 @@ use Empathy\MVC\Validate;
 
 class ShippingAddress extends Entity
 {
-    const TABLE = 'shipping_address';
+    const TABLE = 'shippingaddr';
 
     public $id;
     public $user_id;

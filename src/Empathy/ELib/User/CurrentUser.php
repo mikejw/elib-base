@@ -157,20 +157,17 @@ class CurrentUser
         $zip,
         $country
     ) {
+        $errors = array();
         $u = Model::load('UserItem');
         $u->username = $username;
         $u->email = $email;
-        $u->validates();
-        $errors = array();
-
-        $p = Model::load('UserProfile');
-
+        
         $supply_address = (isset($supply_address) && $supply_address == 1) ? 1 : 0;
 
         if ($supply_address == 1) {
             $s = Model::load('ShippingAddress');
-            if ($p->fullname != '') {
-                $fullname_arr = explode(' ', $p->fullname);
+            if ($fullname != '') {
+                $fullname_arr = explode(' ', $fullname);
                 if (sizeof($fullname_arr) > 1) {
                     $s->last_name = $fullname_arr[sizeof($fullname_arr) - 1];
                     array_pop($fullname_arr);
@@ -178,9 +175,9 @@ class CurrentUser
                 }
             } else {
                 $s->first_name = $first_name;
-                $s->last_name = $last_name;
-                $p->fullname = $s->first_name.' '.$s->last_name;
+                $s->last_name = $last_name;                
             }
+            $u->fullname = $s->first_name.' '.$s->last_name;
 
             $s->address1 = $address1;
             $s->address2 = $address2;
@@ -191,14 +188,13 @@ class CurrentUser
             $s->default_address = 1;
             $s->validates();
         } else {
-            $p->fullname = $first_name.' '.$last_name;
+            $u->fullname = $first_name.' '.$last_name;
         }
+        $u->validates();
 
-        $p->validates();
+        if ($u->hasValErrors() || (isset($s) && $s->hasValErrors())) {
 
-        if ($u->hasValErrors() || $p->hasValErrors() || (isset($s) && $s->hasValErrors())) {
-
-            $errors = array_merge($u->getValErrors(), $p->getValErrors());
+            $errors = $u->getValErrors();
             if (isset($s)) {
                 $errors = array_merge($errors, $s->getValErrors());
             }
@@ -212,7 +208,6 @@ class CurrentUser
             $u->active = 0;
             $u->registered = 'MYSQLTIME';
             $u->popups = 'DEFAULT';
-            $u->user_profile_id = $p->insert(Model::getTable('UserProfile'), 1, array(), 0);
             $u->id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
 
             if (isset($s)) {
@@ -236,22 +231,22 @@ class CurrentUser
                         . " by clicking the following link:\n\n"
                         . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
                         . "\n\nCheers\n\n";
-                    if ($p->fullname === 'Not provided Not provided') {
+                    if ($u->fullname === 'Not provided Not provided') {
                         $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
-                        $p->fullname = $u->email;
+                        $u->fullname = $u->email;
                     }
 
                     $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
                     $service =  DI::getContainer()->get('Contact');
                     $service->prepareDispatch($u->id);
-                    $service->dispatchEmail($p->fullname);
+                    $service->dispatchEmail($u->fullname);
                     $service->persist();                              
                 }   
             } else {
                 throw new \Exception('Could not complete registration');
             }
         }
-        return array($errors, $u, $p, $s ?? new \stdClass()) ;
+        return array($errors, $u, $s ?? new \stdClass()) ;
     }
 
 
@@ -269,18 +264,14 @@ class CurrentUser
             $u->activated = 'MYSQLTIME';
             $u->save(Model::getTable('UserItem'), array(), 0);
 
-            $p = Model::load('UserProfile');
-            $p->id = $u->user_profile_id;
-            $p->load();
-
             Session::set('user_id',$u->id);
 
             $_POST['body'] = "\nHi ___,\n\n"
                 ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
                 ." '___' and the password '".$password."'.\n\nCheers\n\n";
-            if ($p->fullname === 'Not provided Not provided') {
+            if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
-                $p->fullname = $u->email;
+                $u->fullname = $u->email;
             }
 
             $_POST['body'] = str_replace('___', $u->username, $_POST['body']);
@@ -290,7 +281,7 @@ class CurrentUser
 
             $service =  DI::getContainer()->get('Contact');
             if ($service->prepareDispatch($u->id)) {
-                $service->dispatchEmail($p->fullname);
+                $service->dispatchEmail($u->fullname);
                 return true;
             } else {
                 return false;
