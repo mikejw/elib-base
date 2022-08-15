@@ -60,34 +60,33 @@ class Contact
 
             $messageOut = "Message sent from: "
                 .$this->entity->first_name. ' ' .$this->entity->last_name
-                ." - ".$this->entity->email."<br /><br />"
+                ." - ".$this->entity->email."\n\n\n\n"
                 .$this->entity->body;
 
-            $m = new Mailer($r, $this->entity->subject, $messageOut, null, true);
+            $m = new Mailer($r, $this->entity->subject, $messageOut, null);
         } else {
             throw new \Exception('Email service config not set in elib.yml');
         }
     }
     
 
-    public function prepareDispatch($user_id) {
+    public function prepareDispatch($user_id, $html = false) {
         $this->entity->assignFromPost(array('submitted', 'message', 'user_id'));
         $this->entity->message = 1;
         $this->entity->submitted = 'MYSQLTIME';
         $this->entity->user_id = $user_id;
-        $this->entity->validates();
+        $this->entity->validates($html);
         return !$this->entity->hasValErrors();
     }
 
-    public function dispatchEmail($name) {
+    public function dispatchEmail($name, $html = false) {
         if (
             Config::get('EMAIL_ORGANISATION') &&
             Config::get('EMAIL_FROM')
         ) {        
             $r[0]['alias'] = $name;
             $r[0]['address'] = $this->entity->email;
-
-            $m = new Mailer($r, $this->entity->subject, $this->entity->body, null, true);
+            $m = new Mailer($r, $this->entity->subject, $this->entity->body, null, $html);
         } else {
             throw new \Exception('Email service config not set in elib.yml');
         }

@@ -85,6 +85,11 @@ class CurrentUser
         return $this->u;
     }
 
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
     public static function isAuthLevel($level)
     {
         return ($this->u->auth >= $level);

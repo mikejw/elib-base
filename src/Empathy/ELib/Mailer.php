@@ -59,7 +59,7 @@ class Mailer
                 $this->init();
                 $this->mailer->Body = str_replace('___', $r['alias'], $this->message);
                 $this->mailer->addAddress($r['address'], $r['alias']);
-                $this->mailer->send();
+                $this->mailer->send();            
             }
         } catch(Exception $e) {
             throw new \Exception("{$this->mailer->ErrorInfo}");
