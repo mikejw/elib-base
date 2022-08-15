@@ -87,7 +87,7 @@ class CurrentUser
 
     public function setUser($user)
     {
-        $this->user = $user;
+        $this->u = $user;
     }
 
     public static function isAuthLevel($level)
