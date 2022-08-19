@@ -100,9 +100,9 @@ class CurrentUser
         $this->u->id = $id;
     }
 
-    public function doLogin($username, $password, $initSession = true)
+    public function doLogin($username, $password, $initSession = true, $model = 'UserItem')
     {
-        $user = Model::load('UserItem');
+        $user = Model::load($model);
         $user->username = $username;
         $user->password = $password;
 
@@ -126,7 +126,7 @@ class CurrentUser
                     $this->u = $user;
                 }
             } else {
-                $user->addValError('Wrong username/password combination.', 'success');
+                $user->addValError('Wrong username/password combination.', 'general');
             }
         }
 
