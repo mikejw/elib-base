@@ -16,11 +16,13 @@ use Empathy\MVC\DI;
 class Controller extends EController
 {
     private $currentUser;
+    protected $userModel;
 
     public function __construct($boot) 
     {
         parent::__construct($boot);
         $this->currentUser = DI::getContainer()->get('CurrentUser');
+        $this->userModel = DI::getContainer()->get('UserModel');
     }
 
     public function default_event()
@@ -36,7 +38,7 @@ class Controller extends EController
         $errors = array();
 
         if (isset($_POST['login'])) {
-            list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password']);
+            list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password'], true, $this->userModel);
 
             if (!sizeof($errors)) {
                 $ua = Model::load('UserAccess');

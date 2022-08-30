@@ -50,8 +50,15 @@ class UserItem extends Entity
     public function validateLogin()
     {
         $this->doValType(Validate::USERNAME, 'username', $this->username, false);
+        $this->validatePassword();
+    }
+
+
+    public function validatePassword()
+    {
         $this->doValType(Validate::TEXT, 'password', $this->password, false);
     }
+
 
     public function getUsername($id)
     {
@@ -130,7 +137,7 @@ class UserItem extends Entity
     {
         $user_id = 0;
         $sql = 'SELECT id, password FROM '.Model::getTable('UserItem')
-            .' WHERE username = \''.$this->username.'\''
+            .' WHERE (username = \''.$this->username.'\' or email = \''.$this->username.'\')'
             .' AND active = 1';
         $error = "Could not get user for login.";
         $result = $this->query($sql, $error);
@@ -206,5 +213,4 @@ class UserItem extends Entity
 
         return $exists;
     }
-
 }

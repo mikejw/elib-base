@@ -4,8 +4,8 @@
 <h2>Register</h2>
 
 <p>
-    Please note: Usernames must be between four and eight characters
-    long and cannot start with a number. You can add more shipping addresses later.
+    Please note: Usernames are "twitter style". A maximum of 15 characters. Numbers, letters and underscores are
+    allowed. You can add more shipping addresses later.
 </p>
 
 <form action="" method="post">

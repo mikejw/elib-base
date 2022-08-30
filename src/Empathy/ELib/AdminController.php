@@ -78,31 +78,16 @@ class AdminController extends EController
 
     public function password()
     {
+        $this->currentUser = DI::getContainer()->get('CurrentUser');
         $this->setTemplate('elib:/admin/password.tpl');
         if (isset($_POST['submit'])) {
-            $errors = array();
-            $password1 = $_POST['password1'];
-            $password2 = $_POST['password2'];
-
-            $u = Model::load('UserItem');
-            $u->id = Session::get('user_id');
-            $u->load();
-
-            if (!password_verify($_POST['old_password'], $u->password)) {
-                array_push($errors, 'The existing password you have entered is not correct');
-            }
-
-            if ($password1 != $password2) {
-                array_push($errors, 'The new password entered does not match the confirmation');
-            }
-
-            if (!ctype_alnum($password1) || !ctype_alnum($password2)) {
-                array_push($errors, 'Please only use alpha and numeric characters for new passwords');
-            }
+            $errors = $this->currentUser->doChangePassword(
+                $_POST['old_password'],
+                $_POST['password1'],
+                $_POST['password2']
+            );
 
             if (sizeof($errors) < 1) {
-                $u->password = password_hash($password1, PASSWORD_DEFAULT);
-                $u->save(Model::getTable('UserItem'), array(), 0);
                 $this->redirect('admin');
             } else {
                 $this->presenter->assign('errors', $errors);

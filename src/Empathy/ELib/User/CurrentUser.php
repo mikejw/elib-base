@@ -100,8 +100,11 @@ class CurrentUser
         $this->u->id = $id;
     }
 
-    public function doLogin($username, $password, $initSession = true, $model = 'UserItem')
+    public function doLogin($username, $password, $initSession = true, $model = null)
     {
+        if ($model === null) {
+            $model = DI::getContainer()->get('UserModel');    
+        }
         $user = Model::load($model);
         $user->username = $username;
         $user->password = $password;
@@ -147,6 +150,30 @@ class CurrentUser
         }
     }
 
+    public function sendConfirmationEmail($u, $reg_code)
+    {
+        if (
+            ELibConfig::get('EMAIL_ORGANISATION') &&
+            ELibConfig::get('EMAIL_FROM')
+        ) {
+            $_POST['body'] = "\nHi ___,\n\n"
+                . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
+                . " know your password for using the site, please confirm your email address"
+                . " by clicking the following link:\n\n"
+                . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
+                . "\n\nCheers\n\n";
+            if ($u->fullname === 'Not provided Not provided') {
+                $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
+                $u->fullname = $u->email;
+            }
+
+            $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
+            $service =  DI::getContainer()->get('Contact');
+            $service->prepareDispatch($u->id);
+            $service->dispatchEmail($u->fullname);
+            $service->persist();                              
+        }
+    }
 
     public function doRegister(
         $supply_address,
@@ -226,27 +253,7 @@ class CurrentUser
             }
 
             if ($this->postRegister($u)) {
-                if (
-                    ELibConfig::get('EMAIL_ORGANISATION') &&
-                    ELibConfig::get('EMAIL_FROM')
-                ) {
-                    $_POST['body'] = "\nHi ___,\n\n"
-                        . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
-                        . " know your password for using the site, please confirm your email address"
-                        . " by clicking the following link:\n\n"
-                        . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
-                        . "\n\nCheers\n\n";
-                    if ($u->fullname === 'Not provided Not provided') {
-                        $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
-                        $u->fullname = $u->email;
-                    }
-
-                    $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
-                    $service =  DI::getContainer()->get('Contact');
-                    $service->prepareDispatch($u->id);
-                    $service->dispatchEmail($u->fullname);
-                    $service->persist();                              
-                }   
+                $this->sendConfirmationEmail($u, $reg_code);
             } else {
                 throw new \Exception('Could not complete registration');
             }
@@ -288,10 +295,42 @@ class CurrentUser
             if ($service->prepareDispatch($u->id)) {
                 $service->dispatchEmail($u->fullname);
                 return true;
-            } else {
-                return false;
             }
         }
+    }
+
+
+    public function doChangePassword(
+        $old_password,
+        $password1,
+        $password2
+    ) {
+        $errors = array();
+        $model = DI::getContainer()->get('UserModel');
+        $u = Model::load($model);
+        $u->id = Session::get('user_id');
+        $u->load();
+
+        if (!password_verify($old_password, $u->password)) {
+            array_push($errors, 'The existing password you have entered is not correct');
+        }
+
+        if ($password1 != $password2) {
+            array_push($errors, 'The new password entered does not match the confirmation');
+        } else {
+            $u->password = $password1;
+            $u->validatePassword();
+            if ($u->hasValErrors()) {
+                $valErrors = $u->getValErrors();
+                array_push($errors, array_pop($valErrors));
+            }
+        }
+
+        if (sizeof($errors) < 1) {
+            $u->password = password_hash($password1, PASSWORD_DEFAULT);
+            $u->save(Model::getTable('UserItem'), array(), 0);
+        }
+        return $errors;
     }
 }
 
