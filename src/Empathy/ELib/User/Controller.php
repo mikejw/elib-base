@@ -41,8 +41,7 @@ class Controller extends EController
             list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password'], true, $this->userModel);
 
             if (!sizeof($errors)) {
-                $ua = Model::load('UserAccess');
-                if (!($user->auth < $ua->getLevel('admin'))) {
+                if ($this->currentUser->isAdmin($user)) {
                     $this->redirect('admin');
                 } else {
                     $this->redirect('');

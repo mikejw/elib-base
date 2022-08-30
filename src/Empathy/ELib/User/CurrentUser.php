@@ -65,6 +65,16 @@ class CurrentUser
         }
     }
 
+    public function isAdmin($u)
+    {
+        $admin = false;
+        $ua = Model::load('UserAccess');
+        if (!($u->auth < $ua->getLevel('admin'))) {
+            $admin = true;
+        }
+        return $admin;
+    }
+
     public function getUserID()
     {
         return $this->u->id;
