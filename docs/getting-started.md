@@ -74,41 +74,45 @@ Create a file called `/setup.sql` for the data definitions and add the following
     CREATE DATABASE project;
     USE project;
 
-Next copy the contents of ./vendor/mikejw/elib-base/dd.sql to this file at the bottm.
-Between the first chunk of code (after "USE project;") and before the create table blocks 
+Next copy the contents of ./vendor/mikejw/elib-base/dd.sql to this file at the bottom.
+
+Between the first chunk of code (after "USE project;") and before the `CREATE` table blocks 
 create the SQL statement to drop these tables:
 
-    DROP TABLE IF EXISTS user_profile, e_user;                        
+
+    DROP TABLE IF EXISTS e_user, contact, shippingaddr;
 
 
-Next create a file called inserts.sql for data manipulation and add at the top:
+Next create a file called `inserts.sql` for data manipulation and add at the top:
 
     use project;
 
-Copy the contents from ./vendor/mikejw/elib-base/dm.sql to this file.
+Copy the contents from ./vendor/mikejw/elib-base/dm.sql to the end of this file.
 
 Create password
 ---
 
-To create a user for yourself that's ready to use straight away, use an INSERT statement like
-the following:
+To create a user for yourself that's ready to use straight away, we need to generate an
+encrypted password and place it in as the fifth argument to the `INSERT` statement in the `insert.sql` file.
 
-    INSERT INTO user_profile VALUES(
-    NULL, '<Full Name>', NULL, NULL);
- 
-    INSERT INTO e_user VALUES(
-    NULL, 1, '<your email>', 2, '<username>', '<password>', '', 1, NOW(), NOW());
+Run the following from the command line:
 
-Replace '<password>' with the output from running the following command in your terminal
-(using the default `SALT` values:
+    php -a
+    php > echo password_hash('yourpassword', PASSWORD_DEFAULT);
 
-    echo -n "DRAGONFLYmy_password_goes_hereDRAGONFLY" | md5
+Copy the output and paste it into the `insert.sql` file in place of the existing password hash.
 
-Initialise the database with initial records with:
+
+Initialise the database with:
 
     php ./vendor/bin/empathy --mysql setup
 
-At this point your database should be set up but you will still not be able to log in. Continue
+Or if using "base-docker":
+
+    docker-compose exec app php ./vendor/bin/empathy --mysql setup
+
+
+At this point your database should be set up, but you will still not be able to log in. Continue
 to Application.
 
 
@@ -118,13 +122,17 @@ Application
 You now need to generate default controllers in your `/application` directory that inherit from
 files within ELib-Base.
 
-Generate the default application controllers with:
+Generate the default application controllers (from the root dir) with:
 
     php ./vendor/bin/empathy --inst_mod admin
     php ./vendor/bin/empathy --inst_mod user
 
 
 Finally, change the `use_elib` boot options setting in your `/config.yml` to true.
+
+    use_elib: true
+
+Also create an empty YAML configuration file in the root directory called `elib.yml`.
 
 
 Backend
