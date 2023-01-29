@@ -5,14 +5,16 @@ ELib Base
 
 Requirements
 ---
-* PHP =< 5.3
-* MySQL version ~5.7 (if you are using "base-docker" this is made available to you).
+* MySQL version ~5.7 (if you are using https://github.com/mikejw/base-docker this is made available to you).
 
 
 Setup
 ---
 
-Create a composer.json file with elib-blog in the require block:
+Follow the instructions in the Empathy "getting-started.md" docs:
+[Empathy Getting Started](https://github.com/mikejw/empathy/blob/master/docs/getting-started.md).
+
+Hower use the following `composer.json` configuration:
 
     {
         "require": {
@@ -20,11 +22,6 @@ Create a composer.json file with elib-blog in the require block:
         },
         "minimum-stability": "dev"
     }
-
-NB: This dependency alone will bring in Empathy as well.
-
-Follow the instruction in the Empathy "getting-started.md" docs:
-[Empathy Getting Started](https://github.com/mikejw/empathy/blob/master/docs/getting-started.md)
 
 
 Database Philosophy
