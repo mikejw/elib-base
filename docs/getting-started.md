@@ -77,7 +77,7 @@ Between the first chunk of code (after "USE project;") and before the `CREATE` t
 create the SQL statement to drop these tables:
 
 
-    DROP TABLE IF EXISTS e_user, contact, shippingaddr;
+    DROP TABLE IF EXISTS user, contact, shippingaddr;
 
 
 Next create a file called `inserts.sql` for data manipulation and add at the top:
@@ -90,14 +90,14 @@ Create password
 ---
 
 To create a user for yourself that's ready to use straight away, we need to generate an
-encrypted password and place it in as the fifth argument to the `INSERT` statement in the `insert.sql` file.
+encrypted password and place it in as the fifth argument to the `INSERT` statement in the `inserts.sql` file.
 
 Run the following from the command line:
 
     php -a
     php > echo password_hash('yourpassword', PASSWORD_DEFAULT);
 
-Copy the output and paste it into the `insert.sql` file in place of the existing password hash.
+Copy the output and paste it into the `inserts.sql` file in place of the existing password hash.
 
 
 Initialise the database with:
