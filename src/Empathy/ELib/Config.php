@@ -62,12 +62,10 @@ class Config
         });
 
         foreach ($config as $index => $item) {
-            if (!is_array($item)) {
-                self::store(strtoupper($index), $item);
-                $index = 'ELIB_'.$index;
-                if (!defined(strtoupper($index))) {
-                    define(strtoupper($index), $item);    
-                }
+            self::store(strtoupper($index), $item);
+            $index = 'ELIB_'.$index;
+            if (!defined(strtoupper($index))) {
+                define(strtoupper($index), $item);
             }
         }
     }
