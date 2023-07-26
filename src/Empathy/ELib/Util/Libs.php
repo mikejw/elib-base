@@ -73,7 +73,7 @@ class Libs
         $mapped = array();
         foreach (self::$installed_libs as $lib)  {
             switch ($lib) {
-                case 'mikejw/elib-cms':#
+                case 'mikejw/elib-cms':
                     $mapped['dsection'] = 'CMS';
                     break;
                 case 'mikejw/elib-siteinfo':
@@ -85,6 +85,8 @@ class Libs
                 case 'mikejw/elib-events':
                     $mapped['events'] = 'Events';
                     break;
+                case 'mikejw/elib-store':
+                    $mapped['store'] = 'Store';
                 default:
                     break;
             }
