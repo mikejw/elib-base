@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="{if $centerpage}centerpage{/if}">
+<html lang="en" class="{if isset($centerpage) and $centerpage}centerpage{/if}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
