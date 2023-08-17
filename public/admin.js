@@ -329,7 +329,7 @@ $(document).ready(function(){
                 o.content = o.content.replace(/(<([^>]+)>)/gi, '');
             },
             external_plugins: {
-                blogImages: '//vendor/js/blogImages.js'
+                blogImages: '/vendor/js/blogImages.js'
             },
             plugins: [
                 'advlist autolink lists link image charmap print preview anchor',
