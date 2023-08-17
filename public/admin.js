@@ -147,7 +147,7 @@ var edit_box = new function()
     this.enter = function()
     {
         self.locked = 1;
-        self.parent_element.empty().append('<input type="text" id="'+self.field+'_'+self.id+'" value="'+self.current_text+'" />');          
+        self.parent_element.empty().append('<input type="text" id="'+self.field+'_'+self.id+'" value="'+self.current_text+'" />');
         var input = self.parent_element.find('input');
         input.focus();
         input.bind('blur', function(e){
@@ -329,7 +329,7 @@ $(document).ready(function(){
                 o.content = o.content.replace(/(<([^>]+)>)/gi, '');
             },
             external_plugins: {
-                blogImages: '//' + WEB_ROOT + PUBLIC_DIR + '/vendor/js/blogImages.js'
+                blogImages: '//vendor/js/blogImages.js'
             },
             plugins: [
                 'advlist autolink lists link image charmap print preview anchor',
