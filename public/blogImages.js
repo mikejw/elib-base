@@ -13,7 +13,7 @@ tinymce.PluginManager.add('blogImages', function(editor, url) {
             editor.insertContent(event.data.content);
             editor.setContent(editor.getContent().replace(/\[blog-image\:([A-Za-z0-9=]*)\]/g, function (match, match1) {
               var data = JSON.parse(atob(match1));
-              return '<img data-payload="' + match1 + '" class="' + data.centered + ' ' + data.fluid + '" src="//' + WEB_ROOT + PUBLIC_DIR + '/uploads/' + data.size + data.filename + '" alt="" />';
+              return '<img data-payload="' + match1 + '" class="' + data.centered + ' ' + data.fluid + '" src="/uploads/' + data.size + data.filename + '" alt="" />';
             }));
             api.close();
             break;
@@ -25,7 +25,7 @@ tinymce.PluginManager.add('blogImages', function(editor, url) {
     window.addEventListener('message', submit, { once: true });
 
     var api = editor.windowManager.openUrl({
-      url: '//' + WEB_ROOT + PUBLIC_DIR + '/admin/blog/blog_images/' + id,
+      url: '/admin/blog/blog_images/' + id,
       title: 'Blog Images',
       onCancel: function() {
         window.removeEventListener('message', submit);
