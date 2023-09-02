@@ -11,8 +11,8 @@ use Empathy\MVC\Config;
 
 class CurrentUser
 {
-    private $u;
-    private $user_id;
+    protected $u;
+    protected $user_id;
 
 
     // must return true
