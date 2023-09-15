@@ -13,7 +13,7 @@ class AdminController extends EController
     {
         parent::__construct($boot);
         if ($assertAdmin) {
-            DI::getContainer()->get('CurrentUser')->assertAdmin($this);    
+            DI::getContainer()->get('CurrentUser')->assertAdmin($this);
         }
         
         $this->detectHelp();

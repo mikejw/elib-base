@@ -15,11 +15,8 @@ class EController extends CustomController
     {        
         parent::__construct($boot);
 
-
         DI::getContainer()->get('CurrentUser')->detectUser($this);
         $this->elib_tpl_dirs = Util\Libs::detect();
-
-
 
         if (sizeof($this->elib_tpl_dirs) > 1) {
             $this->assign('elibtpl_arr', $this->elib_tpl_dirs);
@@ -27,17 +24,6 @@ class EController extends CustomController
             $this->assign('elibtpl', $this->elib_tpl_dirs[0]);
         }
 
-        if (EConfig::get('SUBDOMAIN')) {
-
-            $this->assign('elibtplsub', EConfig::get('SUBDOMAIN'));
-        }
-
-        if (Util\Libs::getStoreActive()) {
-            DI::getContainer()->get('CurrentUser')->detectUser($this, true);
-        }
-
-
         $this->assign('installed_libs', Util\Libs::getMappedLibNames());
-
     }
 }

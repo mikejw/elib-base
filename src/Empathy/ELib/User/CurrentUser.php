@@ -13,6 +13,7 @@ class CurrentUser
 {
     protected $u;
     protected $user_id;
+    protected $loaded = false;
 
 
     // must return true
@@ -32,36 +33,31 @@ class CurrentUser
         return true;
     }
 
-    public function detectUser($c = NULL, $store_active = false, $user_id = null)
+    public function detectUser($controller)
     {
-        if ($user_id === null) {
-            $user_id = Session::get('user_id');
+        if ($this->loaded) {
+            return;
         }
 
+        $user_id = Session::get('user_id');
         $this->u = Model::load('UserItem');
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
             $this->u->id = $this->user_id;
             $this->u->load();
-
-            if($c !== null) {
-                $c->assign('current_user', $this->u->username);
-                $c->assign('user_id', $this->u->id);
-            }
-
-            if ($store_active) {
-                $c->assign('user_is_vendor', ($this->u->auth == \Empathy\ELib\Store\Access::VENDOR));
-            }
+            $controller->assign('current_user', $this->u->username);
+            $controller->assign('user_id', $this->u->id);
+            $this->loaded = true;
         }
     }
 
-    public function assertAdmin($c)
-    {        
+    public function assertAdmin($controller)
+    {
         $ua = Model::load('UserAccess');
         if ($this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
-            $c->redirect("user/login");
+            $controller->redirect("user/login");
         }
     }
 
@@ -100,12 +96,12 @@ class CurrentUser
         $this->u = $user;
     }
 
-    public static function isAuthLevel($level)
+    public function isAuthLevel($level)
     {
         return ($this->u->auth >= $level);
     }
 
-    public static function setUserID($id)
+    public function setUserID($id)
     {
         $this->u->id = $id;
     }
