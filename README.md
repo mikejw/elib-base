@@ -6,6 +6,8 @@ Copyright 2008-2019 Mike Whiting (mikejw3@gmail.com).
 Empathy PHP Framework - ELib-Base
 ===
 
+[https://empathy.sh/docs/elib-base/README.md](https://empathy.sh/docs/elib-base/README.md)
+
 Swiss army knife library for Empathy web applications. It's main function is providing 
 the essential plumbing for an application with authenticated users and a default backend 'admin'
 area.  Other coming libraries build on Elib-Base to provide blogging, CMS functionality with corresponding
