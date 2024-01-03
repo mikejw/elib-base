@@ -7,6 +7,7 @@ use Empathy\MVC\Session;
 use Empathy\MVC\DI;
 use Empathy\ELib\Config as ELibConfig;
 use Empathy\MVC\Config;
+use Empathy\MVC\RequestException;
 
 
 class CurrentUser
@@ -337,6 +338,14 @@ class CurrentUser
             $u->save(Model::getTable('UserItem'), array(), 0);
         }
         return $errors;
+    }
+
+    public function denyNotAdmin()
+    {
+        $ua = Model::load('UserAccess');
+        if ($this->u->auth < $ua->getLevel('admin')) {
+            throw new RequestException('Denied', RequestException::NOT_AUTHORIZED);
+        }
     }
 }
 
