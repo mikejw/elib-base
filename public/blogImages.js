@@ -5,7 +5,7 @@ tinymce.PluginManager.add('blogImages', function(editor, url) {
     var id = $('form').data('id');
 
     function submit(event) {
-      if (event.origin !== window.origin) {
+      if (event.origin !== window.origin  || (!event.data.mceAction || !event.data.content)) {
         return;
       } else {
         switch (event.data.mceAction) {
@@ -16,13 +16,15 @@ tinymce.PluginManager.add('blogImages', function(editor, url) {
               return '<img data-payload="' + match1 + '" class="' + data.centered + ' ' + data.fluid + '" src="/uploads/' + data.size + data.filename + '" alt="" />';
             }));
             api.close();
+            window.removeEventListener('message', submit);
             break;
           default:
             break;
         }
+
       }
     }
-    window.addEventListener('message', submit, { once: true });
+    window.addEventListener('message', submit);
 
     var api = editor.windowManager.openUrl({
       url: '/admin/blog/blog_images/' + id,
