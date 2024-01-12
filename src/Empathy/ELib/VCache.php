@@ -1,8 +1,5 @@
 <?php
 
-// memcache wrapper
-// will potentiall support other variable caching systems
-
 namespace Empathy\ELib;
 use Empathy\ELib\VCache\DriverManager;
 use Empathy\MVC\Config as EmpConfig;
@@ -39,14 +36,7 @@ class VCache
 
     public function delete($key)
     {
-        $key = $this->add_prefix($key);
         $this->driver->delete($key);
-    }
-
-
-    private function add_prefix($key)
-    {        
-        return EmpConfig::get('NAME').'_'.$key;
     }
 
 
@@ -89,14 +79,11 @@ class VCache
 
     public function get($key)
     {
-        $key = $this->add_prefix($key);
         return $this->driver->get($key);
     }
 
     public function set($key, $value)
     {
-        $tmp = $key;
-        $key = $this->add_prefix($key);
         $success = false;
         try {
             $success = $this->driver->set($key, $value);
@@ -104,7 +91,7 @@ class VCache
             // don't catch here
         }
 
-        $this->updateKeys($tmp);
+        $this->updateKeys($key);
         return $success;
     }
 
@@ -115,8 +102,8 @@ class VCache
     }
 
 
-    private function updateKeys($key=null) {
-
+    private function updateKeys($key=null)
+    {
         if($key !== null) {
             $this->loadKeys();
             if(!in_array($key, $this->keys)) {
@@ -124,12 +111,11 @@ class VCache
             }
         }
            
-        $this->driver->set($this->add_prefix($this->keys_key), $this->keys);
+        $this->driver->set($this->keys_key, $this->keys);
     }
 
     public function init()
     {
         $this->driver->init();
     }
-
 }
