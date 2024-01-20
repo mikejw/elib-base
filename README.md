@@ -1,7 +1,5 @@
  
 
-Copyright 2008-2019 Mike Whiting (mikejw3@gmail.com).
-
 
 Empathy PHP Framework - ELib-Base
 ===
