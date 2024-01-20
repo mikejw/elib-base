@@ -18,4 +18,4 @@ Refer to [getting-started.md](./docs/getting-started.md) to read about the initi
 Licence
 ---
 Empathy and officially released extension libraries are now distributed under an
-MIT license.  See [LICENSE](./LICENSE).
+MIT license.  See [LICENSE.txt](./LICENSE.txt).
