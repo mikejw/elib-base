@@ -22,8 +22,7 @@ class SmartyResourceELib extends \Smarty_Internal_Resource_File {
                     }
                 }
             } else {
-
-                $filename = $smarty->tpl_vars['elibtpl']->value.$file;
+                $filename = $source->smarty->tpl_vars['elibtpl']->value.$file;
                 if (file_exists($filename)) {
                     $found = $filename;
                 }
