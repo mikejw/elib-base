@@ -262,29 +262,29 @@ $(document).ready(function () {
     });
   }
 
-  if ($('textarea.raw').length < 1) {
-    tinymce.init({
-      selector: 'textarea',
-      convert_urls: false,
-      theme: "silver",
+ 
+  tinymce.init({
+    selector: 'textarea:not(.raw)',
+    convert_urls: false,
+    theme: "silver",
 
-      paste_remove_styles: true,
-      paste_preprocess: function (pl, o) {
-        // Content string containing the HTML from the clipboard
-        //alert(o.content);
-        o.content = o.content.replace(/(<([^>]+)>)/gi, '');
-      },
-      external_plugins: {
-        blogImages: '/vendor/js/blogImages.js'
-      },
-      plugins: [
-        'advlist autolink lists link image charmap print preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table paste code help'
-      ],
-      toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | blogimage'
-    });
-  }
+    paste_remove_styles: true,
+    paste_preprocess: function (pl, o) {
+      // Content string containing the HTML from the clipboard
+      //alert(o.content);
+      o.content = o.content.replace(/(<([^>]+)>)/gi, '');
+    },
+    external_plugins: {
+      blogImages: '/vendor/js/blogImages.js'
+    },
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table paste code help'
+    ],
+    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | blogimage'
+  });
+  
 
 
   // new - disable buttons
