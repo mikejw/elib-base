@@ -50,9 +50,8 @@ class VCache
                 $data = call_user_func_array($callback, $callback_params);
                 if($setOnFail) {
                     if($data != false ||
-                        ($data === false && $setOnFalse == true)) { 
-                        
-                        $this->set($key, $data);
+                        ($data === false && $setOnFalse == true)) { 	
+                        $this->set($key, $data);			
                     }
                 }                
         }
@@ -84,6 +83,10 @@ class VCache
 
     public function set($key, $value)
     {
+	if (!$this->enabled) {
+	    return true;
+	}
+	
         $success = false;
         try {
             $success = $this->driver->set($key, $value);
