@@ -16,6 +16,7 @@
         </label> -->
         </div>
         <button class="btn btn-sm btn-primary btn-block" name="login" type="submit">Sign in</button>
+        <input type="hidden" name="csrf_token" value="{$csrf_token}" />
 
        {if isset($errors)}
 
