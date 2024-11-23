@@ -37,7 +37,7 @@ class Controller extends EController
         $this->setTemplate('elib:/login.tpl');
         $errors = array();
 
-        if (isset($_POST['login']) && $_POST['csrf_token'] === Session::get('csrf_token')) {
+        if (isset($_POST['login']) && isset($_POST['csrf_token']) && $_POST['csrf_token'] === Session::get('csrf_token')) {
             list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password'], true, $this->userModel);
 
             if (!sizeof($errors)) {
