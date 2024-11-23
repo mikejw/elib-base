@@ -16,7 +16,6 @@ class CurrentUser
     protected $user_id;
     protected $loaded = false;
 
-
     // must return true
     // to carry on with default behaviour
     protected function loginSuccess($u)
@@ -319,21 +318,26 @@ class CurrentUser
         $u->load();
 
         if (!password_verify($old_password, $u->password)) {
-            array_push($errors, 'The existing password you have entered is not correct');
+            $u->addValError('The existing password you have entered is not correct', 'old_password');
         }
 
-        if ($password1 != $password2) {
-            array_push($errors, 'The new password entered does not match the confirmation');
-        } else {
-            $u->password = $password1;
-            $u->validatePassword();
-            if ($u->hasValErrors()) {
-                $valErrors = $u->getValErrors();
-                array_push($errors, array_pop($valErrors));
-            }
+        if ($password2 == '') {
+            $u->addValError('This is a required field', 'password2');
+        } else if ($password1 != $password2) {
+            $u->addValError('The new password entered does not match the confirmation', 'password1');
+            $u->addValError('The new password entered does not match the confirmation', 'password2');
         }
 
-        if (sizeof($errors) < 1) {
+        $u->password = $password1;
+        $u->validatePassword();
+
+        $errors = $u->getValErrors();
+        if (isset($errors['password'])) {
+            $errors['password1'] = $errors['password'];
+            unset($errors['password']);
+        }
+
+        if (!sizeof($errors)) {
             $u->password = password_hash($password1, PASSWORD_DEFAULT);
             $u->save(Model::getTable('UserItem'), array(), 0);
         }
