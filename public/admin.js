@@ -265,6 +265,7 @@ $(document).ready(function () {
  
   tinymce.init({
     selector: 'textarea:not(.raw)',
+    height: 400,
     convert_urls: false,
     theme: "silver",
 
