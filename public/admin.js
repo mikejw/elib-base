@@ -19,7 +19,7 @@ var help = new function () {
 
   this.toggle = function () {
     $.ajax({
-      url: "//" + WEB_ROOT + PUBLIC_DIR + "/admin/toggle_help",
+      url: "/admin/toggle_help",
       timeout: 5000,
       type: 'GET',
       dataType: 'json',
@@ -179,6 +179,11 @@ var tree = function () {
     toggle($this);
   });
 
+  var controller = $('ul#tree').data('controller');
+  if (typeof controller === 'undefined') {
+    controller = 'admin/dsection/sort';
+  }
+  var url = "/" + controller;
 
   $('ul#tree, ul#tree ul').sortable({
     placeholder: "highlight",
@@ -191,7 +196,7 @@ var tree = function () {
       $.ajax({
         data: data,
         type: 'POST',
-        url: "//" + WEB_ROOT + PUBLIC_DIR + "/admin/dsection/sort"
+        url: url
       })
         .done(function (data) {
           //console.log(data);
@@ -213,7 +218,6 @@ var radios = function () {
 
 
 $(document).ready(function () {
-
 
   $('#data p').bind("click", function () {
 
