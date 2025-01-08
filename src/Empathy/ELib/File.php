@@ -145,6 +145,8 @@ class File
 
     public function spawn($newX, $newY, $prefix, $quality)
     {
+        $newX = floor($newX);
+        $newY = floor($newY);
         $img = imagecreatetruecolor($newX, $newY);
         imagecopyresampled($img, $this->orig, 0, 0, 0, 0, $newX, $newY, $this->origX, $this->origY);
         $newTarget = $this->target_dir.$prefix.$this->filename;
