@@ -1,6 +1,7 @@
 
 
 
+
 {if !($module eq 'user' && $class eq 'user' && $event eq 'login')}
 </div>
 {/if}
