@@ -272,7 +272,7 @@ $(document).ready(function () {
     height: 400,
     convert_urls: false,
     theme: "silver",
-
+    license_key: 'gpl',
     paste_remove_styles: true,
     paste_preprocess: function (pl, o) {
       // Content string containing the HTML from the clipboard
@@ -282,11 +282,8 @@ $(document).ready(function () {
     external_plugins: {
       blogImages: '/vendor/js/blogImages.js'
     },
-    plugins: [
-      'advlist autolink lists link image charmap print preview anchor',
-      'searchreplace visualblocks code fullscreen',
-      'insertdatetime media table paste code help'
-    ],
+    plugins: 'advlist autolink lists link image charmap print preview anchor '
+     + 'searchreplace visualblocks code fullscreen insertdatetime media table paste code help',
     toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | blogimage'
   });
   
