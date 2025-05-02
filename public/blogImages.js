@@ -1,10 +1,12 @@
 
 
 tinymce.PluginManager.add('blogImages', function(editor, url) {
-  var openDialog = function () {
-    var id = $('form').data('id');
 
+  var id = $('form').data('id');
+
+  var openDialog = function () {
     function submit(event) {
+
       if (event.origin !== window.origin  || (!event.data.mceAction || !event.data.content)) {
         return;
       } else {
@@ -13,7 +15,7 @@ tinymce.PluginManager.add('blogImages', function(editor, url) {
             editor.insertContent(event.data.content);
             editor.setContent(editor.getContent().replace(/\[blog-image\:([A-Za-z0-9=]*)\]/g, function (match, match1) {
               var data = JSON.parse(atob(match1));
-              return '<img data-payload="' + match1 + '" class="' + data.centered + ' ' + data.fluid + '" src="/uploads/' + data.size + data.filename + '" alt="" />';
+              return '<img data-payload="' + match1 + '" class="' + data.centered + ' ' + data.fluid + '" src="/uploads/' + data.size + data.filename + '" alt="">';
             }));
             api.close();
             window.removeEventListener('message', submit);
@@ -35,28 +37,22 @@ tinymce.PluginManager.add('blogImages', function(editor, url) {
     });
     return api;
   };
-  /* Add a button that opens a window */
-  editor.ui.registry.addButton('blogimage', {
-    text: 'Blog Image',
-    onAction: function () {
-      /* Open window */
-      openDialog();
-    }
-  });
-  // /* Adds a menu item, which can then be included in any menu via the menu/menubar configuration */
-  editor.ui.registry.addMenuItem('example', {
-    text: 'Example plugin',
-    onAction: function() {
-      /* Open window */
-      openDialog();
-    }
-  });
-  /* Return the metadata for the help plugin */
+
+  
+  if (!!id) {
+    editor.ui.registry.addButton('blogimage', {
+      text: 'Blog Image',
+      onAction: function () {
+        openDialog();
+      }
+    });  
+  }
+
   return {
     getMetadata: function () {
       return {
-        name: 'Example plugin',
-        url: 'http://exampleplugindocsurl.com'
+        name: 'blogimage',
+        url: 'https://empathy.sh/docs/elib-cms/README.md'
       };
     }
   };

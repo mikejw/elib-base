@@ -282,8 +282,8 @@ $(document).ready(function () {
     external_plugins: {
       blogImages: '/vendor/js/blogImages.js'
     },
-    plugins: 'advlist autolink lists link image charmap print preview anchor '
-     + 'searchreplace visualblocks code fullscreen insertdatetime media table paste code help',
+    plugins: 'advlist autolink lists link image charmap preview anchor '
+     + 'searchreplace visualblocks code fullscreen insertdatetime media table code help',
     toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | blogimage'
   });
   
