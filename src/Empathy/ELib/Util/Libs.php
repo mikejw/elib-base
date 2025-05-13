@@ -8,9 +8,16 @@ use Empathy\MVC\FileContentsCache;
 
 class Libs
 {
-    private static $installed_libs;
+    private static $installed_libs = [];
     private static $store_active = false;
 
+    private static function testE($name)
+    {
+        return (
+            strpos($name, 'mikejw/elib-') === 0 ||
+            strpos($name, 'mikejw/empathy') === 0
+        );
+    }
 
     public static function findAll($doc_root = null) 
     {
@@ -30,14 +37,40 @@ class Libs
                 $installed = $installed->packages;
             }
             foreach($installed as $i) {
-                if(strpos($i->name, 'mikejw/elib-') === 0) {
+                if(self::testE($i->name)) {
                     $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name;
                     if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
                     }
-                    self::$installed_libs[] = $i->name;
+
+                    $deps = [];
+                    foreach ($i->require as $lib => $version) {
+                        if (self::testE($lib)) {
+                            $deps[] = $lib;
+                        }
+                    }
+
+                    self::$installed_libs[] = ['name' => $i->name, 'deps' => $deps, 'score' => 0];
                 }
             }
+
+            foreach (self::$installed_libs as &$lib) {
+                if (count($lib['deps']) === 0) {
+                    $lib['score'] = 0;
+                } elseif (in_array('mikejw/empathy', $lib['deps'])) {
+                    $lib['score'] = 1;
+                } else {
+                    $lib['score'] = count($lib['deps']) + 1;
+                }
+            }
+
+            $score = array();
+            foreach (self::$installed_libs as $i => $row)
+            {
+                $score[$i] = $row['score'];
+            }
+            array_multisort($score, SORT_ASC, self::$installed_libs);
+
         } else {
             // support for older monolithic 'system mode' elib directory
             $tpl_dirs[] = UtilClass::getLocation();            
@@ -59,7 +92,11 @@ class Libs
 
     public static function getInstalled()
     {
-        return self::$installed_libs;
+        $names = [];
+        foreach (self::$installed_libs as $item) {
+            $names[] = $item['name'];
+        }
+        return $names;
     }
 
     public static function getStoreActive()
@@ -72,7 +109,7 @@ class Libs
 
         $mapped = array();
         foreach (self::$installed_libs as $lib)  {
-            switch ($lib) {
+            switch ($lib['name']) {
                 case 'mikejw/elib-cms':
                     $mapped['dsection'] = 'CMS';
                     break;
@@ -93,6 +130,4 @@ class Libs
         } 
         return $mapped;
     }
-
-
 }
