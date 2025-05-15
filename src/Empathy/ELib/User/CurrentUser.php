@@ -78,10 +78,17 @@ class CurrentUser
         return $this->u->id;
     }
 
+    #[\Deprecated(message: "use isLoggedIn() instead", since: "1.0.1")]
     public function loggedIn()
+    {
+        return $this->isLoggedIn();
+    }
+
+    public function isLoggedIn()
     {
         return ($this->getUserID() > 0);
     }
+
 
     public function getProfileID()
     {
