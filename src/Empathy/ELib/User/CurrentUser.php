@@ -33,8 +33,9 @@ class CurrentUser
         return true;
     }
 
-    public function detectUser($controller)
+    public function detectUser($ctrl = null)
     {
+        $controller = $ctrl ?? DI::getContainer()->get('Controller');
         if ($this->loaded) {
             return;
         }
@@ -52,8 +53,9 @@ class CurrentUser
         }
     }
 
-    public function assertAdmin($controller)
+    public function assertAdmin($ctrl = null)
     {
+        $controller = $ctrl ?? DI::getContainer()->get('Controller');
         $ua = Model::load('UserAccess');
         if ($this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
