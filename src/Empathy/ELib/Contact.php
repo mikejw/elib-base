@@ -34,7 +34,7 @@ class Contact
     
     public function persist()
     {
-        $this->entity->id = $this->entity->insert(Model::getTable('Contact'), true, array(''), Entity::SANITIZE);
+        $this->entity->id = $this->entity->insert();
         return $this->entity->id;
     }
     

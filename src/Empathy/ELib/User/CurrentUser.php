@@ -253,16 +253,16 @@ class CurrentUser
             $u->active = 0;
             $u->registered = 'MYSQLTIME';
             $u->popups = 'DEFAULT';
-            $u->id = $u->insert(Model::getTable('UserItem'), 1, array(), 0);
+            $u->id = $u->insert();
 
             if (isset($s)) {
                 $s->user_id = $u->id;
-                $s->insert(Model::getTable('ShippingAddress'), 1, array(), 0);
+                $s->insert();
 
                 // vendor stuff disabled - see elib-store for more
                 // $v = Model::load('Vendor');
                 // $v->user_id = $s->user_id;
-                // $v->insert(Model::getTable('Vendor'), 1, array(), 0);
+                // $v->insert();
             }
 
             if ($this->postRegister($u)) {
@@ -286,7 +286,7 @@ class CurrentUser
             $u->password = password_hash($password, PASSWORD_DEFAULT);
             $u->active = 1;
             $u->activated = 'MYSQLTIME';
-            $u->save(Model::getTable('UserItem'), array(), 0);
+            $u->save();
 
             Session::set('user_id',$u->id);
 
@@ -344,7 +344,7 @@ class CurrentUser
 
         if (!sizeof($errors)) {
             $u->password = password_hash($password1, PASSWORD_DEFAULT);
-            $u->save(Model::getTable('UserItem'), array(), 0);
+            $u->save();
         }
         return $errors;
     }

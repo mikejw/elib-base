@@ -117,7 +117,7 @@ class UserItem extends Entity
             $this->about = '';
             $this->validates(false);
             if (!$this->hasValErrors()) {
-                $this->id = $this->insert(self::TABLE, true, array(), 0);
+                $this->id = $this->insert();
                 $user_id = $this->id;
             } else {
                 $errors = $this->getValErrors();
