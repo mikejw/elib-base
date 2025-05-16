@@ -100,7 +100,7 @@ class UserItem extends Entity
     {
         $user_id = 0;
         if (($this->id = $this->getID($username))) {
-            $this->load();
+            $this->load($this->id);
             $user_id = $this->id;
         } else {
             unset($this->id);

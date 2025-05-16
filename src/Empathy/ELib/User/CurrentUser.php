@@ -45,8 +45,7 @@ class CurrentUser
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
-            $this->u->id = $this->user_id;
-            $this->u->load();
+            $this->u->load($this->user_id);
             $controller->assign('current_user', $this->u->username);
             $controller->assign('user_id', $this->u->id);
             $this->loaded = true;
@@ -135,8 +134,7 @@ class CurrentUser
                     session_regenerate_id();
                     Session::set('user_id', $user_id);                    
                 }
-                $user->id = $user_id;
-                $user->load();
+                $user->load($user_id);
 
                 if (!$this->loginSuccess($user)) {
                     throw new \Exception('Could not process post login');
@@ -283,8 +281,7 @@ class CurrentUser
         $id = $u->findUserForActivation($reg_code);
 
         if ($id > 0) {
-            $u->id = $id;
-            $u->load();
+            $u->load($id);
             $password = $u->password;
             $u->password = password_hash($password, PASSWORD_DEFAULT);
             $u->active = 1;
@@ -323,8 +320,7 @@ class CurrentUser
         $errors = array();
         $model = DI::getContainer()->get('UserModel');
         $u = Model::load($model);
-        $u->id = Session::get('user_id');
-        $u->load();
+        $u->load(Session::get('user_id'));
 
         if (!password_verify($old_password, $u->password)) {
             $u->addValError('The existing password you have entered is not correct', 'old_password');
