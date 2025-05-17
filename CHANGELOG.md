@@ -2,18 +2,19 @@
 # Changelog
 
 
-## [1.0.3] - 2025-05-17
+## [2.0.0] - 2025-05-17
 
-### Fixed
+### Changed
 
+- Bump `empathy` version
 - Improve ORM code
 
 
-## [1.0.2] - 2025-05-16
+## [1.0.2] - 2025-05-17
 
 ### Fixed
 
-- Ensure compatibility with ORM
+- Correct `empathy` dependency version
 
 
 ## [1.0.1] - 2025-05-15
