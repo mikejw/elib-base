@@ -297,11 +297,11 @@ class CurrentUser
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
                 $u->fullname = $u->email;
             }
-
             $_POST['body'] = str_replace('___', $u->username, $_POST['body']);
-
             $_POST['subject'] = 'Welcome to '.ELibConfig::get('EMAIL_ORGANISATION');
             $_POST['email'] = $u->email;
+            $_POST['first_name'] = '';
+            $_POST['last_name'] = '';
 
             $service =  DI::getContainer()->get('Contact');
             if ($service->prepareDispatch($u->id)) {

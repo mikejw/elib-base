@@ -62,9 +62,12 @@ class UserItem extends Entity
 
     public function getUsername($id)
     {
-        $sql = "SELECT username FROM ".Model::getTable('UserItem')." WHERE id = $id";
-        $error = "Could not get username.";
-        $result = $this->query($sql, $error);
+        $table = $this::TABLE;
+        $params = [];
+        $sql = "SELECT username FROM $table WHERE id = ?";
+        $params[] = $id;
+        $error = 'Could not get username.';
+        $result = $this->query($sql, $error, $params);
         $row = $result->fetch();
 
         return $row['username'];
@@ -79,17 +82,18 @@ class UserItem extends Entity
 
     public function getID($username, $password=null)
     {
-        $sql = "SELECT id FROM ".Model::getTable('UserItem')
-            ." WHERE username = '$username'";
+        $table = $this::TABLE;
+        $params = [];
+        $sql = "SELECT id FROM $table WHERE username = ?";
+        $params[] = $username;
         if ($password !== null) {
-            $sql .= " AND password = '$password'";
+            $sql .= ' AND password = ?';
+            $params[] = $password;
         }
-        //." AND password = '".md5($this->password)."'";
-        $error = "Could not verify user.";
-        $result = $this->query($sql, $error);
+        $error = 'Could not verify user.';
+        $result = $this->query($sql, $error, $params);
         if (1 == $result->rowCount()) {
             $row =  $result->fetch();
-
             return $row['id'];
         } else {
             return 0;
@@ -135,12 +139,17 @@ class UserItem extends Entity
      */
     public function login()
     {
+        $table = $this::TABLE;
         $user_id = 0;
-        $sql = 'SELECT id, password FROM '.Model::getTable('UserItem')
-            .' WHERE (username = \''.$this->username.'\' or email = \''.$this->username.'\')'
+        $params = [];
+        $sql = "SELECT id, password FROM $table"
+            .' WHERE (username = ? or email = ?)'
             .' AND active = 1';
-        $error = "Could not get user for login.";
-        $result = $this->query($sql, $error);
+        $params[] = $this->username;
+        $params[] = $this->username;
+
+        $error = 'Could not get user for login.';
+        $result = $this->query($sql, $error, $params);
         $rows = $result->rowCount();
         if ($rows == 1) {
             $row = $result->fetch();
@@ -153,10 +162,13 @@ class UserItem extends Entity
 
     public function getAuth($id)
     {
+        $table = $this::TABLE;
+        $params = [];
         $auth = 0;
-        $sql = "SELECT auth FROM ".Model::getTable('UserItem')." WHERE id = $id";
-        $error = "Could not get auth code.";
-        $result = $this->query($sql, $error);
+        $sql = 'SELECT auth FROM $table WHERE id = ?';
+        $params[] = $id;
+        $error = 'Could not get auth code.';
+        $result = $this->query($sql, $error, $params);
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             $auth = $row['auth'];
@@ -167,30 +179,35 @@ class UserItem extends Entity
 
     public function findUserForActivation($reg_code)
     {
+        $table = $this::TABLE;
+        $params = [];
         $user_id = 0;
-        //    $sql = 'SELECT id FROM '.Model::getTable('UserItem').' WHERE reg_code = \''.md5($reg_code).'\''
-        $sql = 'SELECT id FROM '.Model::getTable('UserItem').' WHERE reg_code = \''.md5($reg_code).'\''
+        $sql = "SELECT id FROM $table WHERE reg_code = ?"
             .' AND active = 0';
+        $params[] = md5($reg_code);
         $error = 'Could not get user based on registation code.';
-        $result = $this->query($sql, $error);
+        $result = $this->query($sql, $error, $params);
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             $user_id = $row['id'];
         }
-
         return $user_id;
     }
 
     protected function activeUser()
     {
+        $table = $this::TABLE;
+        $params = [];
         $active = 0;
-        $sql = 'SELECT id FROM '.Model::getTable('UserItem').' WHERE email = \''.$this->email.'\''
+        $sql = "SELECT id FROM $table WHERE email = ?"
             .' AND active = 1';
+        $params[] = $this->email;
         if (isset($this->id)) {
-            $sql .= ' AND id != '.$this->id;
+            $sql .= ' AND id != ?';
+            $params[] = $this->id;
         }
         $error = 'Could not check for existing email address.';
-        $result = $this->query($sql, $error);
+        $result = $this->query($sql, $error, $params);
         if ($result->rowCount() > 0) {
             $active = 1;
         }
@@ -200,13 +217,17 @@ class UserItem extends Entity
 
     protected function usernameExists()
     {
+        $table = $this::TABLE;
+        $params = [];
         $exists = 0;
-        $sql = 'SELECT id FROM '.Model::getTable('UserItem').' WHERE username = \''.$this->username.'\'';
+        $sql = "SELECT id FROM $table WHERE username = ?";
+        $params[] = $this->username;
         if (isset($this->id)) {
-            $sql .= ' AND id != '.$this->id;
+            $sql .= ' AND id != ?';
+            $params[] = $this->id;
         }
         $error = 'Could not check for existing username.';
-        $result = $this->query($sql, $error);
+        $result = $this->query($sql, $error, $params);
         if ($result->rowCount() > 0) {
             $exists = 1;
         }
