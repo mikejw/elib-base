@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [1.0.3] - 2025-05-17
+
+### Fixed
+
+- Improve ORM code
+
+
 ## [1.0.2] - 2025-05-16
 
 ### Fixed
