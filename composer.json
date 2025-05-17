@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "mikejw/empathy": "dev-master",
+        "mikejw/empathy": "^1",
 	    "phpmailer/phpmailer": "^6.1.6"
     },
     "require-dev": {
