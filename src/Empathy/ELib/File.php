@@ -68,9 +68,9 @@ class File
         }
 
         if (sizeof($deriv) < 1) {
-            $this->deriv = array(array('l_', 800, 600),
-                                 array('tn_', 200, 200),
-                                 array('mid_', 500, 500));
+            $this->deriv = array(array('l', 800, 600),
+                                 array('tn', 200, 200),
+                                 array('mid', 500, 500));
         } else {
             $this->deriv = $deriv;
         }
@@ -82,7 +82,7 @@ class File
             if ($this->error == '') {
                 $this->create();
                 foreach ($this->deriv as $item) {
-                    $this->makeDerived($item[0], $item[1], $item[2]);
+                    $this->makeDerived($item[0] . '_', $item[1], $item[2]);
                 }
                 $this->destroy($this->orig);
             }
