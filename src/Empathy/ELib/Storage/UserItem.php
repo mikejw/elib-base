@@ -165,7 +165,7 @@ class UserItem extends Entity
         $table = $this::TABLE;
         $params = [];
         $auth = 0;
-        $sql = 'SELECT auth FROM $table WHERE id = ?';
+        $sql = "SELECT auth FROM $table WHERE id = ?";
         $params[] = $id;
         $error = 'Could not get auth code.';
         $result = $this->query($sql, $error, $params);
