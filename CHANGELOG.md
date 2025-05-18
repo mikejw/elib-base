@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [2.0.1] - 2025-05-18
+
+### Fixed
+
+- Consistent naming for derived image size prefixes
+
+
 ## [2.0.0] - 2025-05-17
 
 ### Changed
