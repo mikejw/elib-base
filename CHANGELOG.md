@@ -2,6 +2,14 @@
 # Changelog
 
 
+## [2.0.3] - 2025-05-20
+
+### Fixed
+
+- Always set query param for admin js include (caching)
+
+
+
 ## [2.0.2] - 2025-05-19
 
 ### Fixed
