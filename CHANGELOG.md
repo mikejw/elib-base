@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [2.0.4] - 2025-05-23
+
+### Fixed
+
+- Improve `findAll` elibs algo
+
+
 ## [2.0.3] - 2025-05-20
 
 ### Fixed

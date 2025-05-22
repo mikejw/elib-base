@@ -57,10 +57,22 @@ class Libs
             foreach (self::$installed_libs as &$lib) {
                 if (count($lib['deps']) === 0) {
                     $lib['score'] = 0;
-                } elseif (in_array('mikejw/empathy', $lib['deps'])) {
+                } elseif ($lib['name'] === 'mikejw/empathy') {
                     $lib['score'] = 1;
+                } elseif (in_array('mikejw/empathy', $lib['deps'])) {
+                    $lib['score'] = 2;
+
+                } elseif (in_array('mikejw/elib-base', $lib['deps'])) {
+                    $lib['score'] = 3;
+    
                 } else {
-                    $lib['score'] = count($lib['deps']) + 1;
+                    // @todo 
+                    // recursively look for chain of deps that 
+                    // stem from elib-base as root dependency
+                    // and count each "jump".
+                    // if not found 
+                    // do the following calculation plus biggest "jump".
+                    $lib['score'] = count($lib['deps']) + 3;
                 }
             }
 
