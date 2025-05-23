@@ -4,7 +4,7 @@ namespace Empathy\ELib\User;
 
 
 use Empathy\ELib\EController;
-use Empathy\ELib\Model;
+use Empathy\MVC\Model;
 use Empathy\ELib\Country\Country;
 use Empathy\ELib\Mailer;
 use Empathy\MVC\Session;

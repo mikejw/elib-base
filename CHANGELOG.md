@@ -2,6 +2,14 @@
 # Changelog
 
 
+## [3.0.0] - 2025-05-23
+
+### Changed
+
+- Bump Empathy version
+- Remove `Model.php` class
+
+
 ## [2.0.4] - 2025-05-23
 
 ### Fixed
@@ -14,7 +22,6 @@
 ### Fixed
 
 - Always set query param for admin js include (caching)
-
 
 
 ## [2.0.2] - 2025-05-19

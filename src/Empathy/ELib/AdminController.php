@@ -2,7 +2,7 @@
 
 namespace Empathy\ELib;
 
-use Empathy\ELib\Model;
+use Empathy\MVC\Model;
 use Empathy\MVC\Session;
 use Empathy\MVC\Config as EmpConfig;
 use Empathy\MVC\DI;

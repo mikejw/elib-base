@@ -2,7 +2,10 @@
 
 namespace Empathy\ELib\User;
 
-use Empathy\ELib\Model;
+use Empathy\MVC\Model;
+use Empathy\ELib\Storage\UserItem;
+use Empathy\ELib\Storage\UserAccess;
+use Empathy\ELib\Storage\ShippingAddress;
 use Empathy\MVC\Session;
 use Empathy\MVC\DI;
 use Empathy\ELib\Config as ELibConfig;
@@ -41,7 +44,7 @@ class CurrentUser
         }
 
         $user_id = Session::get('user_id');
-        $this->u = Model::load('UserItem');
+        $this->u = Model::load(UserItem::class);
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
@@ -55,7 +58,7 @@ class CurrentUser
     public function assertAdmin($ctrl = null)
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
-        $ua = Model::load('UserAccess');
+        $ua = new UserAccess();
         if ($this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
             $controller->redirect("user/login");
@@ -65,7 +68,7 @@ class CurrentUser
     public function isAdmin($u)
     {
         $admin = false;
-        $ua = Model::load('UserAccess');
+        $ua = new UserAccess();
         if (!($u->auth < $ua->getLevel('admin'))) {
             $admin = true;
         }
@@ -203,14 +206,14 @@ class CurrentUser
         $country
     ) {
         $errors = array();
-        $u = Model::load('UserItem');
+        $u = Model::load(UserItem::class);
         $u->username = $username;
         $u->email = $email;
         
         $supply_address = (isset($supply_address) && $supply_address == 1) ? 1 : 0;
 
         if ($supply_address == 1) {
-            $s = Model::load('ShippingAddress');
+            $s = Model::load(ShippingAddress::class);
             if ($fullname != '') {
                 $fullname_arr = explode(' ', $fullname);
                 if (sizeof($fullname_arr) > 1) {
@@ -277,7 +280,7 @@ class CurrentUser
 
     public function doConfirmReg($reg_code)
     {
-        $u = Model::load('UserItem');
+        $u = Model::load(UserItem::class);
         $id = $u->findUserForActivation($reg_code);
 
         if ($id > 0) {
@@ -351,7 +354,7 @@ class CurrentUser
 
     public function denyNotAdmin()
     {
-        $ua = Model::load('UserAccess');
+        $ua = new UserAccess();
         if ($this->u->auth < $ua->getLevel('admin')) {
             throw new RequestException('Denied', RequestException::NOT_AUTHORIZED);
         }

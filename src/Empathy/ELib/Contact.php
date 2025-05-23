@@ -3,7 +3,8 @@
 namespace Empathy\ELib;
 
 use Empathy\ELib\Mailer;
-use Empathy\ELib\Model;
+use Empathy\MVC\Model;
+use Empathy\ELib\Storage\Contact as ContactItem;
 use Empathy\MVC\Entity;
 use Empathy\ELib\Config;
 
@@ -15,7 +16,7 @@ class Contact
     
     public function __construct()
     {
-        $this->entity = Model::load('Contact');
+        $this->entity = Model::load(ContactItem::class);
     }
     
     public function signUp()

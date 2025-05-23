@@ -5,7 +5,7 @@ use Empathy\ELib\Contact;
 
 
 return [
-    'UserModel' => 'UserItem',
+    'UserModel' => 'Empathy\ELib\Storage\UserItem',
     'CurrentUser' => function (\DI\Container $c) {
         return new CurrentUser();
     },
