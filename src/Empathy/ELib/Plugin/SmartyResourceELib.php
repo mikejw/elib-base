@@ -14,8 +14,10 @@ class SmartyResourceELib extends \Smarty_Internal_Resource_File {
 
         if (!file_exists($filename)) {
             if (isset($source->smarty->tpl_vars['elibtpl_arr'])) {
+
                 foreach ($source->smarty->tpl_vars['elibtpl_arr']->value as $dir) {
-                    $filename = $dir.'/'.$file;
+                    $filename = $dir.$file;
+
                     if (file_exists($filename)) {
                         $found = $filename;
                         break;

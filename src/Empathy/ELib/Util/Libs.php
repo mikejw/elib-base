@@ -21,14 +21,14 @@ class Libs
 
     public static function findAll($doc_root = null) 
     {
+        self::$installed_libs = [];
         if ($doc_root === null) {
             $doc_root = Config::get('DOC_ROOT');
         }
 
-        $tpl_dirs = array();
         $composer_installed = $doc_root.'/vendor/composer/installed.json';
 
-        if(file_exists($composer_installed)) {
+        if (file_exists($composer_installed)) {
             $installed = FileContentsCache::cachedCallback($composer_installed, function ($data) {
                 return json_decode($data);
             });
@@ -36,9 +36,9 @@ class Libs
             if (isset($installed->packages)) {
                 $installed = $installed->packages;
             }
-            foreach($installed as $i) {
-                if(self::testE($i->name)) {
-                    $tpl_dirs[] = Config::get('DOC_ROOT').'/vendor/'.$i->name;
+            foreach ($installed as $i) {
+                if (self::testE($i->name)) {
+                    $dir = Config::get('DOC_ROOT') . '/vendor/' . $i->name;
                     if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
                     }
@@ -50,7 +50,7 @@ class Libs
                         }
                     }
 
-                    self::$installed_libs[] = ['name' => $i->name, 'deps' => $deps, 'score' => 0];
+                    self::$installed_libs[] = ['name' => $i->name, 'deps' => $deps, 'score' => 0, 'dir' => $dir];
                 }
             }
 
@@ -76,31 +76,27 @@ class Libs
                 }
             }
 
-            $score = array();
+            $score = [];
             foreach (self::$installed_libs as $i => $row)
             {
                 $score[$i] = $row['score'];
             }
             array_multisort($score, SORT_ASC, self::$installed_libs);
-
-        } else {
-            // support for older monolithic 'system mode' elib directory
-            $tpl_dirs[] = UtilClass::getLocation();            
         }
-        return $tpl_dirs;
-
+        return array_map(function ($lib) {
+            return $lib['dir'];
+        }, self::$installed_libs);
     }
-
 
     public static function detect()
     {               
-        $libs = self::findAll();
-        foreach ($libs as &$item) {
-            $item .= '/tpl';
-        }
-        return $libs;
+        self::findAll();
+        return array_reverse(
+            array_map(function($lib) {
+                return $lib['dir'] . '/tpl';
+            }, self::$installed_libs)
+        );
     }
-
 
     public static function getInstalled()
     {
@@ -116,10 +112,9 @@ class Libs
         return self::$store_active;
     }
 
-
     public static function getMappedLibNames() {
 
-        $mapped = array();
+        $mapped = [];
         foreach (self::$installed_libs as $lib)  {
             switch ($lib['name']) {
                 case 'mikejw/elib-cms':
