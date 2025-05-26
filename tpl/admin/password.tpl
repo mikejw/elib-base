@@ -2,7 +2,7 @@
 
 <p>&nbsp;</p>
 
-{if is_array($errors) && sizeof($errors)}
+{if is_array($errors) && count($errors)}
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!</strong>
         {foreach from=$errors item=e}

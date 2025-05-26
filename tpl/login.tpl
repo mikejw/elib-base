@@ -35,4 +35,4 @@
 
 
 
-{include file="elib:/admin/admin_footer.tpl"}
+{include file="elib:admin/admin_footer.tpl"}

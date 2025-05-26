@@ -93,7 +93,7 @@ class Libs
         self::findAll();
         return array_reverse(
             array_map(function($lib) {
-                return $lib['dir'] . '/tpl';
+                return $lib['dir'] . '/tpl/';
             }, self::$installed_libs)
         );
     }
