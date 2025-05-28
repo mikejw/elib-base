@@ -18,7 +18,7 @@ class EController extends CustomController
         DI::getContainer()->get('CurrentUser')->detectUser($this);
         $this->elib_tpl_dirs = Util\Libs::detect();
 
-        if (sizeof($this->elib_tpl_dirs) > 1) {
+        if (isset($this->elib_tpl_dirs) && sizeof($this->elib_tpl_dirs) > 1) {
             $this->assign('elibtpl_arr', $this->elib_tpl_dirs);
         } else {
             $this->assign('elibtpl', $this->elib_tpl_dirs[0]);

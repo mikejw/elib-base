@@ -1,5 +1,5 @@
 
-{if sizeof($p_nav) > 1}
+{if count($p_nav) > 1}
     {assign var="lastPage" value=0}
     <nav aria-label="Page navigation" class="pt-2 pb-5">
         <ul class="pagination justify-content-end">

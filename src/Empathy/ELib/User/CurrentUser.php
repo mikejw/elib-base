@@ -80,7 +80,7 @@ class CurrentUser
         return $this->u->id;
     }
 
-    #[\Deprecated(message: "use isLoggedIn() instead", since: "1.0.1")]
+    #[Deprecated(message: "use isLoggedIn() instead", since: "1.0.1")]
     public function loggedIn()
     {
         return $this->isLoggedIn();

@@ -78,10 +78,10 @@ class AdminController extends EController
 
     public function password()
     {
-        $this->currentUser = DI::getContainer()->get('CurrentUser');
+        $currentUser = DI::getContainer()->get('CurrentUser');
         $this->setTemplate('elib:/admin/password.tpl');
         if (isset($_POST['submit'])) {
-            $errors = $this->currentUser->doChangePassword(
+            $errors = $currentUser->doChangePassword(
                 $_POST['old_password'],
                 $_POST['password1'],
                 $_POST['password2']
