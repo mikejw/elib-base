@@ -9,13 +9,13 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Mike Whiting",
-            "email": "mikejw3@gmail.com"
+            "name": "Michael J. Whiting",
+            "email": "mail@mikejw.co.uk"
         }
     ],
     "require": {
-        "mikejw/empathy": "^3",
-	"phpmailer/phpmailer": "^6.1.6"
+        "mikejw/empathy": "^4", 
+        "phpmailer/phpmailer": "^6.1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "4.7.*@dev",
