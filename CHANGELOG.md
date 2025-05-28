@@ -3,12 +3,12 @@
 
 ## [4.0.0] - 2025-05-28
 
-## Changed
+### Changed
 
 - Bump Empathy version
 - Smarty `elib` resource improvements
 
-# Fixed
+### Fixed
 
 - Misc fixes
 
