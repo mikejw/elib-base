@@ -43,8 +43,10 @@ class CurrentUser
             return;
         }
 
+        $model = DI::getContainer()->get('UserModel');
+
         $user_id = Session::get('user_id');
-        $this->u = Model::load(UserItem::class);
+        $this->u = Model::load($model);
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
@@ -89,12 +91,6 @@ class CurrentUser
     public function isLoggedIn()
     {
         return ($this->getUserID() > 0);
-    }
-
-
-    public function getProfileID()
-    {
-        return $this->u->user_profile_id;
     }
 
     public function getUser()
