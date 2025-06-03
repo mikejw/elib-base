@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.0.2] - 2025-06-03
+
+### Fixed
+
+- Show list buttons in tinymce
+
+
 ## [4.0.1] - 2025-06-02
 
 ### Fixed
