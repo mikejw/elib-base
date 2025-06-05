@@ -19,20 +19,17 @@ class Contact extends Entity
 
     const TABLE = "contact";
 
-    /**
-     * Validate and filter input.
-     */
     public function validates($html = false)
     {
         if (!isset($this->message) || !($this->message === 0 || $this->message === 1)) {
             $this->addValError("Message field should be boolean, 1 or 0.");
         }
-        $this->doValType(Validate::TEXT, 'first_name', $this->first_name, true);
-        $this->doValType(Validate::TEXT, 'last_name', $this->last_name, true);
+        $this->doValType(Validate::TEXT, 'first_name', $this->first_name, false);
+        $this->doValType(Validate::TEXT, 'last_name', $this->last_name, false);
         $this->doValtype(Validate::EMAIL, 'email', $this->email, false);
 
         if ($this->message === 1) {
-            $this->doValtype(Validate::TEXT, 'subject', $this->subject, true);
+            $this->doValtype(Validate::TEXT, 'subject', $this->subject, false);
             if ($this->body == '') {
                 $this->addValError('Please provide a message body.', 'body');
             }
