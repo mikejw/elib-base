@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.0.4] - 2025-06-05
+
+### Fixed
+
+- Make caching more usable for React front-end
+
+
 ## [4.0.3] - 2025-06-05
 
 ### Fixed
