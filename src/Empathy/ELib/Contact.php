@@ -69,7 +69,6 @@ class Contact
             throw new \Exception('Email service config not set in elib.yml');
         }
     }
-    
 
     public function prepareDispatch($user_id, $html = false) {
         $this->entity->assignFromPost(array('submitted', 'message', 'user_id'));

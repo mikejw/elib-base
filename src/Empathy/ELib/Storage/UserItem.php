@@ -186,11 +186,13 @@ class UserItem extends Entity
             .' AND active = 0';
         $params[] = md5($reg_code);
         $error = 'Could not get user based on registation code.';
+        
         $result = $this->query($sql, $error, $params);
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             $user_id = $row['id'];
         }
+
         return $user_id;
     }
 

@@ -3,7 +3,6 @@
 namespace Empathy\ELib\User;
 
 use Empathy\MVC\Model;
-use Empathy\ELib\Storage\UserItem;
 use Empathy\ELib\Storage\UserAccess;
 use Empathy\ELib\Storage\ShippingAddress;
 use Empathy\MVC\Session;
@@ -28,7 +27,7 @@ class CurrentUser
 
     protected function logoutSuccess($u)
     {
-        return true; 
+        return true;
     }
 
     protected function postRegister($u)
@@ -122,7 +121,7 @@ class CurrentUser
     public function doLogin($username, $password, $initSession = true, $model = null)
     {
         if ($model === null) {
-            $model = DI::getContainer()->get('UserModel');    
+            $model = DI::getContainer()->get('UserModel');
         }
         $user = Model::load($model);
         $user->username = $username;
@@ -137,7 +136,7 @@ class CurrentUser
 
                 if ($initSession) {
                     session_regenerate_id();
-                    Session::set('user_id', $user_id);                    
+                    Session::set('user_id', $user_id);
                 }
                 $user->load($user_id);
 
@@ -182,14 +181,18 @@ class CurrentUser
                 . "\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
+                $_POST['first_name'] = 'Not provided';
+                $_POST['last_name'] = 'Not provided';
                 $u->fullname = $u->email;
             }
 
-            $_POST['subject'] = "Registration with ".ELibConfig::get('EMAIL_ORGANISATION');        
-            $service =  DI::getContainer()->get('Contact');
-            $service->prepareDispatch($u->id);
-            $service->dispatchEmail($u->fullname);
-            $service->persist();                              
+            $_POST['subject'] = "Registration with " . ELibConfig::get('EMAIL_ORGANISATION');
+            $service = DI::getContainer()->get('Contact');
+            if ($service->prepareDispatch($u->id)) {
+                $service->dispatchEmail($u->fullname);
+                $service->persist();
+                return true;
+            }
         }
     }
 
@@ -206,12 +209,15 @@ class CurrentUser
         $state,
         $zip,
         $country
-    ) {
+    )
+    {
         $errors = array();
-        $u = Model::load(UserItem::class);
+        $model = DI::getContainer()->get('UserModel');
+
+        $u = Model::load($model);
         $u->username = $username;
         $u->email = $email;
-        
+
         $supply_address = (isset($supply_address) && $supply_address == 1) ? 1 : 0;
 
         if ($supply_address == 1) {
@@ -225,9 +231,9 @@ class CurrentUser
                 }
             } else {
                 $s->first_name = $first_name;
-                $s->last_name = $last_name;                
+                $s->last_name = $last_name;
             }
-            $u->fullname = $s->first_name.' '.$s->last_name;
+            $u->fullname = $s->first_name . ' ' . $s->last_name;
 
             $s->address1 = $address1;
             $s->address2 = $address2;
@@ -238,7 +244,7 @@ class CurrentUser
             $s->default_address = 1;
             $s->validates();
         } else {
-            $u->fullname = $first_name.' '.$last_name;
+            $u->fullname = $first_name . ' ' . $last_name;
         }
         $u->validates();
 
@@ -257,7 +263,6 @@ class CurrentUser
             $u->auth = 0;
             $u->active = 0;
             $u->registered = 'MYSQLTIME';
-            $u->popups = 'DEFAULT';
             $u->id = $u->insert();
 
             if (isset($s)) {
@@ -270,19 +275,17 @@ class CurrentUser
                 // $v->insert();
             }
 
-            if ($this->postRegister($u)) {
-                $this->sendConfirmationEmail($u, $reg_code);
-            } else {
+            if (!($this->postRegister($u) && $this->sendConfirmationEmail($u, $reg_code))) {
                 throw new \Exception('Could not complete registration');
             }
         }
-        return array($errors, $u, $s ?? new \stdClass()) ;
+        return array($errors, $u, $s ?? new \stdClass());
     }
-
 
     public function doConfirmReg($reg_code)
     {
-        $u = Model::load(UserItem::class);
+        $model = DI::getContainer()->get('UserModel');
+        $u = Model::load($model);
         $id = $u->findUserForActivation($reg_code);
 
         if ($id > 0) {
@@ -293,22 +296,25 @@ class CurrentUser
             $u->activated = 'MYSQLTIME';
             $u->save();
 
-            Session::set('user_id',$u->id);
+            Session::set('user_id', $u->id);
 
             $_POST['body'] = "\nHi ___,\n\n"
-                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
-                ." '___' and the password '".$password."'.\n\nCheers\n\n";
+                //."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
+                //." '___' and the password '".$password."'.\n\nCheers\n\n";
+                . "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
+                . " and the password '" . $password . "'.\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
+                $_POST['first_name'] = 'Not provided';
+                $_POST['last_name'] = 'Not provided';
                 $u->fullname = $u->email;
             }
-            $_POST['body'] = str_replace('___', $u->username, $_POST['body']);
-            $_POST['subject'] = 'Welcome to '.ELibConfig::get('EMAIL_ORGANISATION');
-            $_POST['email'] = $u->email;
-            $_POST['first_name'] = '';
-            $_POST['last_name'] = '';
 
-            $service =  DI::getContainer()->get('Contact');
+            $_POST['body'] = str_replace('___', $u->username, $_POST['body']);
+            $_POST['subject'] = 'Welcome to ' . ELibConfig::get('EMAIL_ORGANISATION');
+            $_POST['email'] = $u->email;
+
+            $service = DI::getContainer()->get('Contact');
             if ($service->prepareDispatch($u->id)) {
                 $service->dispatchEmail($u->fullname);
                 return true;
@@ -316,12 +322,12 @@ class CurrentUser
         }
     }
 
-
     public function doChangePassword(
         $old_password,
         $password1,
         $password2
-    ) {
+    )
+    {
         $errors = array();
         $model = DI::getContainer()->get('UserModel');
         $u = Model::load($model);

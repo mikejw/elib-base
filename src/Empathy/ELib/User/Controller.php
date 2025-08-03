@@ -80,22 +80,36 @@ class Controller extends EController
             $submitted = true; 
             $this->nullify($_POST['first_name']);
             $this->nullify($_POST['last_name']);
+
             $_POST['first_name'] = $_POST['first_name'] ?? 'Not provided';
             $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
+            $supply_address = $_POST['address'] ?? false;
+            $username = $_POST['username'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $fullname = $_POST['fullname'] ?? '';
+            $first_name = $_POST['first_name'] ?? '';
+            $last_name = $_POST['last_name'] ?? '';
+            $address1 = $_POST['address1'] ?? '';
+            $address2 = $_POST['address2'] ?? '';
+            $city = $_POST['city'] ?? '';
+            $state = $_POST['state'] ?? '';
+            $zip = $_POST['zip'] ?? '';
+            $country = $_POST['country'] ?? '';
+
             list($errors, $user, $address) = $this->currentUser->doRegister(
-                $_POST['supply_address'],
-                $_POST['username'],
-                $_POST['email'],
-                $_POST['fullname'] ?? '',
-                $_POST['first_name'],
-                $_POST['last_name'],
-                $_POST['address1'],
-                $_POST['address2'],
-                $_POST['city'],
-                $_POST['state'],
-                $_POST['zip'],
-                $_POST['country']
+                $supply_address,
+                $username,
+                $email,
+                $fullname,
+                $first_name,
+                $last_name,
+                $address1,
+                $address2,
+                $city,
+                $state,
+                $zip,
+                $country
             );            
 
             if (!sizeof($errors)) {
