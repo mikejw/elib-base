@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.0.6] - 2025-08-03
+
+### Fixed
+
+- Lower case username
+
+
 ## [4.0.5] - 2025-08-03
 
 ### Fixed
