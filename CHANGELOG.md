@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.0.7] - 2025-08-03
+
+### Fixed
+
+- Perform post register after confirmation
+
+
 ## [4.0.6] - 2025-08-03
 
 ### Fixed

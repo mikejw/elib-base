@@ -275,7 +275,7 @@ class CurrentUser
                 // $v->insert();
             }
 
-            if (!($this->postRegister($u) && $this->sendConfirmationEmail($u, $reg_code))) {
+            if (!$this->sendConfirmationEmail($u, $reg_code)) {
                 throw new \Exception('Could not complete registration');
             }
         }
@@ -315,7 +315,7 @@ class CurrentUser
             $_POST['email'] = $u->email;
 
             $service = DI::getContainer()->get('Contact');
-            if ($service->prepareDispatch($u->id)) {
+            if ($this->postRegister($u) && $service->prepareDispatch($u->id)) {
                 $service->dispatchEmail($u->fullname);
                 return true;
             }
