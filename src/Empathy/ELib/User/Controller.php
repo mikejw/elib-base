@@ -86,6 +86,7 @@ class Controller extends EController
 
             $supply_address = $_POST['address'] ?? false;
             $username = $_POST['username'] ?? '';
+            $username = strtolower($username);
             $email = $_POST['email'] ?? '';
             $fullname = $_POST['fullname'] ?? '';
             $first_name = $_POST['first_name'] ?? '';
