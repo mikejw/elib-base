@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.0.5] - 2025-08-03
+
+### Fixed
+
+- Make registration flow work without shipping address
+
+
 ## [4.0.4] - 2025-06-05
 
 ### Fixed
