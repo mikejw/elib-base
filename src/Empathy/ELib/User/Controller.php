@@ -135,7 +135,7 @@ class Controller extends EController
         $this->assign('errors', $errors);
         $this->assign('titles', $titles);
         $this->assign('countries', $countries);
-        $this->assign('sc', $submitted ? $address->country : 'GB');
+        $this->assign('sc', ($submitted && $supply_address) ? $address->country : 'GB');
         $this->setTemplate('elib://register.tpl');
         $this->assign('submitted', $submitted);
     }

@@ -299,10 +299,10 @@ class CurrentUser
             Session::set('user_id', $u->id);
 
             $_POST['body'] = "\nHi ___,\n\n"
-                //."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
-                //." '___' and the password '".$password."'.\n\nCheers\n\n";
-                . "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
-                . " and the password '" . $password . "'.\n\nCheers\n\n";
+                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
+                ." '___' and the password '".$password."'.\n\nCheers\n\n";
+                //. "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
+                //. " and the password '" . $password . "'.\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
                 $_POST['first_name'] = 'Not provided';

@@ -1,6 +1,12 @@
 
 # Changelog
 
+## [4.0.8] - 2025-08-03
+
+### Fixed
+
+- Send the user user their username
+
 
 ## [4.0.7] - 2025-08-03
 
