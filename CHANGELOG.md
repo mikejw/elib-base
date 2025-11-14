@@ -6,7 +6,7 @@
 
 ### Fixed
 
-- Handle user is null in `getUserID`
+- Handle user is null in `getUserID` and `assertAdmin`
 
 
 ## [4.0.8] - 2025-08-03

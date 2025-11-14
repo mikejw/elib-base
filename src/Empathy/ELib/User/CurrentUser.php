@@ -60,7 +60,7 @@ class CurrentUser
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
         $ua = new UserAccess();
-        if ($this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
+        if ($this->u === null || $this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
             $controller->redirect("user/login");
         }
@@ -136,7 +136,6 @@ class CurrentUser
         if (!$user->hasValErrors()) {
             $user_id = $user->login();
             if ($user_id > 0) {
-
                 if ($initSession) {
                     session_regenerate_id();
                     Session::set('user_id', $user_id);
