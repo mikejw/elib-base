@@ -1,6 +1,14 @@
 
 # Changelog
 
+
+## [4.0.9] - 2025-11-14
+
+### Fixed
+
+- Handle user is null in `getUserID`
+
+
 ## [4.0.8] - 2025-08-03
 
 ### Fixed

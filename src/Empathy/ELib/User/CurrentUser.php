@@ -78,6 +78,9 @@ class CurrentUser
 
     public function getUserID()
     {
+        if ($this->u === null) {
+            return 0;
+        }
         return $this->u->id;
     }
 
