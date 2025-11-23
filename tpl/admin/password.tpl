@@ -1,6 +1,5 @@
 {include file="elib:/admin/admin_header.tpl"}
 
-<p>&nbsp;</p>
 
 {if is_array($errors) && count($errors)}
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -12,7 +11,7 @@
     </div>
 {/if}
 
-<h2 class="mb-4">Change Password</h2>
+<h2 class="mt-5 mb-4">Change Password</h2>
 
 <form action="" method="post">
     <div class="mb-3">
