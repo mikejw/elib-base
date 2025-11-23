@@ -1,7 +1,6 @@
 
 
-
-<h2>Register</h2>
+<h1 class="mt-5">Register</h1>
 
 <p>
     Please note: Usernames are "twitter style". A maximum of 15 characters. Numbers, letters and underscores are
@@ -9,7 +8,6 @@
 </p>
 
 <form action="" method="post">
-    <input type="hidden" name="supply_address" value="1" />
     <fieldset>
         <legend>Account</legend>
         <div class="mb-3">
@@ -31,7 +29,15 @@
             {/if}
         </div>
     </fieldset>
-    <fieldset>
+
+    <div class="mb-3">
+        <label class="form-label">Supply address?
+            <input id="supply_address" type="checkbox" name="supply_address" {if $supply_address}checked{/if} />
+        </label>
+    </div>
+
+
+    <fieldset id="address_fields" class="{if !$supply_address}hidden{/if}">
         <legend>Shipping Address</legend>
         <div class="mb-3">
             <label class="form-label" for="first_name">Firstname(s)</label>
@@ -107,10 +113,10 @@
                 </div>
             {/if}
         </div>
-        <div class="mb-3">
-            <button class="btn btn-primary btn-sm" type="submit" name="submit">Submit</button>
-        </div>
-</fieldset>
+    </fieldset>
+    <div class="mb-3">
+        <button class="btn btn-primary btn-sm" type="submit" name="submit">Submit</button>
+    </div>
 </form>
 
 
