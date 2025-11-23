@@ -1,17 +1,17 @@
 
 
-<ul class="navbar-nav mr-auto">
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Area
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             {foreach from=$installed_libs key=route item=name}
-            <a class="dropdown-item" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/admin/{$route}">{$name}</a>
+            <li><a class="dropdown-item" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/admin/{$route}">{$name}</a></li>
             {/foreach}
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/admin/password">Change Password</a>
-        </div>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="http://{$WEB_ROOT}{$PUBLIC_DIR}/admin/password">Change Password</a></li>
+        </ul>
     </li>
 </ul>
 

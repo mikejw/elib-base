@@ -3,33 +3,34 @@
 <p>&nbsp;</p>
 
 {if is_array($errors) && count($errors)}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
         <strong>Error!</strong>
         {foreach from=$errors item=e}
             <p>{$e}</p>
         {/foreach}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 {/if}
 
-<h4>Change Password</h4>
+<h2 class="mb-4">Change Password</h2>
+
 <form action="" method="post">
-    <div class="form-group">
-        <label for="old_password">Exisiting Password:</label>
-        <input name="old_password" type="password" class="form-control" id="old_password">
+    <div class="mb-3">
+        <label for="old_password" class="form-label">Exisiting Password:</label>
+        <input name="old_password" type="password" class="form-control form-control-lg" id="old_password">
     </div>
-    <div class="form-group">
-        <label for="password1">New Password:</label>
-        <input name="password1" type="password" class="form-control" id="password1">
+    <div class="mb-3">
+        <label for="password1" class="form-label">New Password:</label>
+        <input name="password1" type="password" class="form-control form-control-lg" id="password1">
     </div>
-    <div class="form-group">
-        <label for="password2">Password (Confirmation):</label>
-        <input name="password2" type="password" class="form-control" id="password2">
+    <div class="mb-4">
+        <label for="password2" class="form-label">Password (Confirmation):</label>
+        <input name="password2" type="password" class="form-control form-control-lg" id="password2">
     </div>
-    <button type="submit" name="submit" class="btn btn-primary">Submit</button>
-    <button type="submit" name="cancel" class="btn btn-primary">Cancel</button>
+    <div class="mb-4">
+        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" name="cancel" class="btn btn-primary">Cancel</button>
+    </div>
 </form>
 
 <p>&nbsp;</p>
