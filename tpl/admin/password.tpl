@@ -16,15 +16,15 @@
 <form action="" method="post">
     <div class="mb-3">
         <label for="old_password" class="form-label">Exisiting Password:</label>
-        <input name="old_password" type="password" class="form-control form-control-lg" id="old_password">
+        <input name="old_password" type="password" class="form-control" id="old_password">
     </div>
     <div class="mb-3">
         <label for="password1" class="form-label">New Password:</label>
-        <input name="password1" type="password" class="form-control form-control-lg" id="password1">
+        <input name="password1" type="password" class="form-control" id="password1">
     </div>
     <div class="mb-4">
         <label for="password2" class="form-label">Password (Confirmation):</label>
-        <input name="password2" type="password" class="form-control form-control-lg" id="password2">
+        <input name="password2" type="password" class="form-control" id="password2">
     </div>
     <div class="mb-4">
         <button type="submit" name="submit" class="btn btn-primary">Submit</button>

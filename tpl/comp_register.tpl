@@ -12,7 +12,7 @@
         <legend>Account</legend>
         <div class="mb-3">
             <label class="form-label" for="username">Username</label>
-            <input class="form-control form-control-lg {if isset($errors.username)}is-invalid{elseif $submitted}is-valid{/if}" id="username" type="text" name="username" value="{$user->username}" />
+            <input class="form-control {if isset($errors.username)}is-invalid{elseif $submitted}is-valid{/if}" id="username" type="text" name="username" value="{$user->username}" />
             {if isset($errors.username)}
             <div class="invalid-feedback">
                 {$errors.username}
@@ -21,7 +21,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" form="eamil">email address</label>
-            <input class="form-control form-control-lg {if isset($errors.email)}is-invalid{elseif $submitted}is-valid{/if}" id="email" type="text" name="email" value="{$user->email}" />
+            <input class="form-control {if isset($errors.email)}is-invalid{elseif $submitted}is-valid{/if}" id="email" type="text" name="email" value="{$user->email}" />
             {if isset($errors.email)}
             <div class="invalid-feedback">
                 {$errors.email}
@@ -41,7 +41,7 @@
         <legend>Shipping Address</legend>
         <div class="mb-3">
             <label class="form-label" for="first_name">Firstname(s)</label>
-            <input class="form-control form-control-lg {if isset($errors.first_name)}is-invalid{elseif $submitted}is-valid{/if}" id="first_name" type="text" name="first_name" value="{$address->first_name}" />
+            <input class="form-control {if isset($errors.first_name)}is-invalid{elseif $submitted}is-valid{/if}" id="first_name" type="text" name="first_name" value="{$address->first_name}" />
             {if isset($errors.first_name)}
                 <div class="invalid-feedback">
                     {$errors.first_name}
@@ -50,7 +50,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="last_name">Lastname</label>
-            <input class="form-control form-control-lg {if isset($errors.last_name)}is-invalid{elseif $submitted}is-valid{/if}" id="last_name" type="text" name="last_name" value="{$address->last_name}" />
+            <input class="form-control {if isset($errors.last_name)}is-invalid{elseif $submitted}is-valid{/if}" id="last_name" type="text" name="last_name" value="{$address->last_name}" />
             {if isset($errors.last_name)}
                 <div class="invalid-feedback">
                     {$errors.last_name}
@@ -59,7 +59,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="address1">First Line of Address</label>
-            <input class="form-control form-control-lg {if isset($errors.address1)}is-invalid{elseif $submitted}is-valid{/if}" id="addreess1" type="text" name="address1" value="{$address->address1}" />
+            <input class="form-control {if isset($errors.address1)}is-invalid{elseif $submitted}is-valid{/if}" id="addreess1" type="text" name="address1" value="{$address->address1}" />
             {if isset($errors.address1)}
                 <div class="invalid-feedback">
                     {$errors.address1}
@@ -68,7 +68,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="address2">Second Line of Address (Optional)</label>
-            <input class="form-control form-control-lg {if isset($errors.address2)}is-invalid{elseif $submitted}is-valid{/if}" id="address2" type="text" name="address2" value="{$address->address2}" />
+            <input class="form-control {if isset($errors.address2)}is-invalid{elseif $submitted}is-valid{/if}" id="address2" type="text" name="address2" value="{$address->address2}" />
             {if isset($errors.address2)}
                 <div class="invalid-feedback">
                     {$errors.address2}
@@ -77,7 +77,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="city">City</label>
-            <input class="form-control form-control-lg {if isset($errors.city)}is-invalid{elseif $submitted}is-valid{/if}" id="city" type="text" name="city" value="{$address->city}" />
+            <input class="form-control {if isset($errors.city)}is-invalid{elseif $submitted}is-valid{/if}" id="city" type="text" name="city" value="{$address->city}" />
             {if isset($errors.city)}
                 <div class="invalid-feedback">
                     {$errors.city}
@@ -86,7 +86,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="county">County / State</label>
-            <input class="form-control form-control-lg {if isset($errors.state)}is-invalid{elseif $submitted}is-valid{/if}" id="county" type="text" name="state" value="{$address->state}" />
+            <input class="form-control {if isset($errors.state)}is-invalid{elseif $submitted}is-valid{/if}" id="county" type="text" name="state" value="{$address->state}" />
             {if isset($errors.state)}
                 <div class="invalid-feedback">
                     {$errors.state}
@@ -95,7 +95,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="zip">Post Code / Zip</label>
-            <input class="form-control form-control-lg {if isset($errors.zip)}is-invalid{elseif $submitted}is-valid{/if}" id="zip" type="text" name="zip" value="{$address->zip}" />
+            <input class="form-control {if isset($errors.zip)}is-invalid{elseif $submitted}is-valid{/if}" id="zip" type="text" name="zip" value="{$address->zip}" />
             {if isset($errors.zip)}
                 <div class="invalid-feedback">
                     {$errors.zip}
@@ -104,7 +104,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="country">Country</label>
-            <select id="country" name="country" class="form-control form-control-lg {if isset($errors.country)}is-invalid{elseif $submitted}is-valid{/if}">
+            <select id="country" name="country" class="form-control {if isset($errors.country)}is-invalid{elseif $submitted}is-valid{/if}">
                 {html_options options=$countries selected=$sc}
             </select>
             {if isset($errors.country)}
