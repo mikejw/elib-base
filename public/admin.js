@@ -225,7 +225,8 @@ var tree = function () {
 
 var radios = function () {
   $(".radios input[name='data_type']").change(function () {
-    if ($(".radios input")[4].checked) {
+    var $inputs = $(".radios input");
+    if ($inputs[$inputs.length - 1].checked) {
       $("#containers").removeClass("hidden");
     } else {
       $("#containers").addClass("hidden");
