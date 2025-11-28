@@ -13,6 +13,7 @@
 </head>
 <body class="adminpage {if isset($centerpage) and $centerpage}centerpage{/if}">
 
+<div class="body-inner">
 
 {if !($module eq 'user' && $class eq 'user' && $event eq 'login')}
 <div class="container">

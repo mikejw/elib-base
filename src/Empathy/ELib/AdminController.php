@@ -6,6 +6,8 @@ use Empathy\MVC\Model;
 use Empathy\MVC\Session;
 use Empathy\MVC\Config as EmpConfig;
 use Empathy\MVC\DI;
+use Empathy\ELib\Util\Libs;
+use Composer\InstalledVersions;
 
 class AdminController extends EController
 {
@@ -17,8 +19,28 @@ class AdminController extends EController
         }
         
         $this->detectHelp();
+
+        $cache = DI::getContainer()->get('Cache');
+        $this->assign('installed', $cache->cachedCallback('installed_lib_info', array($this, 'getInstalledLibInfo')));
     }
 
+    public function getInstalledLibInfo() {
+        Libs::findAll();
+        $libs = Libs::getInstalled();
+        $installed = [];
+        foreach ($libs as $lib) {
+            if (InstalledVersions::isInstalled($lib)) {
+                $installed[$lib] = [
+                    //'version' => InstalledVersions::getVersion($lib)
+                    'version' => InstalledVersions::getPrettyVersion($lib)
+                ];
+                $path = InstalledVersions::getInstallPath($lib);
+                $composerJson = json_decode(file_get_contents($path . '/composer.json'), true);
+                $installed[$lib]['name'] = $composerJson['description'] ?? 'No description';
+            }
+        }
+        return $installed;
+    }
 
     private function tplInLib($help_file) {
         $exists = false;
