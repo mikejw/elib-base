@@ -121,7 +121,7 @@ var edit_box = new (function () {
     self.parent_element
       .empty()
       .append(
-        '<input type="text" id="' +
+        '<input class="form-control" style="width: 50%;" type="text" id="' +
           self.field +
           "_" +
           self.id +
