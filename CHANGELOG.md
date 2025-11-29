@@ -2,6 +2,21 @@
 # Changelog
 
 
+## [4.1.0] - 2025-11-29
+
+### Changed
+
+- Upgrade to Bootstrap 5
+
+### Fixed
+
+- Improve register user flow
+
+### Added
+
+- Add admin area footer
+
+
 ## [4.0.9] - 2025-11-14
 
 ### Fixed

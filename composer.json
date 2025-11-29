@@ -1,35 +1,30 @@
 {
-    "name": "mikejw/elib-base",
-    "type": "library",
-    "description": "ELib Base",
-    "keywords": [
-        "lib"
-    ],
-    "homepage": "https://empathy.sh",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Michael J. Whiting",
-            "email": "mail@mikejw.co.uk"
-        }
-    ],
-    "require": {
-        "mikejw/empathy": "^4", 
-        "phpmailer/phpmailer": "^6.1.6"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.7.*@dev",
-        "mockery/mockery": "dev-master"
-    },
-    "autoload": {
-        "psr-0": {
-            "Empathy": "src/"
-        }
-    },
-    "minimum-stability": "dev",
-    "extra": {
-      "branch-alias": {
-        "dev-feature/bs5": "4.x-dev"
-      }
+  "name": "mikejw/elib-base",
+  "type": "library",
+  "description": "ELib Base",
+  "keywords": [
+    "lib"
+  ],
+  "homepage": "https://empathy.sh",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michael J. Whiting",
+      "email": "mail@mikejw.co.uk"
     }
+  ],
+  "require": {
+    "mikejw/empathy": "^4",
+    "phpmailer/phpmailer": "^6.1.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.7.*@dev",
+    "mockery/mockery": "dev-master"
+  },
+  "autoload": {
+    "psr-0": {
+      "Empathy": "src/"
+    }
+  },
+  "minimum-stability": "dev"
 }
