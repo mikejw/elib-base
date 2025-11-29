@@ -220,9 +220,7 @@ class CurrentUser
         $u->username = $username;
         $u->email = $email;
 
-        $supply_address = (isset($supply_address) && $supply_address == 1) ? 1 : 0;
-
-        if ($supply_address == 1) {
+        if ($supply_address) {
             $s = Model::load(ShippingAddress::class);
             if ($fullname != '') {
                 $fullname_arr = explode(' ', $fullname);
@@ -289,7 +287,7 @@ class CurrentUser
         $model = DI::getContainer()->get('UserModel');
         $u = Model::load($model);
         $id = $u->findUserForActivation($reg_code);
-
+        
         if ($id > 0) {
             $u->load($id);
             $password = $u->password;
@@ -310,6 +308,11 @@ class CurrentUser
                 $_POST['first_name'] = 'Not provided';
                 $_POST['last_name'] = 'Not provided';
                 $u->fullname = $u->email;
+            } else {
+                $s = Model::load(ShippingAddress::class);
+                $s->load($s->getDefault($u->id));
+                $_POST['first_name'] = $s->first_name;
+                $_POST['last_name'] = $s->last_name;
             }
 
             $_POST['body'] = str_replace('___', $u->username, $_POST['body']);
@@ -317,6 +320,7 @@ class CurrentUser
             $_POST['email'] = $u->email;
 
             $service = DI::getContainer()->get('Contact');
+
             if ($this->postRegister($u) && $service->prepareDispatch($u->id)) {
                 $service->dispatchEmail($u->fullname);
                 return true;

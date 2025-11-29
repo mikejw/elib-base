@@ -121,7 +121,7 @@ var edit_box = new (function () {
     self.parent_element
       .empty()
       .append(
-        '<input type="text" id="' +
+        '<input class="form-control" style="width: 50%;" type="text" id="' +
           self.field +
           "_" +
           self.id +
@@ -225,7 +225,8 @@ var tree = function () {
 
 var radios = function () {
   $(".radios input[name='data_type']").change(function () {
-    if ($(".radios input")[4].checked) {
+    var $inputs = $(".radios input");
+    if ($inputs[$inputs.length - 1].checked) {
       $("#containers").removeClass("hidden");
     } else {
       $("#containers").addClass("hidden");

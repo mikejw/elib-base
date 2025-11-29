@@ -75,6 +75,7 @@ class Controller extends EController
     {   
         $errors = array();
         $submitted = false;
+        $supply_address = false;
 
         if (isset($_POST['submit'])) {
             $submitted = true; 
@@ -84,7 +85,8 @@ class Controller extends EController
             $_POST['first_name'] = $_POST['first_name'] ?? 'Not provided';
             $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
-            $supply_address = $_POST['address'] ?? false;
+            $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] === 'on') ? true : false;
+            
             $username = $_POST['username'] ?? '';
             $username = strtolower($username);
             $email = $_POST['email'] ?? '';
@@ -138,6 +140,7 @@ class Controller extends EController
         $this->assign('sc', ($submitted && $supply_address) ? $address->country : 'GB');
         $this->setTemplate('elib://register.tpl');
         $this->assign('submitted', $submitted);
+        $this->assign('supply_address', $supply_address);
     }
 
     public function confirm_reg()

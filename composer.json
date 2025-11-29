@@ -1,7 +1,7 @@
 {
     "name": "mikejw/elib-base",
     "type": "library",
-    "description": "Base component library for the Empathy PHP Framework",
+    "description": "ELib Base",
     "keywords": [
         "lib"
     ],
@@ -26,5 +26,10 @@
             "Empathy": "src/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+      "branch-alias": {
+        "dev-feature/bs5": "4.x-dev"
+      }
+    }
 }

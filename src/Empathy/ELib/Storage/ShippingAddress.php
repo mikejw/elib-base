@@ -76,6 +76,20 @@ class ShippingAddress extends Entity
             $error = 'Could not set new default';
             $this->query($sql, $error, $params);
         }
-
+    }
+    
+    public function getDefault($user_id): int {
+        $id = 0;
+        $params = [];
+        $sql = 'SELECT id FROM '.Model::getTable(EShippingAddress::class).' WHERE user_id = ?'
+            .' AND default_address = 1';
+        $params[] = $user_id;
+        $error = 'Could not get defaut shipping address.';
+        $result = $this->query($sql, $error, $params)->fetchAll();
+        
+        if (count($result) > 0) {
+            $id = $result[0]['id'];    
+        }
+        return $id;
     }
 }
