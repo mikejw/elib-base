@@ -5,6 +5,7 @@
 </div>
 {/if}
 
+{if !(isset($centerpage) and $centerpage)}
 <footer class="mt-5">
     <div class="p-5 pb-1">
         {foreach from=$installed item=lib}
@@ -15,6 +16,7 @@
         <a class="text-white" href="https://empathy.sh" target="_blank">emapthy.sh</a>
     </div>
 </footer>
+{/if}
 
 </div>
 

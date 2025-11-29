@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pattaya&display=swap" rel="stylesheet">
 </head>
-<body class="adminpage {if isset($centerpage) and $centerpage}centerpage{/if}">
+<body class="{if isset($centerpage) and $centerpage}centerpage{else}adminpage{/if}">
 
 <div class="body-inner">
 
