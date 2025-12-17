@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.2] - 2025-12-17
+
+### Fixed
+
+- Add compatibility for ELib Store product property option edits
+
+
 ## [4.1.1] - 2025-12-16
 
 ### Fixed

@@ -90,6 +90,14 @@ var properties = function () {
       edit_box.enter();
     }
   });
+
+  $('#properties form span.option').bind('click', function (e) {
+    var $this = $(this);
+    if (edit_box.locked == 0) {
+      edit_box.init($this.parent(), $this.text(), $this.attr('id').split('_')[1]);
+      edit_box.enter();
+    }
+  });
 };
 
 var edit_box = new (function () {
@@ -257,6 +265,10 @@ $(document).ready(function () {
 
   if ($("#image_sizes").length > 0) {
     properties();
+  }
+
+  if ($('#properties').length > 0) {
+      properties();
   }
 
   $("a.confirm").bind("click", function (e) {
