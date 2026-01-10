@@ -80,21 +80,13 @@ var properties = function () {
     });
   */
 
-  $("#image_sizes form span.edit_box").bind("click", function (e) {
+  $("#image_sizes form span.edit_box, #properties form span.option").bind('click', function (e) {
     var $this = $(this);
     if (edit_box.locked == 0) {
-      var id_arr = $this.attr("id").split("_");
+      var id_arr = $this.attr('id').split('_');
       var id = id_arr[1];
       var field = id_arr[0];
       edit_box.init($this.parent(), $this.text(), id, field);
-      edit_box.enter();
-    }
-  });
-
-  $('#properties form span.option').bind('click', function (e) {
-    var $this = $(this);
-    if (edit_box.locked == 0) {
-      edit_box.init($this.parent(), $this.text(), $this.attr('id').split('_')[1]);
       edit_box.enter();
     }
   });
@@ -192,7 +184,8 @@ var edit_box = new (function () {
     span.bind("click", function (e) {
       var $this = $(this);
       if (self.locked == 0) {
-        self.init($this.parent(), $this.text(), $this.attr("id").split("_")[1]);
+        var id_arr = $this.attr('id').split('_')
+        self.init($this.parent(), $this.text(), id_arr[1], id_arr[0]);
         self.enter();
       }
     });
