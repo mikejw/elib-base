@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.4] - 2026-01-26
+
+### Fixed
+
+- Pagination labelling
+
+
 ## [4.1.3] - 2026-01-10
 
 ### Fixed

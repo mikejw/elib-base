@@ -19,8 +19,8 @@
             {/foreach}
             <li class="page-item{if $page eq $lastPage} disabled{/if}">
                 <a class="page-link" href="?page={$page + 1}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
                     <span class="sr-only">Next</span>
+                    <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
