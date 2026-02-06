@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.5] = 2026-02-06
+
+### Fixed
+
+- Pagination controls
+
+
 ## [4.1.4] - 2026-01-26
 
 ### Fixed
