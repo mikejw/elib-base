@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.6] = 2026-02-06
+
+### Fixed
+
+- Pagination inner element width
+
+
 ## [4.1.5] = 2026-02-06
 
 ### Fixed
