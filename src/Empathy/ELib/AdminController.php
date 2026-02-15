@@ -20,6 +20,8 @@ class AdminController extends EController
         
         $this->detectHelp();
 
+        $cache = null;
+        $cacheEnabled = false;
         try {
             $cache = DI::getContainer()->get('Cache');
             $cacheEnabled = DI::getContainer()->get('cacheEnabled');
