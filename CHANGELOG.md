@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.7] = 2026-02-15
+
+### Fixed
+
+- Get installed lib info without cache
+
+
 ## [4.1.6] = 2026-02-06
 
 ### Fixed

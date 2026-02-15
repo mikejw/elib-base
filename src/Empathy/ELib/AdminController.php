@@ -20,8 +20,18 @@ class AdminController extends EController
         
         $this->detectHelp();
 
-        $cache = DI::getContainer()->get('Cache');
-        $this->assign('installed', $cache->cachedCallback('installed_lib_info', array($this, 'getInstalledLibInfo')));
+        try {
+            $cache = DI::getContainer()->get('Cache');
+            $cacheEnabled = DI::getContainer()->get('cacheEnabled');
+        } catch (\Exception $e) {
+            //
+        }
+        
+        if ($cache && $cacheEnabled) {
+            $this->assign('installed', $cache->cachedCallback('installed_lib_info', array($this, 'getInstalledLibInfo')));
+        } else {
+            $this->assign('installed', $this->getInstalledLibInfo());
+        }
     }
 
     public function getInstalledLibInfo() {
