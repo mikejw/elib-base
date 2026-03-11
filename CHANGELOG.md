@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.8] = 2026-03-11
+
+### Fixed
+
+- Update country code data and add possible check for euopean country code
+
+
 ## [4.1.7] = 2026-02-15
 
 ### Fixed

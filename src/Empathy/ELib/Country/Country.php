@@ -6,6 +6,63 @@ define('SOURCE', dirname(realpath(__FILE__)).'/countries.html');
 
 class Country
 {
+    private static $europeanCountryCodes = [
+        'AL', // Albania
+        'AD', // Andorra
+        'AM', // Armenia
+        'AT', // Austria
+        'AZ', // Azerbaijan
+        'BY', // Belarus
+        'BE', // Belgium
+        'BA', // Bosnia and Herzegovina
+        'BG', // Bulgaria
+        'HR', // Croatia
+        'CY', // Cyprus
+        'CZ', // Czechia
+        'DK', // Denmark
+        'EE', // Estonia
+        'FI', // Finland
+        'FR', // France
+        'GE', // Georgia
+        'DE', // Germany
+        'GR', // Greece
+        'HU', // Hungary
+        'IS', // Iceland
+        'IE', // Ireland
+        'IT', // Italy
+        'XK', // Kosovo (not ISO 3166-1 official, include only if you want it)
+        'LV', // Latvia
+        'LI', // Liechtenstein
+        'LT', // Lithuania
+        'LU', // Luxembourg
+        'MT', // Malta
+        'MD', // Moldova
+        'MC', // Monaco
+        'ME', // Montenegro
+        'NL', // Netherlands
+        'MK', // North Macedonia
+        'NO', // Norway
+        'PL', // Poland
+        'PT', // Portugal
+        'RO', // Romania
+        'RU', // Russia
+        'SM', // San Marino
+        'RS', // Serbia
+        'SK', // Slovakia
+        'SI', // Slovenia
+        'ES', // Spain
+        'SE', // Sweden
+        'CH', // Switzerland
+        'TR', // Türkiye
+        'UA', // Ukraine
+        'GB', // United Kingdom
+        'VA', // Holy See
+    ];
+
+    public static function isEurope($code) {
+        return in_array($code, self::$europeanCountryCodes);
+    }
+
     public static function build()
     {
         //$pathToEmp = explode('empathy', __FILE__);
@@ -26,11 +83,9 @@ class Country
                        ||
                        preg_match('/<\/tr>/', $line)
                        ||
-                       preg_match('/<td width/', $line)
+                       preg_match('/<td/', $line)
                        ||
-                       preg_match('/<td valign/', $line)
-                       ||
-                       preg_match('/<tr class/', $line)
+                       preg_match('/<tr/', $line)
                        ||
                        preg_match('/<\/table/', $line)
                        ||
@@ -74,7 +129,6 @@ class Country
         foreach ($country['code'] as $index => $value) {
             $built[preg_replace('/[^\w]/', '', $value)] = trim($country['name'][$index]);
         }
-
         return $built;
     }
 }
