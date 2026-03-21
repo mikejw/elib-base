@@ -11,7 +11,7 @@ class UserItem extends Entity
 {
     const TABLE = 'user';
 
-    public $id;
+    public int $id;
     public $email;
     public $auth;
     public $username;
