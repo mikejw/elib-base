@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.1.9] = 2026-03-21
+
+### Fixed
+
+- Add id int type
+
+
 ## [4.1.8] = 2026-03-11
 
 ### Fixed
