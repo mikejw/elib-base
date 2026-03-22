@@ -4,8 +4,8 @@ namespace Empathy\ELib\Gen;
 
 class Admin extends \Empathy\MVC\Util\ControllerGen
 {
-    protected $name = 'admin';
-    protected $module = 'admin';
-    protected $parent = '\Empathy\ELib\AdminController';
+    protected string $name = 'admin';
+    protected string $module = 'admin';
+    protected string $parent = '\Empathy\ELib\AdminController';
 }
 

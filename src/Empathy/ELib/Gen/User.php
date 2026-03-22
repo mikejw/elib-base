@@ -4,8 +4,8 @@ namespace Empathy\ELib\Gen;
 
 class User extends \Empathy\MVC\Util\ControllerGen
 {
-    protected $name = 'user';
-    protected $module = 'user';
-    protected $parent = '\Empathy\ELib\User\Controller';
+    protected string $name = 'user';
+    protected string $module = 'user';
+    protected string $parent = '\Empathy\ELib\User\Controller';
 }
 

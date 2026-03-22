@@ -4,7 +4,7 @@ namespace Empathy\ELib\Gen;
 
 class Contact extends \Empathy\MVC\Util\ControllerGen
 {
-    protected $name = 'contact';
-    protected $module = 'contact';
-    protected $parent = '\Empathy\ELib\Contact\FrontController';
+    protected string $name = 'contact';
+    protected string $module = 'contact';
+    protected string $parent = '\Empathy\ELib\Contact\FrontController';
 }
