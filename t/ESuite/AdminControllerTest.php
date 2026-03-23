@@ -2,21 +2,18 @@
 
 namespace ESuite;
 
+use Empathy\MVC\Util\Testing\ESuiteTestCase;
+use Empathy\MVC\DI;
 
-use Empathy\MVC\Config;
-
-use ESuite\ESuiteTest;
-
-class AdminControllerTest extends ESuiteTest
+class AdminControllerTest extends ESuiteTestCase
 {
  
  	private $bootstrap;
- 	private $controller;
 
 
 	public function setup(): void {
  		parent::setUp();
-        $this->bootstrap = $this->makeFakeBootstrap(\Empathy\MVC\Plugin\ELibs::TESTING_LIB);        
+        $this->bootstrap = $this->makeFakeBootstrap(\Empathy\MVC\Plugin\ELibs::TESTING_LIB);
 	}
 
 
@@ -28,7 +25,7 @@ class AdminControllerTest extends ESuiteTest
 		$_GET['module'] = 'default_event';
 		$this->bootstrap->dispatch(true, '\Empathy\ELib\AdminController');
 
-		$controller = $this->bootstrap->getController();
+		$controller = DI::getContainer()->get('Controller');
 		$this->assertInstanceOf('\Empathy\ELib\AdminController', $controller);
 	}
 

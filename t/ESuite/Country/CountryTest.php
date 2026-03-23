@@ -2,9 +2,9 @@
 
 namespace ESuite\Country;
 
-use ESuite\ESuiteTest;
+use Empathy\MVC\Util\Testing\ESuiteTestCase;
 
-class CountryTest extends ESuiteTest
+class CountryTest extends ESuiteTestCase
 {
     private $country;
     
@@ -19,6 +19,4 @@ class CountryTest extends ESuiteTest
     	$countries = $this->country->build();
     	$this->assertEquals($countries['GB'], 'United Kingdom');
     }
-
-
 }

@@ -1,40 +1,19 @@
-<?xml version="1.0" encoding="utf-8" ?> 
-
-<phpunit    
-    bootstrap="bootstrap.php"
-    backupGlobals="false"
-    stopOnFailure="false"
-    verbose="true"
-    colors="true">
-
-  <!--
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" backupGlobals="false" stopOnFailure="false" verbose="true" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="false">
+    <include>
+      <directory suffix=".php">../src/</directory>
+    </include>
+    <report>
+      <html outputDirectory="../build/coverage" lowUpperBound="35" highLowerBound="70"/>
+    </report>
+  </coverage>
   <testsuites>
-    <testsuite name="exp">
-      <directory>Experimental</directory>
-    </testsuite>
-    <testsuite name="mvc">
-      <directory>MVC</directory>
+    <testsuite name="ESuite">
+      <directory suffix="Test.php">./ESuite</directory>
     </testsuite>
   </testsuites>
-  -->
-
-  <logging>    
-    <log type="junit" target="../build/testsuite.xml" logIncompleteSkipped="false" /> 
-    <log type="coverage-html" target="../build/coverage" charset="UTF-8" yui="true" highlight="false" lowUpperBound="35" highLowerBound="70" />   
+  <logging>
+    <junit outputFile="../build/testsuite.xml"/>
   </logging>
-  
-
-  <filter>   
-    <blacklist>
-      <!--<directory suffix=".php">../../libs/</directory>-->
-      <directory suffix=".php">../vendor/</directory>
-      <directory suffix=".php">./</directory>
-    </blacklist>
-    
-    <whitelist processUncoveredFilesFromWhitelist="false">
-      <directory suffix=".php">../src/</directory>
-    </whitelist>
-    
-  </filter>
-  
 </phpunit>

@@ -23,8 +23,15 @@
   },
   "autoload": {
     "psr-0": {
-      "Empathy": "src/"
+      "Empathy": "src/",
+      "ESuite": "t/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "scripts": {
+    "test": "phpunit -c ./t/phpunit.xml",
+    "check": [
+      "@test"
+    ]
+  }
 }

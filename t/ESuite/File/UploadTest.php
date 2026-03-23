@@ -3,9 +3,9 @@
 namespace ESuite;
 
 use Empathy\MVC\Config;
-use ESuite\ESuiteTest;
+use Empathy\MVC\Util\Testing\ESuiteTestCase;
 
-class UploadTest extends ESuiteTest
+class UploadTest extends ESuiteTestCase
 {
     private $file;
     
