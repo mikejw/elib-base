@@ -2,10 +2,10 @@
 
 namespace ESuite;
 
-use Empathy\MVC\Util\Testing\ESuiteTest;
+
 use Empathy\MVC\Config;
 
-
+use ESuite\ESuiteTest;
 
 class AdminControllerTest extends ESuiteTest
 {
@@ -14,7 +14,7 @@ class AdminControllerTest extends ESuiteTest
  	private $controller;
 
 
-	public function setup() {
+	public function setup(): void {
  		parent::setUp();
         $this->bootstrap = $this->makeFakeBootstrap(\Empathy\MVC\Plugin\ELibs::TESTING_LIB);        
 	}

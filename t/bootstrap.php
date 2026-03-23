@@ -9,7 +9,7 @@ if (!function_exists('loadClass')) {
             $class = str_replace('ESuite\\', '', $class);
             $class = str_replace('\\', '/', $class);
             $class_file = $base."/$class.php";
-            
+
             if (!@include($class_file)) {
                 echo '[[['.$class_file.']]]';
                 throw new \Exception('Could not include class '.$class_file);

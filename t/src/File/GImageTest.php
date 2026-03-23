@@ -2,15 +2,15 @@
 
 namespace ESuite;
 
-use Empathy\MVC\Util\Testing\ESuiteTest;
 use Empathy\MVC\Config;
+use ESuite\ESuiteTest;
 
 class GImageTest extends ESuiteTest
 {
     private $file;
     
 
-    protected function setUp()
+    protected function setUp(): void
     {
        
       

@@ -2,15 +2,14 @@
 
 namespace ESuite\Country;
 
-use Empathy\MVC\Util\Testing\ESuiteTest;
-
+use ESuite\ESuiteTest;
 
 class CountryTest extends ESuiteTest
 {
     private $country;
     
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->country = new \Empathy\ELib\Country\Country();
     }
