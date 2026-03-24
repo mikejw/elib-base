@@ -26,14 +26,14 @@ class Upload
     public $target;
     public $target_dir;
     public $file;
-    private $fileName;
+    public $filename;
 
     public function __construct($upload = true)
     {
         $this->file = '';
         $this->error = '';
         $this->target = '';
-        $this->fileName = '';
+        $this->filename = '';
         $this->target_dir = Config::get('DOC_ROOT') . '/public_html/uploads/';
         if ($upload) {
             $this->upload();
@@ -47,7 +47,7 @@ class Upload
     
     public function getFileNameEncoded()
     {
-        return htmlentities($this->fileName);
+        return htmlentities($this->filename);
     }
 
     public function getError()
@@ -96,7 +96,7 @@ class Upload
                     $this->target = $this->target_dir . $charPath . $name . "_" . $i++ . "." . $ext;
                 }
                 
-                $this->fileName = substr($this->target, strlen($this->target_dir . $charPath));
+                $this->filename = substr($this->target, strlen($this->target_dir . $charPath));
                 $this->file = substr($this->target, strlen($this->target_dir));
 
                 if (!move_uploaded_file($_FILES['file']['tmp_name'], $this->target)) {

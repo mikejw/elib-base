@@ -27,7 +27,12 @@ class FileTest extends ESuiteTestCase
         );
 
         // fake doc root
-        Config::store('DOC_ROOT', dirname(realpath(__FILE__)).'/../tmp');
+        $fakeDocRoot = dirname(realpath(__FILE__)) . '/../../tmp';
+        $uploadsDir = $fakeDocRoot . '/public_html/uploads';
+        if (!is_dir($uploadsDir)) {
+            mkdir($uploadsDir, 0777, true);
+        }
+        Config::store('DOC_ROOT', $fakeDocRoot);
 
         $this->file = new \Empathy\ELib\File('', false, array());
     }
@@ -36,14 +41,13 @@ class FileTest extends ESuiteTestCase
     {
         $this->file->upload();
         $this->assertEquals("", $this->file->getError());
-        $this->assertEquals(1, $this->file->remove(array($_FILES['file']['name'])));
+        $this->assertEquals(1, $this->file->remove([$this->file->filename]));
     }
 
    
 
     public function testDerived()
     {
-
         $this->file->upload();
         $deriv = array(
             array('l_', 800, 600),
@@ -56,10 +60,6 @@ class FileTest extends ESuiteTestCase
             $this->file->makeDerived($item[0], $item[1], $item[2]);
         }
         $this->file->destroy();
-        $this->assertEquals(4, $this->file->remove(array($_FILES['file']['name'])));
+        $this->assertEquals(4, $this->file->remove([$this->file->filename]));
     }
-
-
-
-
 }

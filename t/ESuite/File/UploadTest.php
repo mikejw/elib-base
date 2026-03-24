@@ -1,6 +1,6 @@
 <?php
 
-namespace ESuite;
+namespace ESuite\File;
 
 use Empathy\MVC\Config;
 use Empathy\MVC\Util\Testing\ESuiteTestCase;
@@ -36,7 +36,6 @@ class UploadTest extends ESuiteTestCase
     {
         $this->file->upload();
         $this->assertEquals("", $this->file->getError());
-        $this->assertEquals(1, $this->file->remove(array($_FILES['file']['name'])));
+        $this->assertEquals(1, $this->file->remove([$this->file->file]));
     }
-
 }

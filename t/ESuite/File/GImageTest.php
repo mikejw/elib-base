@@ -1,6 +1,6 @@
 <?php
 
-namespace ESuite;
+namespace ESuite\File;
 
 use Empathy\MVC\Config;
 use Empathy\MVC\Util\Testing\ESuiteTestCase;
@@ -26,8 +26,13 @@ class GImageTest extends ESuiteTestCase
         );
 
         // fake doc root
-        Config::store('DOC_ROOT', dirname(realpath(__FILE__)).'/../../tmp');
+        $fakeDocRoot = dirname(realpath(__FILE__)) . '/../../tmp';
+        $uploadsDir = $fakeDocRoot . '/public_html/uploads';
+        if (!is_dir($uploadsDir)) {
+            mkdir($uploadsDir, 0777, true);
+        }
 
+        Config::store('DOC_ROOT', $fakeDocRoot);
         $this->file = new \Empathy\ELib\File\GImage('', false, array());
     }
 
@@ -36,7 +41,7 @@ class GImageTest extends ESuiteTestCase
     {
         $this->file->upload();
         $this->assertEquals("", $this->file->getError());
-        $this->assertEquals(1, $this->file->remove(array($_FILES['file']['name'])));
+        $this->assertEquals(1, $this->file->remove([$this->file->filename]));
     }
  
 
@@ -54,8 +59,8 @@ class GImageTest extends ESuiteTestCase
             $this->file->makeDerived($item[0], $item[1], $item[2]);
         }
         $this->file->destroy();
-        
-        $this->assertEquals(4, $this->file->remove(array($_FILES['file']['name'])));
+
+        $this->assertEquals(4, $this->file->remove([$this->file->filename]));
     }
 
 }

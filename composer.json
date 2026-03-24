@@ -30,6 +30,7 @@
   "minimum-stability": "dev",
   "scripts": {
     "test": "phpunit -c ./t/phpunit.xml",
+    "test:coverage": "XDEBUG_MODE=coverage phpunit -c ./t/phpunit.xml",
     "check": [
       "@test"
     ]

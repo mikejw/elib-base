@@ -20,10 +20,12 @@ class GImage extends File
     }
 
     public function spawn($newX, $newY, $prefix, $quality)
-    {        
-        $this->lastImage = clone $this->orig;        
+    {
+        $newX = floor($newX);
+        $newY = floor($newY);
+        $this->lastImage = clone $this->orig;
         $newTarget = $this->target_dir.$prefix.$this->filename;
-        $this->lastImage->resizeimage($newX, $newY, null, 1);
+        $this->lastImage->resizeimage($newX, $newY, \Imagick::FILTER_UNDEFINED, 1);
         $this->lastImage->writeImage($newTarget);
         $this->destroy($this->lastImage);
     }
