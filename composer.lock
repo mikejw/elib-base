@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2c826e61e567c91e6be26bd52e3f1f8",
+    "content-hash": "e54cf885b8b1e5ac5bbf908a730a60fe",
     "packages": [
         {
             "name": "laravel/serializable-closure",
@@ -2147,6 +2147,60 @@
                 "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.x"
             },
             "time": "2026-02-26T12:23:26+00:00"
+        },
+        {
+            "name": "phpstan/phpstan",
+            "version": "2.2.x-dev",
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/366d2147fcba1cd2dd223dbf9c4e5829c76d08f8",
+                "reference": "366d2147fcba1cd2dd223dbf9c4e5829c76d08f8",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "conflict": {
+                "phpstan/phpstan-shim": "*"
+            },
+            "default-branch": true,
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan - PHP Static Analysis Tool",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
+            "support": {
+                "docs": "https://phpstan.org/user-guide/getting-started",
+                "forum": "https://github.com/phpstan/phpstan/discussions",
+                "issues": "https://github.com/phpstan/phpstan/issues",
+                "security": "https://github.com/phpstan/phpstan/security/policy",
+                "source": "https://github.com/phpstan/phpstan-src"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ondrejmirtes",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/phpstan",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-28T19:41:26+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -4704,7 +4758,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "laravel/pint": 20
+        "laravel/pint": 20,
+        "phpstan/phpstan": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
