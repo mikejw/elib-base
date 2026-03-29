@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class Curl
@@ -51,12 +53,12 @@ class Curl
         //curl_setopt($this->ch, CURLOPT_POSTFIELDS, $b);
     }
 
-    public function fetch($disconnect=true)
+    public function fetch($disconnect = true)
     {
         $this->response = curl_exec($this->ch);
         $code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-        $this->success = ($code == 200);
-        if($disconnect === true) {
+        $this->success = ($code === 200);
+        if ($disconnect === true) {
             curl_close($this->ch);
         }
         return $this->success;

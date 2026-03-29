@@ -1,28 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 use Empathy\MVC\Config;
 
 class Worker
 {
-    const DEF_MEM_LIMIT = 10000000;
-    const DEF_SLEEP_INTERVAL = 10;
+    public const DEF_MEM_LIMIT = 10000000;
+    public const DEF_SLEEP_INTERVAL = 10;
 
     private $tube;
     private $driver;
     private $memory_limit;
     private $sleep_interval;
 
-    public function __construct($host, $tube = null, $display_log = null,
-                                $sleep_interval = null,
-                                $memory_limit = null,
-                                $driver_name = null)
-    {
+    public function __construct(
+        $host,
+        $tube = null,
+        $display_log = null,
+        $sleep_interval = null,
+        $memory_limit = null,
+        $driver_name = null
+    ) {
         $this->tube = $tube;
-        $this->display_log = ($display_log === true)? true: false;
-        $this->memory_limit = ($memory_limit === null)? self::DEF_MEM_LIMIT: $memory_limit;
-        $this->sleep_interval = ($sleep_interval === null)? self::DEF_SLEEP_INTERVAL: $sleep_interval;
+        $this->display_log = ($display_log === true) ? true : false;
+        $this->memory_limit = ($memory_limit === null) ? self::DEF_MEM_LIMIT : $memory_limit;
+        $this->sleep_interval = ($sleep_interval === null) ? self::DEF_SLEEP_INTERVAL : $sleep_interval;
         $this->driver = DriverManager::load($host, $driver_name);
     }
 

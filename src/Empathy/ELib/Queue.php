@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
-use Empathy\ELib\Queue\DriverManager,
-    Empathy\ELib\Queue\Job,
-    Empathy\ELib\Queue\Stats;
-
+use Empathy\ELib\Queue\DriverManager;
+use Empathy\ELib\Queue\Job;
+use Empathy\ELib\Queue\Stats;
 
 class Queue
 {
-    const DEFAULT_DRIVER = 'pheanstalk';
+    public const DEFAULT_DRIVER = 'pheanstalk';
 
     private $driver;
     private $tube;
@@ -29,7 +30,7 @@ class Queue
 
     public function put($job_data)
     {
-        $j = new Job(array($job_data, $this->tube));
+        $j = new Job([$job_data, $this->tube]);
         $this->driver->put($j);
     }
 

@@ -1,24 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\User;
 
-
-use Empathy\ELib\EController;
-use Empathy\MVC\Model;
 use Empathy\ELib\Country\Country;
-use Empathy\ELib\Mailer;
-use Empathy\MVC\Session;
-use Empathy\MVC\Config;
-use Empathy\ELib\Config as ELibConfig;
+use Empathy\ELib\EController;
 use Empathy\MVC\DI;
-
+use Empathy\MVC\Session;
 
 class Controller extends EController
 {
     private $currentUser;
     protected $userModel;
 
-    public function __construct($boot) 
+    public function __construct($boot)
     {
         parent::__construct($boot);
         $this->currentUser = DI::getContainer()->get('CurrentUser');
@@ -35,7 +31,7 @@ class Controller extends EController
     {
         $this->assign('centerpage', true);
         $this->setTemplate('elib:/login.tpl');
-        $errors = array();
+        $errors = [];
 
         if (isset($_POST['login']) && isset($_POST['csrf_token']) && $_POST['csrf_token'] === Session::get('csrf_token')) {
             list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password'], true, $this->userModel);
@@ -45,11 +41,11 @@ class Controller extends EController
                     $this->redirect('admin');
                 } else {
                     $this->redirect('');
-                }    
+                }
             } else {
                 $this->presenter->assign('errors', $user->getValErrors());
-                $this->presenter->assign("username", $_POST['username']);
-                $this->presenter->assign("password", $_POST['password']);    
+                $this->presenter->assign('username', $_POST['username']);
+                $this->presenter->assign('password', $_POST['password']);
             }
         }
         $this->assignCSRFToken();
@@ -61,24 +57,25 @@ class Controller extends EController
             throw new \Exception('Could not logout');
         } else {
             $this->redirect('');
-            return false;    
+            return false;
         }
     }
 
-    private function nullify(&$var) {
+    private function nullify(&$var)
+    {
         if (isset($var) && $var === '') {
             $var = null;
         }
     }
 
     public function register()
-    {   
-        $errors = array();
+    {
+        $errors = [];
         $submitted = false;
         $supply_address = false;
 
         if (isset($_POST['submit'])) {
-            $submitted = true; 
+            $submitted = true;
             $this->nullify($_POST['first_name']);
             $this->nullify($_POST['last_name']);
 
@@ -86,7 +83,7 @@ class Controller extends EController
             $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
             $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] === 'on') ? true : false;
-            
+
             $username = $_POST['username'] ?? '';
             $username = strtolower($username);
             $email = $_POST['email'] ?? '';
@@ -113,26 +110,26 @@ class Controller extends EController
                 $state,
                 $zip,
                 $country
-            );            
+            );
 
             if (!sizeof($errors)) {
-               $this->redirect('user/thanks/1'); 
+                $this->redirect('user/thanks/1');
             } else {
                 $address->first_name = (
-                    isset($address->first_name) && 
+                    isset($address->first_name) &&
                     $address->first_name === 'Not provided'
                 ) ? '' : $address->first_name ?? '';
                 $address->last_name = (
-                    isset($address->last_name) && 
+                    isset($address->last_name) &&
                     $address->last_name === 'Not provided'
                 ) ? '' : $address->last_name ?? '';
 
                 $this->assign('user', $user);
-                $this->assign('address', $address);       
+                $this->assign('address', $address);
             }
         }
 
-        $titles = array('Mr', 'Mrs', 'Miss', 'Ms', 'Dr');
+        $titles = ['Mr', 'Mrs', 'Miss', 'Ms', 'Dr'];
         $countries = Country::build();
         $this->assign('errors', $errors);
         $this->assign('titles', $titles);

@@ -1,16 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Contact;
-use Empathy\ELib\Config;
+
 use Empathy\ELib\EController;
-use Empathy\ELib\Mailer;
-use Empathy\MVC\Model;
-use Empathy\MVC\Entity;
 use Empathy\MVC\DI;
 
 class FrontController extends EController
 {
-
     public function default_event()
     {
         $service =  DI::getContainer()->get('Contact');

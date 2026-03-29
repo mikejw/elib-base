@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Plugin;
 
-class SmartyResourceELib extends \Smarty_Internal_Resource_File {
-
-
+class SmartyResourceELib extends \Smarty_Internal_Resource_File
+{
     protected function buildFilepath(\Smarty_Template_Source $source, ?\Smarty_Internal_Template $_template = null)
     {
         $file = ltrim($source->name, '/');

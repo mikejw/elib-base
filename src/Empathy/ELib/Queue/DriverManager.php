@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 class DriverManager
@@ -13,15 +15,15 @@ class DriverManager
         }
 
         switch ($name) {
-        case 'pheanstalk':
-            $driver_name = 'Empathy\ELib\Queue\Driver'.ucfirst($name);
-            $driver = new $driver_name($driver_name);
+            case 'pheanstalk':
+                $driver_name = 'Empathy\ELib\Queue\Driver'.ucfirst($name);
+                $driver = new $driver_name($driver_name);
 
-            $driver->load($h);
+                $driver->load($h);
 
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
         }
 
         return $driver;

@@ -1,9 +1,11 @@
 <?php
 
-namespace Empathy\ELib;
-use Empathy\MVC\FileContentsCache;
-use Empathy\MVC\DI;
+declare(strict_types=1);
 
+namespace Empathy\ELib;
+
+use Empathy\MVC\DI;
+use Empathy\MVC\FileContentsCache;
 
 /*
  * Modified to have the same "static interface"
@@ -14,7 +16,7 @@ class Config
     /**
      * Initialise empty config;
      */
-    private static $items = array();
+    private static $items = [];
 
     /**
      * Return a piece of config.
@@ -56,8 +58,8 @@ class Config
     public static function load($config_dir)
     {
         $config_file = $config_dir.'/elib.yml';
-        
-        $config = FileContentsCache::cachedCallback($config_file, function($data) {
+
+        $config = FileContentsCache::cachedCallback($config_file, function ($data) {
             return DI::getContainer()->get('Spyc')->YamlLoadString($data);
         });
 

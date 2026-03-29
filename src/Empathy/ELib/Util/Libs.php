@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Util;
 
-use Empathy\ELib\Util as UtilClass;
 use Empathy\MVC\Config;
 use Empathy\MVC\FileContentsCache;
 
@@ -19,7 +20,7 @@ class Libs
         );
     }
 
-    public static function findAll($doc_root = null) 
+    public static function findAll($doc_root = null)
     {
         self::$installed_libs = [];
         if ($doc_root === null) {
@@ -32,14 +33,14 @@ class Libs
             $installed = FileContentsCache::cachedCallback($composer_installed, function ($data) {
                 return json_decode($data);
             });
-            
+
             if (isset($installed->packages)) {
                 $installed = $installed->packages;
             }
             foreach ($installed as $i) {
                 if (self::testE($i->name)) {
                     $dir = Config::get('DOC_ROOT') . '/vendor/' . $i->name;
-                    if (self::$store_active == false && strpos($i->name, 'elib-store') !== false) {
+                    if (self::$store_active === false && strpos($i->name, 'elib-store') !== false) {
                         self::$store_active = true;
                     }
 
@@ -59,26 +60,25 @@ class Libs
                     $lib['score'] = 0;
                 } elseif ($lib['name'] === 'mikejw/empathy') {
                     $lib['score'] = 1;
-                } elseif (in_array('mikejw/empathy', $lib['deps'])) {
+                } elseif (in_array('mikejw/empathy', $lib['deps'], true)) {
                     $lib['score'] = 2;
 
-                } elseif (in_array('mikejw/elib-base', $lib['deps'])) {
+                } elseif (in_array('mikejw/elib-base', $lib['deps'], true)) {
                     $lib['score'] = 3;
-    
+
                 } else {
-                    // @todo 
-                    // recursively look for chain of deps that 
+                    // @todo
+                    // recursively look for chain of deps that
                     // stem from elib-base as root dependency
                     // and count each "jump".
-                    // if not found 
+                    // if not found
                     // do the following calculation plus biggest "jump".
                     $lib['score'] = count($lib['deps']) + 3;
                 }
             }
 
             $score = [];
-            foreach (self::$installed_libs as $i => $row)
-            {
+            foreach (self::$installed_libs as $i => $row) {
                 $score[$i] = $row['score'];
             }
             array_multisort($score, SORT_ASC, self::$installed_libs);
@@ -89,10 +89,10 @@ class Libs
     }
 
     public static function detect()
-    {               
+    {
         self::findAll();
         return array_reverse(
-            array_map(function($lib) {
+            array_map(function ($lib) {
                 return $lib['dir'] . '/tpl/';
             }, self::$installed_libs)
         );
@@ -112,10 +112,11 @@ class Libs
         return self::$store_active;
     }
 
-    public static function getMappedLibNames() {
+    public static function getMappedLibNames()
+    {
 
         $mapped = [];
-        foreach (self::$installed_libs as $lib)  {
+        foreach (self::$installed_libs as $lib) {
             switch ($lib['name']) {
                 case 'mikejw/elib-cms':
                     $mapped['dsection'] = 'CMS';
@@ -131,10 +132,11 @@ class Libs
                     break;
                 case 'mikejw/elib-store':
                     $mapped['store'] = 'Store';
+                    // no break
                 default:
                     break;
             }
-        } 
+        }
         return $mapped;
     }
 }

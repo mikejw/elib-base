@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Country;
 
 define('SOURCE', dirname(realpath(__FILE__)).'/countries.html');
@@ -59,23 +61,24 @@ class Country
         'VA', // Holy See
     ];
 
-    public static function isEurope($code) {
-        return in_array($code, self::$europeanCountryCodes);
+    public static function isEurope($code)
+    {
+        return in_array($code, self::$europeanCountryCodes, true);
     }
 
     public static function build()
     {
         //$pathToEmp = explode('empathy', __FILE__);
         //if(($fp = @fopen($pathToEmp[0].SOURCE, 'r')) == false)
-        if (($fp = @fopen(SOURCE, 'r')) == false) {
+        if (($fp = @fopen(SOURCE, 'r')) === false) {
             echo 'Could not open source file.';
         } else {
             $i = 0;
             $j = 0;
             $k = 1;
-            while (($line = fgets($fp)) == true) {
-                if(!(
-                       preg_match('/^<table/', $line)
+            while (($line = fgets($fp))) {
+                if (!(
+                    preg_match('/^<table/', $line)
                        ||
                        preg_match('/<tr>/', $line)
                        ||
@@ -94,16 +97,14 @@ class Country
                        preg_match('/\ see\ /', $line)
                        ||
                        preg_match('/\t\t/', $line)
-                       ))
-
-                {
+                )) {
                     $format = strip_tags($line);
 
-                    if ((($k+1) % 2) == 0) {
+                    if ((($k + 1) % 2) === 0) {
                         $format = strtolower($format);
                         $format_arr = explode(' ', $format);
                         for ($l = 0; $l < sizeof($format_arr); $l++) {
-                            if ($format_arr[$l] !=  'and') {
+                            if ($format_arr[$l] !==  'and') {
                                 $format_arr[$l] = ucfirst($format_arr[$l]);
                             }
                         }

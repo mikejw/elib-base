@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class REST extends Curl
 {
-
     public function configure()
     {
         if ($this->auth) {
@@ -31,13 +32,13 @@ class REST extends Curl
 
 
     public function configure_put()
-    {    
+    {
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
         $this->assign_post_params();
     }
 
     public function configure_delete()
-    {    
+    {
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         $this->assign_post_params();
     }
@@ -45,5 +46,3 @@ class REST extends Curl
 
 
 }
-
-

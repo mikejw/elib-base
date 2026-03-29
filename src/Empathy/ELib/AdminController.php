@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
-use Empathy\MVC\Model;
-use Empathy\MVC\Session;
+use Composer\InstalledVersions;
+use Empathy\ELib\Util\Libs;
 use Empathy\MVC\Config as EmpConfig;
 use Empathy\MVC\DI;
-use Empathy\ELib\Util\Libs;
-use Composer\InstalledVersions;
+use Empathy\MVC\Session;
 
 class AdminController extends EController
 {
@@ -17,7 +18,7 @@ class AdminController extends EController
         if ($assertAdmin) {
             DI::getContainer()->get('CurrentUser')->assertAdmin($this);
         }
-        
+
         $this->detectHelp();
 
         $cache = null;
@@ -28,15 +29,16 @@ class AdminController extends EController
         } catch (\Exception $e) {
             //
         }
-        
+
         if ($cache && $cacheEnabled) {
-            $this->assign('installed', $cache->cachedCallback('installed_lib_info', array($this, 'getInstalledLibInfo')));
+            $this->assign('installed', $cache->cachedCallback('installed_lib_info', [$this, 'getInstalledLibInfo']));
         } else {
             $this->assign('installed', $this->getInstalledLibInfo());
         }
     }
 
-    public function getInstalledLibInfo() {
+    public function getInstalledLibInfo()
+    {
         Libs::findAll();
         $libs = Libs::getInstalled();
         $installed = [];
@@ -44,7 +46,7 @@ class AdminController extends EController
             if (InstalledVersions::isInstalled($lib)) {
                 $installed[$lib] = [
                     //'version' => InstalledVersions::getVersion($lib)
-                    'version' => InstalledVersions::getPrettyVersion($lib)
+                    'version' => InstalledVersions::getPrettyVersion($lib),
                 ];
                 $path = InstalledVersions::getInstallPath($lib);
                 $composerJson = json_decode(file_get_contents($path . '/composer.json'), true);
@@ -54,12 +56,13 @@ class AdminController extends EController
         return $installed;
     }
 
-    private function tplInLib($help_file) {
+    private function tplInLib($help_file)
+    {
         $exists = false;
         $i = 0;
-        while(!$exists && $i < sizeof($this->elib_tpl_dirs)) {
+        while (!$exists && $i < sizeof($this->elib_tpl_dirs)) {
             $file = $this->elib_tpl_dirs[$i].'/'.$help_file;
-            if(file_exists($file)) {
+            if (file_exists($file)) {
                 $exists = true;
             }
             $i++;
@@ -133,13 +136,13 @@ class AdminController extends EController
 
     public function toggle_help()
     {
-        if($this->isXMLHttpRequest()) {
+        if ($this->isXMLHttpRequest()) {
             $help_shown = Session::get('help_shown');
             if ($help_shown) {
                 Session::set('help_shown', false);
             } else {
                 Session::set('help_shown', true);
-            }           
+            }
             header('Content-type: application/json');
             echo json_encode(1);
             exit();

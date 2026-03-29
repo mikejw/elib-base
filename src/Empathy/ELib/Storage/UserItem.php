@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Storage;
 
-use Empathy\MVC\Model;
 use Empathy\MVC\Entity;
 use Empathy\MVC\Validate;
 
-
 class UserItem extends Entity
 {
-    const TABLE = 'user';
+    public const TABLE = 'user';
 
     public int $id;
     public $email;
@@ -24,7 +24,7 @@ class UserItem extends Entity
     public $picture;
     public $about;
 
-    public function validates($email_check=true)
+    public function validates($email_check = true)
     {
         if ($this->doValType(Validate::USERNAME, 'username', $this->username, false)) {
             if ($this->usernameExists()) {
@@ -80,7 +80,7 @@ class UserItem extends Entity
         $this->password = $password;
     }
 
-    public function getID($username, $password=null)
+    public function getID($username, $password = null)
     {
         $table = $this::TABLE;
         $params = [];
@@ -92,7 +92,7 @@ class UserItem extends Entity
         }
         $error = 'Could not verify user.';
         $result = $this->query($sql, $error, $params);
-        if (1 == $result->rowCount()) {
+        if (1 === $result->rowCount()) {
             $row =  $result->fetch();
             return $row['id'];
         } else {
@@ -135,7 +135,7 @@ class UserItem extends Entity
     /**
      * Do login.
      * User should not need to know exact casing of username (like twitter).
-     * This is handled by DB.  
+     * This is handled by DB.
      */
     public function login()
     {
@@ -151,10 +151,10 @@ class UserItem extends Entity
         $error = 'Could not get user for login.';
         $result = $this->query($sql, $error, $params);
         $rows = $result->rowCount();
-        if ($rows == 1) {
+        if ($rows === 1) {
             $row = $result->fetch();
             if (password_verify($this->password, $row['password'])) {
-                $user_id = $row['id'];    
+                $user_id = $row['id'];
             }
         }
         return $user_id;
@@ -169,7 +169,7 @@ class UserItem extends Entity
         $params[] = $id;
         $error = 'Could not get auth code.';
         $result = $this->query($sql, $error, $params);
-        if ($result->rowCount() == 1) {
+        if ($result->rowCount() === 1) {
             $row = $result->fetch();
             $auth = $row['auth'];
         }
@@ -186,9 +186,9 @@ class UserItem extends Entity
             .' AND active = 0';
         $params[] = md5($reg_code);
         $error = 'Could not get user based on registation code.';
-        
+
         $result = $this->query($sql, $error, $params);
-        if ($result->rowCount() == 1) {
+        if ($result->rowCount() === 1) {
             $row = $result->fetch();
             $user_id = $row['id'];
         }

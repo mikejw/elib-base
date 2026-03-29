@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\VCache;
 
 abstract class Driver
 {
-    const DEF_D = 'memcached';
+    public const DEF_D = 'memcached';
     protected $host;
     protected $port;
     protected $name;

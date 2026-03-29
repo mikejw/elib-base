@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 class Stats
 {
-    const SEMAPHORE_ID = 100;
-    const SEGMENT_ID = 200;
+    public const SEMAPHORE_ID = 100;
+    public const SEGMENT_ID = 200;
 
     private static $handle;
     private static $semaphore;
-    private static $shared_vars = array('stats' => 1);
+    private static $shared_vars = ['stats' => 1];
 
     public static function getVarKey($var_name)
     {

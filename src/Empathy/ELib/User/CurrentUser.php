@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\User;
 
-use Empathy\MVC\Model;
-use Empathy\ELib\Storage\UserAccess;
-use Empathy\ELib\Storage\ShippingAddress;
-use Empathy\MVC\Session;
-use Empathy\MVC\DI;
 use Empathy\ELib\Config as ELibConfig;
+use Empathy\ELib\Storage\ShippingAddress;
+use Empathy\ELib\Storage\UserAccess;
 use Empathy\MVC\Config;
+use Empathy\MVC\DI;
+use Empathy\MVC\Model;
 use Empathy\MVC\RequestException;
-
+use Empathy\MVC\Session;
 
 class CurrentUser
 {
@@ -62,7 +63,7 @@ class CurrentUser
         $ua = new UserAccess();
         if ($this->u === null || $this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
-            $controller->redirect("user/login");
+            $controller->redirect('user/login');
         }
     }
 
@@ -84,7 +85,7 @@ class CurrentUser
         return $this->u->id;
     }
 
-    #[Deprecated(message: "use isLoggedIn() instead", since: "1.0.1")]
+    #[Deprecated(message: 'use isLoggedIn() instead', since: '1.0.1')]
     public function loggedIn()
     {
         return $this->isLoggedIn();
@@ -95,7 +96,7 @@ class CurrentUser
         return ($this->getUserID() > 0);
     }
 
-    #[Deprecated(message: "no longer standard property", since: "4.0.2")]
+    #[Deprecated(message: 'no longer standard property', since: '4.0.2')]
     public function getProfileID()
     {
         return $this->u->user_profile_id;
@@ -131,7 +132,7 @@ class CurrentUser
         $user->password = $password;
 
         $user->validateLogin();
-        $errors = array();
+        $errors = [];
 
         if (!$user->hasValErrors()) {
             $user_id = $user->login();
@@ -155,7 +156,7 @@ class CurrentUser
         if ($user->hasValErrors() || $user_id < 1) {
             $errors = $user->getValErrors();
         }
-        return array($errors, $user);
+        return [$errors, $user];
     }
 
     public function doLogout()
@@ -176,10 +177,10 @@ class CurrentUser
             ELibConfig::get('EMAIL_FROM')
         ) {
             $_POST['body'] = "\nHi ___,\n\n"
-                . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
-                . " know your password for using the site, please confirm your email address"
+                . 'Thanks for registering with ' . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
+                . ' know your password for using the site, please confirm your email address'
                 . " by clicking the following link:\n\n"
-                . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
+                . 'http://' . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . '/user/confirm_reg/?code=' . $reg_code
                 . "\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
@@ -188,7 +189,7 @@ class CurrentUser
                 $u->fullname = $u->email;
             }
 
-            $_POST['subject'] = "Registration with " . ELibConfig::get('EMAIL_ORGANISATION');
+            $_POST['subject'] = 'Registration with ' . ELibConfig::get('EMAIL_ORGANISATION');
             $service = DI::getContainer()->get('Contact');
             if ($service->prepareDispatch($u->id)) {
                 $service->dispatchEmail($u->fullname);
@@ -211,9 +212,8 @@ class CurrentUser
         $state,
         $zip,
         $country
-    )
-    {
-        $errors = array();
+    ) {
+        $errors = [];
         $model = DI::getContainer()->get('UserModel');
 
         $u = Model::load($model);
@@ -222,7 +222,7 @@ class CurrentUser
 
         if ($supply_address) {
             $s = Model::load(ShippingAddress::class);
-            if ($fullname != '') {
+            if ($fullname !== '') {
                 $fullname_arr = explode(' ', $fullname);
                 if (sizeof($fullname_arr) > 1) {
                     $s->last_name = $fullname_arr[sizeof($fullname_arr) - 1];
@@ -279,7 +279,7 @@ class CurrentUser
                 throw new \Exception('Could not complete registration');
             }
         }
-        return array($errors, $u, $s ?? new \stdClass());
+        return [$errors, $u, $s ?? new \stdClass()];
     }
 
     public function doConfirmReg($reg_code)
@@ -287,7 +287,7 @@ class CurrentUser
         $model = DI::getContainer()->get('UserModel');
         $u = Model::load($model);
         $id = $u->findUserForActivation($reg_code);
-        
+
         if ($id > 0) {
             $u->load($id);
             $password = $u->password;
@@ -299,10 +299,10 @@ class CurrentUser
             Session::set('user_id', $u->id);
 
             $_POST['body'] = "\nHi ___,\n\n"
-                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
+                .'Thanks for confirming your registration. You can now log in to the '.ELibConfig::get('EMAIL_ORGANISATION').' website using your username '
                 ." '___' and the password '".$password."'.\n\nCheers\n\n";
-                //. "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
-                //. " and the password '" . $password . "'.\n\nCheers\n\n";
+            //. "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
+            //. " and the password '" . $password . "'.\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
                 $_POST['first_name'] = 'Not provided';
@@ -332,9 +332,8 @@ class CurrentUser
         $old_password,
         $password1,
         $password2
-    )
-    {
-        $errors = array();
+    ) {
+        $errors = [];
         $model = DI::getContainer()->get('UserModel');
         $u = Model::load($model);
         $u->load(Session::get('user_id'));
@@ -343,9 +342,9 @@ class CurrentUser
             $u->addValError('The existing password you have entered is not correct', 'old_password');
         }
 
-        if ($password2 == '') {
+        if ($password2 === '') {
             $u->addValError('This is a required field', 'password2');
-        } else if ($password1 != $password2) {
+        } elseif ($password1 !== $password2) {
             $u->addValError('The new password entered does not match the confirmation', 'password1');
             $u->addValError('The new password entered does not match the confirmation', 'password2');
         }
@@ -374,4 +373,3 @@ class CurrentUser
         }
     }
 }
-

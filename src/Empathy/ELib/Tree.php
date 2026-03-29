@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class Tree
@@ -24,7 +26,7 @@ class Tree
                     $max_length--;
                 }
                 //echo $max_length;
-                $desc = substr($desc, 0, $max_length+1);
+                $desc = substr($desc, 0, $max_length + 1);
                 $desc = preg_replace('/\W$/', '', $desc).'...';
             }
         }

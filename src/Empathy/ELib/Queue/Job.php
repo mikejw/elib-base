@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 use Empathy\ELib\YAML;
@@ -24,15 +26,15 @@ class Job
 
     public function __construct($args)
     {
-        $this->serialized_vars = array(
-            'id', 'queued_at', 'body', 'tube');
+        $this->serialized_vars = [
+            'id', 'queued_at', 'body', 'tube'];
         switch (sizeof($args)) {
-        case 2:
-            $this->init($args[0], $args[1]);
-            break;
-        case 1:
-            $this->initEmpty($args[0]);
-            break;
+            case 2:
+                $this->init($args[0], $args[1]);
+                break;
+            case 1:
+                $this->initEmpty($args[0]);
+                break;
         }
     }
 
@@ -73,7 +75,7 @@ class Job
 
     public function serialize()
     {
-        $data = array();
+        $data = [];
         foreach ($this->serialized_vars as $v) {
             $data[$v] = $this->$v;
         }

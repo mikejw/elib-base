@@ -1,8 +1,8 @@
 <?php
 
-namespace Empathy\ELib\Queue;
+declare(strict_types=1);
 
-use Empathy\ELib\Queue\Job;
+namespace Empathy\ELib\Queue;
 
 class DriverPheanstalk extends Driver
 {
@@ -25,7 +25,7 @@ class DriverPheanstalk extends Driver
     public function getNext($tube)
     {
         self::$job = $this->d->watch($tube)->ignore('default')->reserve();
-        $j = new Job(array(self::$job->getData()));
+        $j = new Job([self::$job->getData()]);
 
         return $j;
     }

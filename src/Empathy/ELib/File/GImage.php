@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\File;
 
 use Empathy\ELib\File;
 
 /**
- * This class now uses Imagic because it 
+ * This class now uses Imagic because it
  * has wider support
  */
 class GImage extends File
@@ -21,8 +23,8 @@ class GImage extends File
 
     public function spawn($newX, $newY, $prefix, $quality)
     {
-        $newX = floor($newX);
-        $newY = floor($newY);
+        $newX = (int)floor($newX);
+        $newY = (int) floor($newY);
         $this->lastImage = clone $this->orig;
         $newTarget = $this->target_dir.$prefix.$this->filename;
         $this->lastImage->resizeimage($newX, $newY, \Imagick::FILTER_UNDEFINED, 1);
@@ -30,7 +32,7 @@ class GImage extends File
         $this->destroy($this->lastImage);
     }
 
-    public function destroy($image=null)
+    public function destroy($image = null)
     {
         if ($image === null) {
             $this->orig->destroy();

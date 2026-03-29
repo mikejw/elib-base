@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
-use Empathy\ELib\Config;
+
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 class Mailer
 {
@@ -17,7 +19,7 @@ class Mailer
     public $result;
 
 
-    public function __construct($r, $s, $m, $f=null, $html=false)
+    public function __construct($r, $s, $m, $f = null, $html = false)
     {
         $this->recipients = $r;
         $this->subject = $s;
@@ -59,9 +61,9 @@ class Mailer
                 $this->init();
                 $this->mailer->Body = str_replace('___', $r['alias'], $this->message);
                 $this->mailer->addAddress($r['address'], $r['alias']);
-                $this->mailer->send();            
+                $this->mailer->send();
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new \Exception("{$this->mailer->ErrorInfo}");
             $this->result = 0;
         }

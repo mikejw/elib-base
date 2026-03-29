@@ -1,8 +1,10 @@
 <?php
 
-namespace Empathy\ELib;
-use Empathy\MVC\DI;
+declare(strict_types=1);
 
+namespace Empathy\ELib;
+
+use Empathy\MVC\DI;
 
 /*
   user has logged in to be here...
@@ -19,7 +21,7 @@ class AuthedController extends EController
     }
 
     protected function authFailed()
-    {       
+    {
         $this->redirect('');
     }
 

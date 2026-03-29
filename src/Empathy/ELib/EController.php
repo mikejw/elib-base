@@ -1,18 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 use Empathy\MVC\Controller\CustomController;
-use Empathy\MVC\Config as EConfig;
 use Empathy\MVC\DI;
-
 
 class EController extends CustomController
 {
     protected $elib_tpl_dirs;
 
     public function __construct($boot)
-    {        
+    {
         parent::__construct($boot);
 
         DI::getContainer()->get('CurrentUser')->detectUser($this);
@@ -20,7 +20,7 @@ class EController extends CustomController
 
         if (isset($this->elib_tpl_dirs) && sizeof($this->elib_tpl_dirs) > 1) {
             $this->assign('elibtpl_arr', $this->elib_tpl_dirs);
-        } else if (count($this->elib_tpl_dirs) === 1) {
+        } elseif (count($this->elib_tpl_dirs) === 1) {
             $this->assign('elibtpl', $this->elib_tpl_dirs[0]);
         }
 

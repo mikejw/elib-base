@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Util;
 
 use Empathy\ELib\YAML;

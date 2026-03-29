@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class DateTime
@@ -17,19 +19,25 @@ class DateTime
     private $dow;
     private $valid;
 
-    private static $length = array(31, 28, 31, 30, 31, 30,
-                                   31, 31, 30, 31, 30, 31);
+    private static $length = [31, 28, 31, 30, 31, 30,
+                                   31, 31, 30, 31, 30, 31];
 
-    public function __construct($time = array(), $do_init = true)
+    public function __construct($time = [], $do_init = true)
     {
-        if (sizeof($time) == 0) {
+        if (sizeof($time) === 0) {
             $this->time = time();
-        } elseif (sizeof($time) == 1) {
+        } elseif (sizeof($time) === 1) {
             $this->time = $time[0];
         } else {
             $this->valid = checkdate($time['month'], $time['day'], $time['year']);
-            $this->time = mktime($time['hour'], $time['minute'], $time['second'], $time['month'],
-                                 $time['day'], $time['year']);
+            $this->time = mktime(
+                $time['hour'],
+                $time['minute'],
+                $time['second'],
+                $time['month'],
+                $time['day'],
+                $time['year']
+            );
         }
 
         if ($do_init) {
@@ -63,7 +71,7 @@ class DateTime
     public function setLastDay()
     {
         $last_day = self::$length[$this->month - 1];
-        if ($this->month == 2 && ($this->year % 400 == 0 || ($this->year % 4 == 0 && $this->year % 100 != 0))) {
+        if ($this->month === 2 && ($this->year % 400 === 0 || ($this->year % 4 === 0 && $this->year % 100 !== 0))) {
             $last_day++;
         }
         $this->last_day = $last_day;
@@ -121,36 +129,66 @@ class DateTime
 
     public function resetToFirst()
     {
-        $this->time = mktime($this->hour, $this->minute, $this->second, $this->month,
-                             1, $this->year);
+        $this->time = mktime(
+            $this->hour,
+            $this->minute,
+            $this->second,
+            $this->month,
+            1,
+            $this->year
+        );
         $this->init();
     }
 
     public function resetToLast()
     {
-        $this->time = mktime($this->hour, $this->minute, $this->second, $this->month,
-                             $this->getLastDay(), $this->year);
+        $this->time = mktime(
+            $this->hour,
+            $this->minute,
+            $this->second,
+            $this->month,
+            $this->getLastDay(),
+            $this->year
+        );
         $this->init();
     }
 
     public function adjustMonth($offset)
     {
-        $this->time = mktime($this->hour, $this->minute, $this->second, ($this->month + $offset),
-                             $this->day, $this->year);
+        $this->time = mktime(
+            $this->hour,
+            $this->minute,
+            $this->second,
+            ($this->month + $offset),
+            $this->day,
+            $this->year
+        );
         $this->init();
     }
 
     public function adjustDay($offset)
     {
-        $this->time = mktime($this->hour, $this->minute, $this->second, $this->month,
-                             ($this->day + $offset), $this->year);
+        $this->time = mktime(
+            $this->hour,
+            $this->minute,
+            $this->second,
+            $this->month,
+            ($this->day + $offset),
+            $this->year
+        );
         $this->init();
     }
 
     public function adjustMinute($offset)
     {
-        $this->time = mktime($this->hour, $this->minute + $offset, $this->second, $this->month,
-                             ($this->day), $this->year);
+        $this->time = mktime(
+            $this->hour,
+            $this->minute + $offset,
+            $this->second,
+            $this->month,
+            ($this->day),
+            $this->year
+        );
         $this->init();
     }
 

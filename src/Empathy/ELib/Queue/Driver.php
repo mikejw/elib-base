@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 abstract class Driver
 {
-    const DEF_D = 'pheanstalk';
+    public const DEF_D = 'pheanstalk';
     protected $host;
     protected $name;
     protected $d;

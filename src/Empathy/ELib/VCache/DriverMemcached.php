@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\VCache;
 
 class DriverMemcached extends Driver
@@ -14,7 +16,7 @@ class DriverMemcached extends Driver
         $this->m->addServer($h, $p);
     }
 
-    public function set($key, $value, $timeout=0)
+    public function set($key, $value, $timeout = 0)
     {
         $this->m->set($key, $value, $timeout);
         $this->m->set($key . '_json', json_encode($value), $timeout);

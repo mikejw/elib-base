@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class YAML
 {
-    public static function save($data, $file, $append=false)
+    public static function save($data, $file, $append = false)
     {
         $s = new \spyc();
         $yaml = self::dump($data);
@@ -42,14 +44,14 @@ class YAML
 
     public static function objectToArray($object)
     {
-        if (!is_object( $object ) && !is_array($object)) {
+        if (!is_object($object) && !is_array($object)) {
             return $object;
         }
         if (is_object($object)) {
             $object = get_object_vars($object);
         }
 
-        return array_map(array('ELib\YAML', 'objectToArray'), $object);
+        return array_map(['ELib\YAML', 'objectToArray'], $object);
     }
 
 }

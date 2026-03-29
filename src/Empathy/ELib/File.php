@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
-use Empathy\ELib\File\Image;
 use Empathy\MVC\Config as EConfig;
-
 
 // overrides for testing purposes
 if (defined('MVC_TEST_MODE')) {
 
-    function is_uploaded_file($filename) {
+    function is_uploaded_file($filename)
+    {
         return file_exists($filename);
     }
-    function move_uploaded_file($filename, $destination) {
+    function move_uploaded_file($filename, $destination)
+    {
         return copy($filename, $destination);
     }
 }
@@ -36,14 +38,15 @@ class File
 
 
     // taken from http://php.net/manual/en/features.file-upload.multiple.php
-    public static function reArrayFiles(&$file_post) {
+    public static function reArrayFiles(&$file_post)
+    {
 
 
-        $file_ary = array();
+        $file_ary = [];
         $file_count = count($file_post['name']);
         $file_keys = array_keys($file_post);
 
-        for ($i=0; $i<$file_count; $i++) {
+        for ($i = 0; $i < $file_count; $i++) {
 
             foreach ($file_keys as $key) {
                 $file_ary[$i][$key] = $file_post[$key][$i];
@@ -55,22 +58,22 @@ class File
 
 
 
-    public function __construct($gallery, $upload, $deriv, $fs_depth=0)
+    public function __construct($gallery, $upload, $deriv, $fs_depth = 0)
     {
         $this->fs_depth = $fs_depth;
 
         $this->gallery = $gallery;
-        if ($this->gallery != '') {
+        if ($this->gallery !== '') {
             //$this->target_dir = DOC_ROOT."/public_html/img/$this->gallery/";
-            $this->target_dir = EConfig::get('DOC_ROOT')."/public_html/uploads/";
+            $this->target_dir = EConfig::get('DOC_ROOT').'/public_html/uploads/';
         } else {
-            $this->target_dir = EConfig::get('DOC_ROOT')."/public_html/uploads/";
+            $this->target_dir = EConfig::get('DOC_ROOT').'/public_html/uploads/';
         }
 
         if (sizeof($deriv) < 1) {
-            $this->deriv = array(array('l', 800, 600),
-                                 array('tn', 200, 200),
-                                 array('mid', 500, 500));
+            $this->deriv = [['l', 800, 600],
+                                 ['tn', 200, 200],
+                                 ['mid', 500, 500]];
         } else {
             $this->deriv = $deriv;
         }
@@ -79,7 +82,7 @@ class File
 
         if ($upload) {
             $this->upload();
-            if ($this->error == '') {
+            if ($this->error === '') {
                 $this->create();
                 foreach ($this->deriv as $item) {
                     $this->makeDerived($item[0] . '_', $item[1], $item[2]);
@@ -89,7 +92,7 @@ class File
         }
     }
 
-    public function destroy($image=null)
+    public function destroy($image = null)
     {
         if ($image === null) {
             $image = $this->orig;
@@ -133,7 +136,7 @@ class File
         foreach ($files as $file) {
             $this->filename = $file;
             $this->target = $this->target_dir.$file;
-            if ($this->filename != '' && file_exists($this->target)) {
+            if ($this->filename !== '' && file_exists($this->target)) {
                 $this->create();
                 foreach ($this->deriv as $item) {
                     $this->makeDerived($item[0], $item[1], $item[2]);
@@ -145,8 +148,8 @@ class File
 
     public function spawn($newX, $newY, $prefix, $quality)
     {
-        $newX = floor($newX);
-        $newY = floor($newY);
+        $newX = (int) floor($newX);
+        $newY = (int) floor($newY);
         $img = imagecreatetruecolor($newX, $newY);
         imagecopyresampled($img, $this->orig, 0, 0, 0, 0, $newX, $newY, $this->origX, $this->origY);
         $newTarget = $this->target_dir.$prefix.$this->filename;
@@ -156,11 +159,11 @@ class File
 
     public function remove($files)
     {
-        $success_arr = array();
-        $all_files = array();
+        $success_arr = [];
+        $all_files = [];
 
         foreach ($files as $file) {
-            if ($file != '') {
+            if ($file !== '') {
                 $file = urldecode($file);
                 $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));
             }
@@ -170,7 +173,7 @@ class File
             array_push($success_arr, @unlink($file));
         }
 
-        if (in_array(false, $success_arr)) {
+        if (in_array(false, $success_arr, true)) {
             $success = false;
         } else {
             $success = sizeof($success_arr);
@@ -193,24 +196,24 @@ class File
 
     public function upload()
     {
-        if ($_FILES['file']['name'] == '' || $_FILES['file']['error'] == 1) {
-            $this->error .= "Problem uploading file. Empty file?";
+        if ($_FILES['file']['name'] === '' || $_FILES['file']['error'] === 1) {
+            $this->error .= 'Problem uploading file. Empty file?';
         } else {
             $name_array = explode('.', $_FILES['file']['name']);
             $size = sizeof($name_array);
-            $ext = $name_array[$size-1];
+            $ext = $name_array[$size - 1];
 
             /* check for jpeg */
             $mimeType = $this->getMimeType();
 
-            if (!preg_match('/jpg|jpeg|JPG|JPEG/', $ext) || $mimeType != 'image/jpeg') {
-                $this->error .= "Invalid file format.";
+            if (!preg_match('/jpg|jpeg|JPG|JPEG/', $ext) || $mimeType !== 'image/jpeg') {
+                $this->error .= 'Invalid file format.';
             } else {
                 $name = '';
                 if (sizeof($name_array) > 2) {
-                    for ($i = 0; $i < $size-1; $i++) {
+                    for ($i = 0; $i < $size - 1; $i++) {
                         $name .= $name_array[$i];
-                        if ($i+1 != $size-1) {
+                        if ($i + 1 !== $size - 1) {
                             $name .= '.';
                         }
                     }
@@ -225,16 +228,16 @@ class File
                     $depth_arr = array_slice($md_alpha_arr, $this->fs_depth);
                 }
 
-                $this->target = $this->target_dir.$name.".".$ext;
+                $this->target = $this->target_dir.$name.'.'.$ext;
                 // deal with duplicates
                 $i = 1;
                 while (file_exists($this->target)) {
-                    $this->target = $this->target_dir.$name."_".$i++.".".$ext;
+                    $this->target = $this->target_dir.$name.'_'.$i++.'.'.$ext;
                 }
                 $this->filename = substr($this->target, strlen($this->target_dir));
 
                 if (!move_uploaded_file($_FILES['file']['tmp_name'], $this->target)) {
-                    $this->error .= "Internal error";
+                    $this->error .= 'Internal error';
                 }
             }
         }
@@ -256,11 +259,13 @@ class File
     }
 
 
-    public function getError() {
+    public function getError()
+    {
         return $this->error;
     }
 
-    public function getDimensions() {
+    public function getDimensions()
+    {
         return [$this->origX, $this->origY];
     }
 
