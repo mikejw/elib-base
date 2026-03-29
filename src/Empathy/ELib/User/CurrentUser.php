@@ -7,33 +7,55 @@ namespace Empathy\ELib\User;
 use Empathy\ELib\Config as ELibConfig;
 use Empathy\ELib\Storage\ShippingAddress;
 use Empathy\ELib\Storage\UserAccess;
+use Empathy\ELib\Storage\UserItem;
 use Empathy\MVC\Config;
 use Empathy\MVC\DI;
+use Empathy\MVC\Entity;
 use Empathy\MVC\Model;
 use Empathy\MVC\RequestException;
 use Empathy\MVC\Session;
+use LogicException;
+use TypeError;
 
 class CurrentUser
 {
-    protected $u;
+    protected ?UserItem $u = null;
     protected $user_id;
     protected $loaded = false;
 
     // must return true
     // to carry on with default behaviour
-    protected function loginSuccess($u)
+    protected function loginSuccess(UserItem $u)
     {
         return true;
     }
 
-    protected function logoutSuccess($u)
+    protected function logoutSuccess(?UserItem $u)
     {
         return true;
     }
 
-    protected function postRegister($u)
+    protected function postRegister(UserItem $u)
     {
         return true;
+    }
+
+    private static function assertUserItem(Entity $entity): UserItem
+    {
+        if (!$entity instanceof UserItem) {
+            throw new LogicException('User model must be an instance of '.UserItem::class);
+        }
+
+        return $entity;
+    }
+
+    private static function assertShippingAddress(Entity $entity): ShippingAddress
+    {
+        if (!$entity instanceof ShippingAddress) {
+            throw new LogicException('Expected '.ShippingAddress::class);
+        }
+
+        return $entity;
     }
 
     public function detectUser($ctrl = null)
@@ -44,9 +66,12 @@ class CurrentUser
         }
 
         $model = DI::getContainer()->get('UserModel');
+        if (!is_string($model)) {
+            throw new TypeError('UserModel must be a class-string');
+        }
 
         $user_id = Session::get('user_id');
-        $this->u = Model::load($model);
+        $this->u = self::assertUserItem(Model::load($model));
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
@@ -67,7 +92,7 @@ class CurrentUser
         }
     }
 
-    public function isAdmin($u)
+    public function isAdmin(UserItem $u)
     {
         $admin = false;
         $ua = new UserAccess();
@@ -85,7 +110,7 @@ class CurrentUser
         return $this->u->id;
     }
 
-    #[Deprecated(message: 'use isLoggedIn() instead', since: '1.0.1')]
+    #[\Deprecated(message: 'use isLoggedIn() instead', since: '1.0.1')]
     public function loggedIn()
     {
         return $this->isLoggedIn();
@@ -96,18 +121,18 @@ class CurrentUser
         return ($this->getUserID() > 0);
     }
 
-    #[Deprecated(message: 'no longer standard property', since: '4.0.2')]
+    #[\Deprecated(message: 'no longer standard property', since: '4.0.2')]
     public function getProfileID()
     {
         return $this->u->user_profile_id;
     }
 
-    public function getUser()
+    public function getUser(): ?UserItem
     {
         return $this->u;
     }
 
-    public function setUser($user)
+    public function setUser(UserItem $user): void
     {
         $this->u = $user;
     }
@@ -124,10 +149,14 @@ class CurrentUser
 
     public function doLogin($username, $password, $initSession = true, $model = null)
     {
+        $user_id = 0;
         if ($model === null) {
             $model = DI::getContainer()->get('UserModel');
         }
-        $user = Model::load($model);
+        if (!is_string($model)) {
+            throw new TypeError('UserModel must be a class-string');
+        }
+        $user = self::assertUserItem(Model::load($model));
         $user->username = $username;
         $user->password = $password;
 
@@ -170,7 +199,7 @@ class CurrentUser
         }
     }
 
-    public function sendConfirmationEmail($u, $reg_code)
+    public function sendConfirmationEmail(UserItem $u, $reg_code)
     {
         if (
             ELibConfig::get('EMAIL_ORGANISATION') &&
@@ -215,13 +244,16 @@ class CurrentUser
     ) {
         $errors = [];
         $model = DI::getContainer()->get('UserModel');
+        if (!is_string($model)) {
+            throw new TypeError('UserModel must be a class-string');
+        }
 
-        $u = Model::load($model);
+        $u = self::assertUserItem(Model::load($model));
         $u->username = $username;
         $u->email = $email;
 
         if ($supply_address) {
-            $s = Model::load(ShippingAddress::class);
+            $s = self::assertShippingAddress(Model::load(ShippingAddress::class));
             if ($fullname !== '') {
                 $fullname_arr = explode(' ', $fullname);
                 if (sizeof($fullname_arr) > 1) {
@@ -256,8 +288,9 @@ class CurrentUser
             }
 
         } else {
-            $password = exec(MAKEPASSWD . ' --chars=8');
-            $reg_code = exec(MAKEPASSWD . ' --chars=16');
+            $makePasswd = \defined('MAKEPASSWD') ? (string) \constant('MAKEPASSWD') : 'mkpasswd';
+            $password = exec($makePasswd.' --chars=8');
+            $reg_code = exec($makePasswd.' --chars=16');
             $u->password = $password;
             $u->reg_code = md5($reg_code);
             $u->auth = 0;
@@ -285,7 +318,10 @@ class CurrentUser
     public function doConfirmReg($reg_code)
     {
         $model = DI::getContainer()->get('UserModel');
-        $u = Model::load($model);
+        if (!is_string($model)) {
+            throw new TypeError('UserModel must be a class-string');
+        }
+        $u = self::assertUserItem(Model::load($model));
         $id = $u->findUserForActivation($reg_code);
 
         if ($id > 0) {
@@ -309,7 +345,7 @@ class CurrentUser
                 $_POST['last_name'] = 'Not provided';
                 $u->fullname = $u->email;
             } else {
-                $s = Model::load(ShippingAddress::class);
+                $s = self::assertShippingAddress(Model::load(ShippingAddress::class));
                 $s->load($s->getDefault($u->id));
                 $_POST['first_name'] = $s->first_name;
                 $_POST['last_name'] = $s->last_name;
@@ -335,7 +371,10 @@ class CurrentUser
     ) {
         $errors = [];
         $model = DI::getContainer()->get('UserModel');
-        $u = Model::load($model);
+        if (!is_string($model)) {
+            throw new TypeError('UserModel must be a class-string');
+        }
+        $u = self::assertUserItem(Model::load($model));
         $u->load(Session::get('user_id'));
 
         if (!password_verify($old_password, $u->password)) {

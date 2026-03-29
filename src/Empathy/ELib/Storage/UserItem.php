@@ -12,6 +12,7 @@ class UserItem extends Entity
     public const TABLE = 'user';
 
     public int $id;
+    public ?int $user_profile_id = null;
     public $email;
     public $auth;
     public $username;
@@ -107,7 +108,7 @@ class UserItem extends Entity
             $this->load($this->id);
             $user_id = $this->id;
         } else {
-            unset($this->id);
+            $this->id = 0;
             $this->email = 'twitter_user@example.com';
             $this->auth = 'DEFAULT';
             $this->username = $username;

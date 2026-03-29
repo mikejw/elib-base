@@ -22,34 +22,32 @@ class Config
      * Return a piece of config.
      *
      * @param string $key The config key.
-     * @return string Config.
+     * @return mixed Config value, or false when the key is not set.
      */
-    public static function get($key)
+    public static function get($key): mixed
     {
         if (!isset(self::$items[$key])) {
             return false;
-        } else {
-            return self::$items[$key];
         }
+
+        return self::$items[$key];
     }
 
     /**
      * Store some config.
      *
      * @param string $key The config key.
-     * @param mixed Data to store against key.
-     * @return null
+     * @param mixed $data Data to store against key.
      */
-    public static function store($key, $data)
+    public static function store($key, $data): void
     {
         self::$items[$key] = $data;
     }
 
     /**
      * Simple dump of config.
-     * @return null
      */
-    public static function dump()
+    public static function dump(): void
     {
         print_r(self::$items);
     }

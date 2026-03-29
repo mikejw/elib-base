@@ -10,10 +10,12 @@ beforeEach(function () {
 });
 
 test('init dispatches AdminController', function () {
-    $this->expectOutputRegex('/session start/');
-
+    ob_start();
     $_GET['module'] = 'default_event';
     $this->bootstrap->dispatch(true, \Empathy\ELib\AdminController::class);
+    $output = (string) ob_get_clean();
+
+    expect($output)->toMatch('/session start/');
 
     $controller = DI::getContainer()->get('Controller');
     expect($controller)->toBeInstanceOf(\Empathy\ELib\AdminController::class);

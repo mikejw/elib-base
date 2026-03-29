@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Empathy\ELib;
 
-use Empathy\MVC\Controller\CustomController;
+use Empathy\MVC\Controller as MvcController;
 use Empathy\MVC\DI;
 
-class EController extends CustomController
+class EController extends MvcController
 {
+    /** @var list<string>|null */
     protected $elib_tpl_dirs;
 
     public function __construct($boot)

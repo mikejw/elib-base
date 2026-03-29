@@ -9,7 +9,7 @@ use Empathy\MVC\Validate;
 
 class Contact extends Entity
 {
-    public $id;
+    public int $id;
     public $user_id;
     public $message;
     public $subject;

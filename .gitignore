@@ -4,5 +4,6 @@
 /build
 /vendor
 /tests/tmp
+/var
 *~
 

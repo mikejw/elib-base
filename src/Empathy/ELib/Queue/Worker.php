@@ -15,6 +15,7 @@ class Worker
     private $driver;
     private $memory_limit;
     private $sleep_interval;
+    private bool $display_log;
 
     public function __construct(
         $host,

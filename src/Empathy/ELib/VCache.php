@@ -92,7 +92,7 @@ class VCache
         $success = false;
         try {
             $success = $this->driver->set($key, $value);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // don't catch here
         }
 
