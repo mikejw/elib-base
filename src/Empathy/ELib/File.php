@@ -9,11 +9,12 @@ use Empathy\MVC\Config as EConfig;
 // overrides for testing purposes
 if (defined('MVC_TEST_MODE')) {
 
-    function is_uploaded_file($filename)
+    function is_uploaded_file(string $filename): bool
     {
         return file_exists($filename);
     }
-    function move_uploaded_file($filename, $destination)
+
+    function move_uploaded_file(string $filename, string $destination): bool
     {
         return copy($filename, $destination);
     }
@@ -23,20 +24,36 @@ if (defined('MVC_TEST_MODE')) {
 
 class File
 {
-    public $error;
-    public $target;
-    public $target_dir;
-    public $filename;
-    public $deriv;
-    public $orig;
-    public $origX;
-    public $origY;
-    public $quality;
-    public $gallery;
-    private $fs_depth;
+    public string $error = '';
+
+    public string $target = '';
+
+    public string $target_dir = '';
+
+    public string $filename = '';
+
+    /** @var list<array{0: string, 1: int, 2: int}> */
+    public array $deriv = [];
+
+    public mixed $orig = null;
+
+    public int $origX = 0;
+
+    public int $origY = 0;
+
+    public int $quality = 85;
+
+    public string $gallery = '';
+
+    private int $fs_depth = 0;
 
     // taken from http://php.net/manual/en/features.file-upload.multiple.php
-    public static function reArrayFiles(&$file_post)
+    /**
+     * @param array<string, mixed> $file_post
+     *
+     * @return list<array<string, mixed>>
+     */
+    public static function reArrayFiles(array &$file_post): array
     {
 
 
@@ -51,12 +68,15 @@ class File
             }
         }
 
-        return $file_ary;
+        return array_values($file_ary);
     }
 
 
 
-    public function __construct($gallery, $upload, $deriv, $fs_depth = 0)
+    /**
+     * @param list<array{0: string, 1: int, 2: int}> $deriv
+     */
+    public function __construct(string $gallery, bool $upload, array $deriv, int $fs_depth = 0)
     {
         $this->fs_depth = $fs_depth;
 
@@ -90,22 +110,30 @@ class File
         }
     }
 
-    public function destroy($image = null)
+    public function destroy(mixed $image = null): void
     {
         if ($image === null) {
             $image = $this->orig;
         }
-        imageDestroy($image);
+        if ($image instanceof \GdImage) {
+            imagedestroy($image);
+        } elseif ($image instanceof \Imagick) {
+            $image->destroy();
+        }
     }
 
-    public function create()
+    public function create(): void
     {
-        $this->orig = \imagecreatefromjpeg($this->target);
-        $this->origX = imagesx($this->orig);
-        $this->origY = imagesy($this->orig);
+        $img = \imagecreatefromjpeg($this->target);
+        if (!$img instanceof \GdImage) {
+            throw new \RuntimeException('Could not load JPEG image: '.$this->target);
+        }
+        $this->orig = $img;
+        $this->origX = imagesx($img);
+        $this->origY = imagesy($img);
     }
 
-    public function makeDerived($prefix, $max_width, $max_height)
+    public function makeDerived(string $prefix, int $max_width, int $max_height): void
     {
         if ($max_width < 300 || $max_height < 300) {
             $quality = 100;
@@ -129,7 +157,10 @@ class File
         $this->spawn($newX, $newY, $prefix, $quality);
     }
 
-    public function resize($files)
+    /**
+     * @param iterable<string> $files
+     */
+    public function resize(iterable $files): void
     {
         foreach ($files as $file) {
             $this->filename = $file;
@@ -144,10 +175,13 @@ class File
         }
     }
 
-    public function spawn($newX, $newY, $prefix, $quality)
+    public function spawn(float|int $newX, float|int $newY, string $prefix, int $quality): void
     {
-        $newX = (int) floor($newX);
-        $newY = (int) floor($newY);
+        $newX = max(1, (int) floor($newX));
+        $newY = max(1, (int) floor($newY));
+        if (!$this->orig instanceof \GdImage) {
+            throw new \RuntimeException('No source image loaded');
+        }
         $img = imagecreatetruecolor($newX, $newY);
         imagecopyresampled($img, $this->orig, 0, 0, 0, 0, $newX, $newY, $this->origX, $this->origY);
         $newTarget = $this->target_dir.$prefix.$this->filename;
@@ -155,7 +189,12 @@ class File
         $this->destroy($img);
     }
 
-    public function remove($files)
+    /**
+     * @param iterable<string> $files
+     *
+     * @return bool|int
+     */
+    public function remove(iterable $files): bool|int
     {
         $success_arr = [];
         $all_files = [];
@@ -163,7 +202,8 @@ class File
         foreach ($files as $file) {
             if ($file !== '') {
                 $file = urldecode($file);
-                $all_files = array_merge($all_files, glob($this->target_dir.'*'.$file));
+                $matched = glob($this->target_dir.'*'.$file);
+                $all_files = array_merge($all_files, is_array($matched) ? $matched : []);
             }
         }
 
@@ -178,7 +218,11 @@ class File
         }
 
         // no files found to remove
-        if (sizeof($files) && !sizeof($all_files)) {
+        $fileCount = 0;
+        foreach ($files as $_) {
+            $fileCount++;
+        }
+        if ($fileCount > 0 && $all_files === []) {
             $success = 1;
         }
 
@@ -186,14 +230,18 @@ class File
     }
 
     // does not require GD
-    public function getMimeType()
+    public function getMimeType(): string
     {
-        $imgInfo = getImageSize($_FILES['file']['tmp_name']);
+        $imgInfo = getimagesize($_FILES['file']['tmp_name']);
+        if ($imgInfo === false) {
+            return 'application/octet-stream';
+        }
+
         return $imgInfo['mime'];
     }
 
     /** @phpstan-impure */
-    public function upload()
+    public function upload(): void
     {
         if ($_FILES['file']['name'] === '' || $_FILES['file']['error'] === 1) {
             $this->error .= 'Problem uploading file. Empty file?';
@@ -222,7 +270,7 @@ class File
 
                 // new fs depth stuff
                 if ($this->fs_depth > 0) {
-                    $md_alpha_arr = str_split(preg_replace('/[^a-z]/', '', md5($this->filename)));
+                    $md_alpha_arr = str_split((string) preg_replace('/[^a-z]/', '', md5($this->filename)));
 
                     $depth_arr = array_slice($md_alpha_arr, $this->fs_depth);
                 }
@@ -242,28 +290,31 @@ class File
         }
     }
 
-    public function getFile()
+    public function getFile(): string
     {
         return rawurlencode($this->filename);
     }
 
-    public function getFileEncoded()
+    public function getFileEncoded(): string
     {
         return htmlentities($this->filename);
     }
 
-    public function getFsDepth()
+    public function getFsDepth(): int
     {
         return $this->fs_depth;
     }
 
 
-    public function getError()
+    public function getError(): string
     {
         return $this->error;
     }
 
-    public function getDimensions()
+    /**
+     * @return array{0: int, 1: int}
+     */
+    public function getDimensions(): array
     {
         return [$this->origX, $this->origY];
     }

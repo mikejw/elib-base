@@ -6,28 +6,30 @@ namespace Empathy\ELib\User;
 
 use Empathy\ELib\Country\Country;
 use Empathy\ELib\EController;
+use Empathy\MVC\Bootstrap;
 use Empathy\MVC\DI;
 use Empathy\MVC\Session;
 
 class Controller extends EController
 {
-    private $currentUser;
-    protected $userModel;
+    private CurrentUser $currentUser;
 
-    public function __construct($boot)
+    protected mixed $userModel;
+
+    public function __construct(Bootstrap $boot)
     {
         parent::__construct($boot);
         $this->currentUser = DI::getContainer()->get('CurrentUser');
         $this->userModel = DI::getContainer()->get('UserModel');
     }
 
-    public function default_event()
+    public function default_event(): void
     {
         $this->redirect('');
     }
 
 
-    public function login()
+    public function login(): void
     {
         $this->assign('centerpage', true);
         $this->setTemplate('elib:/login.tpl');
@@ -43,32 +45,30 @@ class Controller extends EController
                     $this->redirect('');
                 }
             } else {
-                $this->presenter->assign('errors', $user->getValErrors());
-                $this->presenter->assign('username', $_POST['username']);
-                $this->presenter->assign('password', $_POST['password']);
+                $this->assign('errors', $user->getValErrors());
+                $this->assign('username', $_POST['username']);
+                $this->assign('password', $_POST['password']);
             }
         }
         $this->assignCSRFToken();
     }
 
-    public function logout()
+    public function logout(): void
     {
         if (!$this->currentUser->doLogout()) {
             throw new \Exception('Could not logout');
-        } else {
-            $this->redirect('');
-            return false;
         }
+        $this->redirect('');
     }
 
-    private function nullify(&$var)
+    private function nullify(mixed &$var): void
     {
         if (isset($var) && $var === '') {
             $var = null;
         }
     }
 
-    public function register()
+    public function register(): void
     {
         $errors = [];
         $submitted = false;
@@ -140,7 +140,7 @@ class Controller extends EController
         $this->assign('supply_address', $supply_address);
     }
 
-    public function confirm_reg()
+    public function confirm_reg(): void
     {
         $reg_code = $_GET['code'];
         if ($this->currentUser->doConfirmReg($reg_code)) {
@@ -150,9 +150,9 @@ class Controller extends EController
         }
     }
 
-    public function thanks()
+    public function thanks(): void
     {
-        $this->presenter->assign('id', $_GET['id']);
+        $this->assign('id', $_GET['id']);
         $this->setTemplate('elib://thanks.tpl');
     }
 

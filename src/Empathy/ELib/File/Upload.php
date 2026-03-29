@@ -9,12 +9,12 @@ use Empathy\MVC\Config;
 // overrides for testing purposes
 if (defined('MVC_TEST_MODE')) {
 
-    function is_uploaded_file($filename)
+    function is_uploaded_file(string $filename): bool
     {
         return file_exists($filename);
     }
 
-    function move_uploaded_file($filename, $destination)
+    function move_uploaded_file(string $filename, string $destination): bool
     {
         return copy($filename, $destination);
     }
@@ -23,13 +23,17 @@ if (defined('MVC_TEST_MODE')) {
 
 class Upload
 {
-    public $error;
-    public $target;
-    public $target_dir;
-    public $file;
-    public $filename;
+    public string $error = '';
 
-    public function __construct($upload = true)
+    public string $target = '';
+
+    public string $target_dir = '';
+
+    public string $file = '';
+
+    public string $filename = '';
+
+    public function __construct(bool $upload = true)
     {
         $this->file = '';
         $this->error = '';
@@ -41,22 +45,22 @@ class Upload
         }
     }
 
-    public function getFile()
+    public function getFile(): string
     {
         return $this->file;
     }
 
-    public function getFileNameEncoded()
+    public function getFileNameEncoded(): string
     {
         return htmlentities($this->filename);
     }
 
-    public function getError()
+    public function getError(): string
     {
         return $this->error;
     }
 
-    public function upload()
+    public function upload(): void
     {
         if (!isset($_FILES['file']['name']) || ($_FILES['file']['name'] === '')) {
             $this->error .= 'Problem uploading file. Empty file?';
@@ -80,7 +84,8 @@ class Upload
                     $name = $name_array[0];
                 }
 
-                $md5 = strtolower(md5_file($_FILES['file']['tmp_name']));
+                $md5Hash = md5_file($_FILES['file']['tmp_name']);
+                $md5 = strtolower(is_string($md5Hash) ? $md5Hash : '');
                 $matches = [];
                 $chars = preg_match_all('/[a-zA-Z]/', $md5, $matches);
                 $charPath = 'audio/' . implode('/', array_slice($matches[0], 0, 5)) . '/';
@@ -107,14 +112,20 @@ class Upload
         }
     }
 
-    public function remove($files)
+    /**
+     * @param iterable<string> $files
+     *
+     * @return bool|int
+     */
+    public function remove(iterable $files): bool|int
     {
         $success_arr = [];
         $all_files = [];
 
         foreach ($files as $file) {
             if ($file !== '') {
-                $all_files = array_merge($all_files, glob($this->target_dir . $file));
+                $matched = glob($this->target_dir . $file);
+                $all_files = array_merge($all_files, is_array($matched) ? $matched : []);
             }
         }
 

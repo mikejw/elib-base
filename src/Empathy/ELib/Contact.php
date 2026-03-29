@@ -9,14 +9,14 @@ use Empathy\MVC\Model;
 
 class Contact
 {
-    private $entity;
+    private ContactItem $entity;
 
     public function __construct()
     {
         $this->entity = Model::load(ContactItem::class);
     }
 
-    public function signUp()
+    public function signUp(): bool
     {
         $this->entity->assignFromPost(['submitted', 'message', 'subject', 'body', 'user_id']);
         $this->entity->message = 0;
@@ -25,18 +25,21 @@ class Contact
         return !$this->entity->hasValErrors();
     }
 
-    public function getErrors()
+    /**
+     * @return array<int|string, string>
+     */
+    public function getErrors(): array
     {
         return $this->entity->getValErrors();
     }
 
-    public function persist()
+    public function persist(): int
     {
         $this->entity->id = $this->entity->insert();
         return $this->entity->id;
     }
 
-    public function email()
+    public function email(): bool
     {
         $this->entity->assignFromPost(['message', 'submitted', 'user_id']);
         $this->entity->message = 1;
@@ -45,7 +48,7 @@ class Contact
         return !$this->entity->hasValErrors();
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $r = [];
         if (
@@ -67,7 +70,7 @@ class Contact
         }
     }
 
-    public function prepareDispatch($user_id, $html = false)
+    public function prepareDispatch(mixed $user_id, bool $html = false): bool
     {
         $this->entity->assignFromPost(['submitted', 'message', 'user_id']);
         $this->entity->message = 1;
@@ -77,7 +80,7 @@ class Contact
         return !$this->entity->hasValErrors();
     }
 
-    public function dispatchEmail($name, $html = false)
+    public function dispatchEmail(string $name, bool $html = false): void
     {
         if (
             Config::get('EMAIL_ORGANISATION') &&
@@ -91,7 +94,7 @@ class Contact
         }
     }
 
-    public function getContact()
+    public function getContact(): ContactItem
     {
         return $this->entity;
     }

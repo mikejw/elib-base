@@ -6,7 +6,7 @@ namespace Empathy\ELib\VCache;
 
 class DriverManager
 {
-    public static function load($h, $p, $name = null)
+    public static function load(string $h, int $p, ?string $name = null): ?Driver
     {
         $driver = null;
 

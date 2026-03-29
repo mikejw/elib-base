@@ -15,18 +15,28 @@ class ShippingAddress extends Entity
     public const TABLE = 'shippingaddr';
 
     public int $id;
-    public $user_id;
-    public $first_name;
-    public $last_name;
-    public $address1;
-    public $address2;
-    public $city;
-    public $state;
-    public $zip;
-    public $country;
-    public $default_address;
 
-    public function validates()
+    public mixed $user_id = null;
+
+    public mixed $first_name = null;
+
+    public mixed $last_name = null;
+
+    public mixed $address1 = null;
+
+    public mixed $address2 = null;
+
+    public mixed $city = null;
+
+    public mixed $state = null;
+
+    public mixed $zip = null;
+
+    public mixed $country = null;
+
+    public mixed $default_address = null;
+
+    public function validates(): void
     {
         if ($this->doValType(Validate::TEXT, 'first_name', $this->first_name, false)) {
             if ($this->first_name === 'Not provided') {
@@ -50,7 +60,7 @@ class ShippingAddress extends Entity
         }
     }
 
-    public function setDefault($user_id, $address_id)
+    public function setDefault(int $user_id, int $address_id): void
     {
         $params = [];
         $sql = 'SELECT id FROM '.Model::getTable(EShippingAddress::class).' WHERE user_id = ?';
@@ -79,7 +89,7 @@ class ShippingAddress extends Entity
         }
     }
 
-    public function getDefault($user_id): int
+    public function getDefault(int $user_id): int
     {
         $id = 0;
         $params = [];

@@ -15,8 +15,10 @@ class Config
 {
     /**
      * Initialise empty config;
+     *
+     * @var array<string, mixed>
      */
-    private static $items = [];
+    private static array $items = [];
 
     /**
      * Return a piece of config.
@@ -53,7 +55,7 @@ class Config
     }
 
 
-    public static function load($config_dir)
+    public static function load(string $config_dir): void
     {
         $config_file = $config_dir.'/elib.yml';
 

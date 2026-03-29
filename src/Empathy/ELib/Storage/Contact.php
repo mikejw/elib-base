@@ -10,18 +10,26 @@ use Empathy\MVC\Validate;
 class Contact extends Entity
 {
     public int $id;
-    public $user_id;
-    public $message;
-    public $subject;
-    public $body;
-    public $email;
-    public $first_name;
-    public $last_name;
-    public $submitted;
+
+    public mixed $user_id = null;
+
+    public mixed $message = null;
+
+    public mixed $subject = null;
+
+    public mixed $body = null;
+
+    public mixed $email = null;
+
+    public mixed $first_name = null;
+
+    public mixed $last_name = null;
+
+    public mixed $submitted = null;
 
     public const TABLE = 'contact';
 
-    public function validates($html = false)
+    public function validates(bool $html = false): void
     {
         if (!isset($this->message) || !($this->message === 0 || $this->message === 1)) {
             $this->addValError('Message field should be boolean, 1 or 0.');

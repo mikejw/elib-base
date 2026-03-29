@@ -6,9 +6,9 @@ namespace Empathy\ELib\VCache;
 
 class DriverMemcached extends Driver
 {
-    private $m;
+    private \Memcached $m;
 
-    public function load($h, $p)
+    public function load(string $h, int $p): void
     {
         $this->m = new \Memcached();
         $this->m->setOption(\Memcached::OPT_COMPRESSION, false);
@@ -16,19 +16,25 @@ class DriverMemcached extends Driver
         $this->m->addServer($h, $p);
     }
 
-    public function set($key, $value, $timeout = 0)
+    public function set(string $key, mixed $value, int $timeout = 0): bool
     {
-        $this->m->set($key, $value, $timeout);
+        $ok = $this->m->set($key, $value, $timeout);
         $this->m->set($key . '_json', json_encode($value), $timeout);
+
+        return $ok;
     }
 
-    public function get($key)
+    public function get(string $key): mixed
     {
         return $this->m->get($key);
     }
 
-    public function delete($key)
+    public function delete(string $key): mixed
     {
         return $this->m->delete($key);
+    }
+
+    public function init(): void
+    {
     }
 }

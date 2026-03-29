@@ -4,45 +4,56 @@ declare(strict_types=1);
 
 namespace Empathy\ELib;
 
+use Empathy\ELib\VCache\Driver;
 use Empathy\ELib\VCache\DriverManager;
 
 class VCache
 {
     public const DEFAULT_DRIVER = 'memcached';
 
-    private $driver;
-    private $enabled;
-    private $keys;
-    private $keys_key;
+    private Driver $driver;
 
-    public function __construct($host, $port, $driver_name = null, $enabled = true)
+    private bool $enabled;
+
+    /** @var list<string> */
+    private array $keys = [];
+
+    private string $keys_key = 'keys';
+
+    public function __construct(string $host, int $port, ?string $driver_name = null, bool $enabled = true)
     {
         $this->enabled = $enabled;
-        $this->driver = DriverManager::load($host, $port, $driver_name);
-        $this->keys = null;
+        $driver = DriverManager::load($host, $port, $driver_name);
+        if ($driver === null) {
+            throw new \RuntimeException('VCache driver could not be loaded');
+        }
+        $this->driver = $driver;
+        $this->keys = [];
         $this->keys_key = 'keys';
     }
 
-
-    public function clear()
+    public function clear(): void
     {
         $this->loadKeys();
-        foreach ($this->keys as $index => $key) {
-
+        $toDelete = $this->keys;
+        foreach ($toDelete as $key) {
             $this->delete($key);
-            unset($this->keys[$index]);
         }
+        $this->keys = [];
         $this->updateKeys();
     }
 
 
-    public function delete($key)
+    public function delete(string $key): void
     {
         $this->driver->delete($key);
     }
 
-
-    public function cachedCallback($key, $callback, $callback_params = [], $setOnFail = true, $setOnFalse = false)
+    /**
+     * @param callable $callback
+     * @param list<mixed> $callback_params
+     */
+    public function cachedCallback(string $key, callable $callback, array $callback_params = [], bool $setOnFail = true, bool $setOnFalse = false): mixed
     {
         $data = false;
         if ($this->enabled && (false !== ($data = $this->get($key)))) {
@@ -60,7 +71,10 @@ class VCache
     }
 
 
-    public function getAllCacheData()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getAllCacheData(): array
     {
         $this->loadKeys();
         sort($this->keys);
@@ -77,12 +91,12 @@ class VCache
     }
 
 
-    public function get($key)
+    public function get(string $key): mixed
     {
         return $this->driver->get($key);
     }
 
-    public function set($key, $value)
+    public function set(string $key, mixed $value): bool
     {
         if (!$this->enabled) {
             return true;
@@ -99,14 +113,20 @@ class VCache
         return $success;
     }
 
-    private function loadKeys()
+    private function loadKeys(): void
     {
         $cached = $this->get($this->keys_key);
-        $this->keys = ($cached) ? $cached : [];
+        if (is_array($cached)) {
+            /** @var list<string> $keys */
+            $keys = array_values(array_map(static fn (mixed $k): string => (string) $k, $cached));
+            $this->keys = $keys;
+        } else {
+            $this->keys = [];
+        }
     }
 
 
-    private function updateKeys($key = null)
+    private function updateKeys(?string $key = null): void
     {
         if ($key !== null) {
             $this->loadKeys();
@@ -118,7 +138,7 @@ class VCache
         $this->driver->set($this->keys_key, $this->keys);
     }
 
-    public function init()
+    public function init(): void
     {
         $this->driver->init();
     }

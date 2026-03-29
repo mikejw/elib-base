@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Empathy\ELib;
 
+use Empathy\MVC\Bootstrap;
 use Empathy\MVC\Controller as MvcController;
 use Empathy\MVC\DI;
 
 class EController extends MvcController
 {
     /** @var list<string>|null */
-    protected $elib_tpl_dirs;
+    protected ?array $elib_tpl_dirs;
 
-    public function __construct($boot)
+    public function __construct(Bootstrap $boot)
     {
         parent::__construct($boot);
 

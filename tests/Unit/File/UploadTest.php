@@ -6,9 +6,7 @@ use Empathy\ELib\File\Upload;
 use Empathy\MVC\Config;
 
 describe('ELib File Upload', function () {
-    $file = null;
-
-    beforeEach(function () use (&$file) {
+    beforeEach(function () {
         $base = dirname(__DIR__, 3);
 
         $_FILES = [
@@ -22,11 +20,10 @@ describe('ELib File Upload', function () {
         ];
 
         Config::store('DOC_ROOT', $base.'/tests/tmp');
-
-        $file = new Upload(false);
     });
 
-    test('upload', function () use (&$file) {
+    test('upload', function () {
+        $file = new Upload(false);
         $file->upload();
         expect($file->getError())->toBe('');
         expect($file->remove([$file->file]))->toBe(1);

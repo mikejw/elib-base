@@ -8,6 +8,14 @@ declare(strict_types=1);
 
 namespace Pheanstalk;
 
+class ReservedJob
+{
+    public function getData(): string
+    {
+        return '';
+    }
+}
+
 class Pheanstalk
 {
     public function __construct(mixed $host)
@@ -33,14 +41,9 @@ class Pheanstalk
         return $this;
     }
 
-    public function reserve(): object
+    public function reserve(): ReservedJob
     {
-        return new class () {
-            public function getData(): string
-            {
-                return '';
-            }
-        };
+        return new ReservedJob();
     }
 
     public function delete(object $job): void

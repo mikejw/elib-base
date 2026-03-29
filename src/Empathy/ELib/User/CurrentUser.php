@@ -20,22 +20,24 @@ use TypeError;
 class CurrentUser
 {
     protected ?UserItem $u = null;
-    protected $user_id;
-    protected $loaded = false;
+
+    protected mixed $user_id = null;
+
+    protected bool $loaded = false;
 
     // must return true
     // to carry on with default behaviour
-    protected function loginSuccess(UserItem $u)
+    protected function loginSuccess(UserItem $u): bool
     {
         return true;
     }
 
-    protected function logoutSuccess(?UserItem $u)
+    protected function logoutSuccess(?UserItem $u): bool
     {
         return true;
     }
 
-    protected function postRegister(UserItem $u)
+    protected function postRegister(UserItem $u): bool
     {
         return true;
     }
@@ -73,7 +75,7 @@ class CurrentUser
         return $resolved;
     }
 
-    public function detectUser($ctrl = null)
+    public function detectUser(mixed $ctrl = null): void
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
         if ($this->loaded) {
@@ -92,7 +94,7 @@ class CurrentUser
         }
     }
 
-    public function assertAdmin($ctrl = null)
+    public function assertAdmin(mixed $ctrl = null): void
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
         $ua = new UserAccess();
@@ -102,7 +104,7 @@ class CurrentUser
         }
     }
 
-    public function isAdmin(UserItem $u)
+    public function isAdmin(UserItem $u): bool
     {
         $admin = false;
         $ua = new UserAccess();
@@ -112,7 +114,7 @@ class CurrentUser
         return $admin;
     }
 
-    public function getUserID()
+    public function getUserID(): int
     {
         if ($this->u === null) {
             return 0;
@@ -121,20 +123,20 @@ class CurrentUser
     }
 
     #[\Deprecated(message: 'use isLoggedIn() instead', since: '1.0.1')]
-    public function loggedIn()
+    public function loggedIn(): bool
     {
         return $this->isLoggedIn();
     }
 
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return ($this->getUserID() > 0);
     }
 
     #[\Deprecated(message: 'no longer standard property', since: '4.0.2')]
-    public function getProfileID()
+    public function getProfileID(): ?int
     {
-        return $this->u->user_profile_id;
+        return $this->u?->user_profile_id;
     }
 
     public function getUser(): ?UserItem
@@ -147,23 +149,31 @@ class CurrentUser
         $this->u = $user;
     }
 
-    public function isAuthLevel($level)
+    public function isAuthLevel(int $level): bool
     {
-        return ($this->u->auth >= $level);
+        return $this->u !== null && $this->u->auth >= $level;
     }
 
-    public function setUserID($id)
+    public function setUserID(int $id): void
     {
+        if ($this->u === null) {
+            throw new LogicException('No user loaded');
+        }
         $this->u->id = $id;
     }
 
-    public function doLogin($username, $password, $initSession = true, $model = null)
+    /**
+     * @return array{array<int|string, string>, UserItem}
+     */
+    public function doLogin(string $username, string $password, bool $initSession = true, mixed $model = null): array
     {
         $user_id = 0;
         if ($model !== null && !is_string($model)) {
             throw new TypeError('UserModel must be a class-string referring to '.UserItem::class);
         }
-        $user = self::assertUserItem(Model::load(self::resolveUserModelClass($model)));
+        /** @var class-string<UserItem>|null $modelClass */
+        $modelClass = is_string($model) ? $model : null;
+        $user = self::assertUserItem(Model::load(self::resolveUserModelClass($modelClass)));
         $user->username = $username;
         $user->password = $password;
 
@@ -195,7 +205,7 @@ class CurrentUser
         return [$errors, $user];
     }
 
-    public function doLogout()
+    public function doLogout(): bool
     {
         $user = $this->getUser();
         Session::down();
@@ -206,7 +216,7 @@ class CurrentUser
         }
     }
 
-    public function sendConfirmationEmail(UserItem $u, $reg_code)
+    public function sendConfirmationEmail(UserItem $u, string $reg_code): ?bool
     {
         if (
             ELibConfig::get('EMAIL_ORGANISATION') &&
@@ -228,27 +238,32 @@ class CurrentUser
             $_POST['subject'] = 'Registration with ' . ELibConfig::get('EMAIL_ORGANISATION');
             $service = DI::getContainer()->get('Contact');
             if ($service->prepareDispatch($u->id)) {
-                $service->dispatchEmail($u->fullname);
+                $service->dispatchEmail((string) $u->fullname);
                 $service->persist();
                 return true;
             }
         }
+
+        return null;
     }
 
+    /**
+     * @return array{array<int|string, string>, UserItem, ShippingAddress|\stdClass}
+     */
     public function doRegister(
-        $supply_address,
-        $username,
-        $email,
-        $fullname,
-        $first_name,
-        $last_name,
-        $address1,
-        $address2,
-        $city,
-        $state,
-        $zip,
-        $country
-    ) {
+        bool $supply_address,
+        string $username,
+        string $email,
+        string $fullname,
+        string $first_name,
+        string $last_name,
+        string $address1,
+        string $address2,
+        string $city,
+        string $state,
+        string $zip,
+        string $country
+    ): array {
         $errors = [];
         $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $u->username = $username;
@@ -291,8 +306,13 @@ class CurrentUser
 
         } else {
             $makePasswd = \defined('MAKEPASSWD') ? (string) \constant('MAKEPASSWD') : 'mkpasswd';
-            $password = exec($makePasswd.' --chars=8');
-            $reg_code = exec($makePasswd.' --chars=16');
+            exec($makePasswd.' --chars=8', $pwOut);
+            exec($makePasswd.' --chars=16', $regOut);
+            $password = $pwOut[0] ?? '';
+            $reg_code = $regOut[0] ?? '';
+            if ($reg_code === '') {
+                throw new \RuntimeException('Could not generate registration code');
+            }
             $u->password = $password;
             $u->reg_code = md5($reg_code);
             $u->auth = 0;
@@ -317,7 +337,7 @@ class CurrentUser
         return [$errors, $u, $s ?? new \stdClass()];
     }
 
-    public function doConfirmReg($reg_code)
+    public function doConfirmReg(string $reg_code): ?bool
     {
         $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $id = $u->findUserForActivation($reg_code);
@@ -356,17 +376,22 @@ class CurrentUser
             $service = DI::getContainer()->get('Contact');
 
             if ($this->postRegister($u) && $service->prepareDispatch($u->id)) {
-                $service->dispatchEmail($u->fullname);
+                $service->dispatchEmail((string) $u->fullname);
                 return true;
             }
         }
+
+        return null;
     }
 
+    /**
+     * @return array<int|string, string>
+     */
     public function doChangePassword(
-        $old_password,
-        $password1,
-        $password2
-    ) {
+        string $old_password,
+        string $password1,
+        string $password2
+    ): array {
         $errors = [];
         $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $u->load(Session::get('user_id'));
@@ -398,10 +423,10 @@ class CurrentUser
         return $errors;
     }
 
-    public function denyNotAdmin()
+    public function denyNotAdmin(): void
     {
         $ua = new UserAccess();
-        if ($this->u->auth < $ua->getLevel('admin')) {
+        if ($this->u === null || $this->u->auth < $ua->getLevel('admin')) {
             throw new RequestException('Denied', RequestException::NOT_AUTHORIZED);
         }
     }

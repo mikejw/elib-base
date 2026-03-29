@@ -12,19 +12,22 @@ use Empathy\ELib\File;
  */
 class GImage extends File
 {
-    private $lastImage;
+    private ?\Imagick $lastImage = null;
 
-    public function create()
+    public function create(): void
     {
         $this->orig = new \Imagick($this->target);
         $this->origX = $this->orig->getimagewidth();
         $this->origY = $this->orig->getimageheight();
     }
 
-    public function spawn($newX, $newY, $prefix, $quality)
+    public function spawn(float|int $newX, float|int $newY, string $prefix, int $quality): void
     {
         $newX = (int)floor($newX);
         $newY = (int) floor($newY);
+        if (!$this->orig instanceof \Imagick) {
+            throw new \RuntimeException('Expected Imagick source');
+        }
         $this->lastImage = clone $this->orig;
         $newTarget = $this->target_dir.$prefix.$this->filename;
         $this->lastImage->resizeimage($newX, $newY, \Imagick::FILTER_UNDEFINED, 1);
@@ -32,7 +35,7 @@ class GImage extends File
         $this->destroy($this->lastImage);
     }
 
-    public function destroy($image = null)
+    public function destroy(mixed $image = null): void
     {
         if ($image === null) {
             $this->orig->destroy();

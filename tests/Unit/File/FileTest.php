@@ -6,9 +6,7 @@ use Empathy\ELib\File;
 use Empathy\MVC\Config;
 
 describe('ELib File', function () {
-    $file = null;
-
-    beforeEach(function () use (&$file) {
+    beforeEach(function () {
         $base = dirname(__DIR__, 3);
 
         $_FILES = [
@@ -27,17 +25,17 @@ describe('ELib File', function () {
             mkdir($uploadsDir, 0777, true);
         }
         Config::store('DOC_ROOT', $fakeDocRoot);
-
-        $file = new File('', false, []);
     });
 
-    test('upload', function () use (&$file) {
+    test('upload', function () {
+        $file = new File('', false, []);
         $file->upload();
         expect($file->getError())->toBe('');
         expect($file->remove([$file->filename]))->toBe(1);
     });
 
-    test('derived', function () use (&$file) {
+    test('derived', function () {
+        $file = new File('', false, []);
         $file->upload();
         $deriv = [
             ['l_', 800, 600],

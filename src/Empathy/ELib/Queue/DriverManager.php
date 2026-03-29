@@ -6,7 +6,7 @@ namespace Empathy\ELib\Queue;
 
 class DriverManager
 {
-    public static function load($h, $name = null)
+    public static function load(string $h, ?string $name = null): ?Driver
     {
         $driver = null;
 

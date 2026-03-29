@@ -11,7 +11,7 @@ class UserAccess
     public const ADMIN = 2;
     public const SUPER_ADMIN = 3;
 
-    public function getLevel($name)
+    public function getLevel(string $name): int
     {
         $c = get_class($this);
         $level = @constant($c.'::'.strtoupper($name));

@@ -6,9 +6,7 @@ use Empathy\ELib\File\GImage;
 use Empathy\MVC\Config;
 
 describe('ELib File GImage', function () {
-    $file = null;
-
-    beforeEach(function () use (&$file) {
+    beforeEach(function () {
         $base = dirname(__DIR__, 3);
 
         $_FILES = [
@@ -28,16 +26,17 @@ describe('ELib File GImage', function () {
         }
 
         Config::store('DOC_ROOT', $fakeDocRoot);
-        $file = new GImage('', false, []);
     });
 
-    test('upload', function () use (&$file) {
+    test('upload', function () {
+        $file = new GImage('', false, []);
         $file->upload();
         expect($file->getError())->toBe('');
         expect($file->remove([$file->filename]))->toBe(1);
     });
 
-    test('derived', function () use (&$file) {
+    test('derived', function () {
+        $file = new GImage('', false, []);
         $file->upload();
         $deriv = [
             ['l_', 800, 600],

@@ -6,7 +6,7 @@ namespace Empathy\ELib\Plugin;
 
 class SmartyResourceELib extends \Smarty_Internal_Resource_File
 {
-    protected function buildFilepath(\Smarty_Template_Source $source, ?\Smarty_Internal_Template $_template = null)
+    protected function buildFilepath(\Smarty_Template_Source $source, ?\Smarty_Internal_Template $_template = null): string|false
     {
         $file = ltrim($source->name, '/');
         $tplDir = $source->smarty->getTemplateDir(null, $source->isConfig)[0];

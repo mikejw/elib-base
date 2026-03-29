@@ -9,10 +9,14 @@ use Empathy\MVC\FileContentsCache;
 
 class Libs
 {
-    private static $installed_libs = [];
-    private static $store_active = false;
+    /**
+     * @var list<array{name: string, deps: list<string>, score: int, dir: string}>
+     */
+    private static array $installed_libs = [];
 
-    private static function testE($name)
+    private static bool $store_active = false;
+
+    private static function testE(string $name): bool
     {
         return (
             strpos($name, 'mikejw/elib-') === 0 ||
@@ -20,7 +24,10 @@ class Libs
         );
     }
 
-    public static function findAll($doc_root = null)
+    /**
+     * @return list<string>
+     */
+    public static function findAll(?string $doc_root = null): array
     {
         self::$installed_libs = [];
         if ($doc_root === null) {
@@ -88,7 +95,10 @@ class Libs
         }, self::$installed_libs);
     }
 
-    public static function detect()
+    /**
+     * @return list<string>
+     */
+    public static function detect(): array
     {
         self::findAll();
         return array_reverse(
@@ -98,7 +108,10 @@ class Libs
         );
     }
 
-    public static function getInstalled()
+    /**
+     * @return list<string>
+     */
+    public static function getInstalled(): array
     {
         $names = [];
         foreach (self::$installed_libs as $item) {
@@ -107,12 +120,15 @@ class Libs
         return $names;
     }
 
-    public static function getStoreActive()
+    public static function getStoreActive(): bool
     {
         return self::$store_active;
     }
 
-    public static function getMappedLibNames()
+    /**
+     * @return array<string, string>
+     */
+    public static function getMappedLibNames(): array
     {
 
         $mapped = [];

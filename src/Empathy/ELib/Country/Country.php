@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Empathy\ELib\Country;
 
-define('SOURCE', dirname(realpath(__FILE__)).'/countries.html');
+define('SOURCE', __DIR__.'/countries.html');
 
 class Country
 {
-    private static $europeanCountryCodes = [
+    /** @var list<string> */
+    private static array $europeanCountryCodes = [
         'AL', // Albania
         'AD', // Andorra
         'AM', // Armenia
@@ -61,12 +62,15 @@ class Country
         'VA', // Holy See
     ];
 
-    public static function isEurope($code)
+    public static function isEurope(string $code): bool
     {
         return in_array($code, self::$europeanCountryCodes, true);
     }
 
-    public static function build()
+    /**
+     * @return array<string, string>
+     */
+    public static function build(): array
     {
         //$pathToEmp = explode('empathy', __FILE__);
         //if(($fp = @fopen($pathToEmp[0].SOURCE, 'r')) == false)
@@ -113,8 +117,8 @@ class Country
                     }
                     $format = implode(' ', $format_arr);
                     $format = str_replace('\n', '', $format);
-                    $format = preg_replace('/ $/', '', $format);
-                    $format = preg_replace('/^ */', '', $format);
+                    $format = (string) preg_replace('/ $/', '', $format);
+                    $format = (string) preg_replace('/^ */', '', $format);
                     $country['name'][$j] = $format;
                     $k++;
                 } else {
@@ -131,7 +135,9 @@ class Country
 
         $built = [];
         foreach ($country['code'] as $index => $value) {
-            $built[preg_replace('/[^\w]/', '', $value)] = trim($country['name'][$index]);
+            $codeKey = (string) preg_replace('/[^\w]/', '', $value);
+            $name = $country['name'][$index] ?? '';
+            $built[$codeKey] = trim((string) $name);
         }
 
         return $built;

@@ -8,9 +8,11 @@ use Empathy\ELib\YAML;
 
 class Job
 {
-    private $id;
-    private $queued_at;
-    private $body;
+    private mixed $id = null;
+
+    private mixed $queued_at = null;
+
+    private mixed $body = null;
 
     /*
       private $time_to_run;
@@ -18,13 +20,19 @@ class Job
       private $delay;
     */
 
-    private $data;
-    private $data_s;
+    private mixed $data = null;
 
-    private $tube;
-    private $serialized_vars;
+    private mixed $data_s = null;
 
-    public function __construct($args)
+    private mixed $tube = null;
+
+    /** @var list<string> */
+    private array $serialized_vars = [];
+
+    /**
+     * @param list<mixed> $args
+     */
+    public function __construct(array $args)
     {
         $this->serialized_vars = [
             'id', 'queued_at', 'body', 'tube'];
@@ -38,7 +46,7 @@ class Job
         }
     }
 
-    public function init($body, $tube)
+    public function init(mixed $body, ?string $tube): void
     {
         $this->tube = $tube;
         $this->id = uniqid();
@@ -47,33 +55,33 @@ class Job
         $this->serialize();
     }
 
-    public function initEmpty($data)
+    public function initEmpty(mixed $data): void
     {
         $this->setData($data);
         $this->deserialize();
     }
 
-    public function setData($data)
+    public function setData(mixed $data): void
     {
         $this->data_s = $data;
     }
 
-    public function getTube()
+    public function getTube(): mixed
     {
         return $this->tube;
     }
 
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->body;
     }
 
-    public function getID()
+    public function getID(): mixed
     {
         return $this->id;
     }
 
-    public function serialize()
+    public function serialize(): void
     {
         $data = [];
         foreach ($this->serialized_vars as $v) {
@@ -82,12 +90,12 @@ class Job
         $this->data_s = YAML::dump($data);
     }
 
-    public function getSerialized()
+    public function getSerialized(): mixed
     {
         return $this->data_s;
     }
 
-    public function deserialize()
+    public function deserialize(): void
     {
         $data = YAML::loadString($this->data_s);
         foreach ($this->serialized_vars as $v) {

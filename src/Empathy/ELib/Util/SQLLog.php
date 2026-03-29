@@ -9,7 +9,7 @@ use Empathy\MVC\Config;
 
 class SQLLog
 {
-    public static function log($data)
+    public static function log(mixed $data): void
     {
         $queries = YAML::load(Config::get('DOC_ROOT').'/logs/sql_log');
         $queries[] = $data;

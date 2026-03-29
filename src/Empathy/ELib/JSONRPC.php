@@ -7,7 +7,7 @@ namespace Empathy\ELib;
 class JSONRPC extends Curl
 {
     // based on REST
-    public function configure()
+    public function configure(): void
     {
         if ($this->auth) {
             $auth_string = $this->user.':'.$this->pass;

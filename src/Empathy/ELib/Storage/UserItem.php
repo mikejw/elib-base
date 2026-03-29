@@ -12,20 +12,32 @@ class UserItem extends Entity
     public const TABLE = 'user';
 
     public int $id;
-    public ?int $user_profile_id = null;
-    public $email;
-    public $auth;
-    public $username;
-    public $password;
-    public $reg_code;
-    public $active;
-    public $registered;
-    public $activated;
-    public $fullname;
-    public $picture;
-    public $about;
 
-    public function validates($email_check = true)
+    public ?int $user_profile_id = null;
+
+    public mixed $email = null;
+
+    public mixed $auth = null;
+
+    public mixed $username = null;
+
+    public mixed $password = null;
+
+    public mixed $reg_code = null;
+
+    public mixed $active = null;
+
+    public mixed $registered = null;
+
+    public mixed $activated = null;
+
+    public mixed $fullname = null;
+
+    public mixed $picture = null;
+
+    public mixed $about = null;
+
+    public function validates(bool $email_check = true): void
     {
         if ($this->doValType(Validate::USERNAME, 'username', $this->username, false)) {
             if ($this->usernameExists()) {
@@ -48,20 +60,20 @@ class UserItem extends Entity
         $this->doValType(Validate::TEXT, 'about', $this->about, true);
     }
 
-    public function validateLogin()
+    public function validateLogin(): void
     {
         $this->doValType(Validate::USERNAME, 'username', $this->username, false);
         $this->validatePassword();
     }
 
 
-    public function validatePassword()
+    public function validatePassword(): void
     {
         $this->doValType(Validate::TEXT, 'password', $this->password, false);
     }
 
 
-    public function getUsername($id)
+    public function getUsername(int|string $id): mixed
     {
         $table = $this::TABLE;
         $params = [];
@@ -74,14 +86,14 @@ class UserItem extends Entity
         return $row['username'];
     }
 
-    public function buildInvalid($username, $password)
+    public function buildInvalid(string $username, string $password): void
     {
         $this->id = 0;
         $this->username = $username;
         $this->password = $password;
     }
 
-    public function getID($username, $password = null)
+    public function getID(string $username, ?string $password = null): int
     {
         $table = $this::TABLE;
         $params = [];
@@ -101,7 +113,7 @@ class UserItem extends Entity
         }
     }
 
-    public function oAuthSignIn($username, $name, $image)
+    public function oAuthSignIn(string $username, string $name, string $image): int
     {
         $user_id = 0;
         if (($this->id = $this->getID($username))) {
@@ -138,7 +150,7 @@ class UserItem extends Entity
      * User should not need to know exact casing of username (like twitter).
      * This is handled by DB.
      */
-    public function login()
+    public function login(): int
     {
         $table = $this::TABLE;
         $user_id = 0;
@@ -161,7 +173,7 @@ class UserItem extends Entity
         return $user_id;
     }
 
-    public function getAuth($id)
+    public function getAuth(int|string $id): mixed
     {
         $table = $this::TABLE;
         $params = [];
@@ -178,7 +190,7 @@ class UserItem extends Entity
         return $auth;
     }
 
-    public function findUserForActivation($reg_code)
+    public function findUserForActivation(string $reg_code): int
     {
         $table = $this::TABLE;
         $params = [];
@@ -197,7 +209,7 @@ class UserItem extends Entity
         return $user_id;
     }
 
-    protected function activeUser()
+    protected function activeUser(): int
     {
         $table = $this::TABLE;
         $params = [];
@@ -218,7 +230,7 @@ class UserItem extends Entity
         return $active;
     }
 
-    protected function usernameExists()
+    protected function usernameExists(): int
     {
         $table = $this::TABLE;
         $params = [];

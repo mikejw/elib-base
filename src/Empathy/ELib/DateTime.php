@@ -6,38 +6,52 @@ namespace Empathy\ELib;
 
 class DateTime
 {
-    private $time;
-    private $mysql_time;
-    private $day;
-    private $month;
-    private $year;
+    private int $time = 0;
 
-    private $hour;
-    private $minute;
-    private $second;
-    private $last_day;
-    private $dow;
-    private $valid;
+    private string $mysql_time = '';
 
-    private static $length = [31, 28, 31, 30, 31, 30,
-                                   31, 31, 30, 31, 30, 31];
+    private int $day = 0;
 
-    public function __construct($time = [], $do_init = true)
+    private int $month = 0;
+
+    private int $year = 0;
+
+    private int $hour = 0;
+
+    private int $minute = 0;
+
+    private int $second = 0;
+
+    private int $last_day = 0;
+
+    private int $dow = 0;
+
+    private ?bool $valid = null;
+
+    /** @var list<int> */
+    private static array $length = [31, 28, 31, 30, 31, 30,
+        31, 31, 30, 31, 30, 31];
+
+    /**
+     * @param array<int|string, mixed> $time
+     */
+    public function __construct(array $time = [], bool $do_init = true)
     {
         if (sizeof($time) === 0) {
             $this->time = time();
         } elseif (sizeof($time) === 1) {
-            $this->time = $time[0];
+            $this->time = (int) $time[0];
         } else {
-            $this->valid = checkdate($time['month'], $time['day'], $time['year']);
-            $this->time = mktime(
-                $time['hour'],
-                $time['minute'],
-                $time['second'],
-                $time['month'],
-                $time['day'],
-                $time['year']
+            $this->valid = checkdate((int) $time['month'], (int) $time['day'], (int) $time['year']);
+            $t = mktime(
+                (int) $time['hour'],
+                (int) $time['minute'],
+                (int) $time['second'],
+                (int) $time['month'],
+                (int) $time['day'],
+                (int) $time['year']
             );
+            $this->time = $t !== false ? $t : time();
         }
 
         if ($do_init) {
@@ -45,30 +59,34 @@ class DateTime
         }
     }
 
-    public function getValid()
+    public function getValid(): ?bool
     {
         return $this->valid;
     }
 
-    public function getTime()
+    public function getTime(): int
     {
         return $this->time;
     }
 
-    public function init()
+    public function init(): void
     {
         $this->mysql_time = date('Y:m:d H:i:s', $this->time);
-        list($date, $time) = explode(' ', $this->mysql_time);
-        list($this->year, $this->month, $this->day) = explode(':', $date);
-        list($this->hour, $this->minute, $this->second) = explode(':', $time);
-
-        $this->day = (int) $this->day;
+        list($date, $clock) = explode(' ', $this->mysql_time);
+        list($y, $mo, $dayStr) = explode(':', $date);
+        $this->year = (int) $y;
+        $this->month = (int) $mo;
+        $this->day = (int) $dayStr;
+        list($h, $mi, $s) = explode(':', $clock);
+        $this->hour = (int) $h;
+        $this->minute = (int) $mi;
+        $this->second = (int) $s;
 
         $this->setLastDay();
-        $this->dow = date('N', $this->time);
+        $this->dow = (int) date('N', $this->time);
     }
 
-    public function setLastDay()
+    public function setLastDay(): void
     {
         $last_day = self::$length[$this->month - 1];
         if ($this->month === 2 && ($this->year % 400 === 0 || ($this->year % 4 === 0 && $this->year % 100 !== 0))) {
@@ -77,59 +95,59 @@ class DateTime
         $this->last_day = $last_day;
     }
 
-    public function getLastDay()
+    public function getLastDay(): int
     {
         return $this->last_day;
     }
 
-    public function getDay()
+    public function getDay(): int
     {
         return $this->day;
     }
 
-    public function getMonth()
+    public function getMonth(): int
     {
         return $this->month;
     }
 
-    public function getMonthText()
+    public function getMonthText(): string
     {
         return date('F', $this->time);
     }
 
-    public function getYear()
+    public function getYear(): int
     {
         return $this->year;
     }
 
-    public function getHour()
+    public function getHour(): int
     {
         return $this->hour;
     }
 
-    public function getMinute()
+    public function getMinute(): int
     {
         return $this->minute;
     }
 
-    public function getSecond()
+    public function getSecond(): int
     {
         return $this->second;
     }
 
-    public function getDayOfWeek()
+    public function getDayOfWeek(): int
     {
         return $this->dow;
     }
 
-    public function getMySQLTime()
+    public function getMySQLTime(): string
     {
         return $this->mysql_time;
     }
 
-    public function resetToFirst()
+    public function resetToFirst(): void
     {
-        $this->time = mktime(
+        $t = mktime(
             $this->hour,
             $this->minute,
             $this->second,
@@ -137,12 +155,13 @@ class DateTime
             1,
             $this->year
         );
+        $this->time = $t !== false ? $t : $this->time;
         $this->init();
     }
 
-    public function resetToLast()
+    public function resetToLast(): void
     {
-        $this->time = mktime(
+        $t = mktime(
             $this->hour,
             $this->minute,
             $this->second,
@@ -150,45 +169,49 @@ class DateTime
             $this->getLastDay(),
             $this->year
         );
+        $this->time = $t !== false ? $t : $this->time;
         $this->init();
     }
 
-    public function adjustMonth($offset)
+    public function adjustMonth(int $offset): void
     {
-        $this->time = mktime(
+        $t = mktime(
             $this->hour,
             $this->minute,
             $this->second,
-            ($this->month + $offset),
+            $this->month + $offset,
             $this->day,
             $this->year
         );
+        $this->time = $t !== false ? $t : $this->time;
         $this->init();
     }
 
-    public function adjustDay($offset)
+    public function adjustDay(int $offset): void
     {
-        $this->time = mktime(
+        $t = mktime(
             $this->hour,
             $this->minute,
             $this->second,
             $this->month,
-            ($this->day + $offset),
+            $this->day + $offset,
             $this->year
         );
+        $this->time = $t !== false ? $t : $this->time;
         $this->init();
     }
 
-    public function adjustMinute($offset)
+    public function adjustMinute(int $offset): void
     {
-        $this->time = mktime(
+        $t = mktime(
             $this->hour,
             $this->minute + $offset,
             $this->second,
             $this->month,
-            ($this->day),
+            $this->day,
             $this->year
         );
+        $this->time = $t !== false ? $t : $this->time;
         $this->init();
     }
 

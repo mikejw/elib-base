@@ -10,16 +10,27 @@ use PHPMailer\PHPMailer\SMTP;
 
 class Mailer
 {
-    private $recipients;
-    private $subject;
-    private $message;
-    private $from;
-    private $mailer;
-    private $html;
-    public $result;
+    /** @var list<array{alias: string, address: string}> */
+    private array $recipients;
 
+    private string $subject;
 
-    public function __construct($r, $s, $m, $f = null, $html = false)
+    private string $message;
+
+    /** @var array{address: string, alias: string}|null */
+    private ?array $from = null;
+
+    private ?PHPMailer $mailer = null;
+
+    private bool $html = false;
+
+    public int $result = 1;
+
+    /**
+     * @param list<array{alias: string, address: string}> $r
+     * @param array{address: string, alias: string}|null  $f
+     */
+    public function __construct(array $r, string $s, string $m, ?array $f = null, bool $html = false)
     {
         $this->recipients = $r;
         $this->subject = $s;
@@ -30,7 +41,7 @@ class Mailer
         $this->send();
     }
 
-    private function init()
+    private function init(): void
     {
         $this->mailer = new PHPMailer(true); // allow exceptions
         $this->mailer->IsSMTP();
@@ -54,18 +65,23 @@ class Mailer
         }
     }
 
-    public function send()
+    public function send(): void
     {
         try {
-            foreach ($this->recipients as $index => $r) {
+            foreach ($this->recipients as $r) {
                 $this->init();
-                $this->mailer->Body = str_replace('___', $r['alias'], $this->message);
-                $this->mailer->addAddress($r['address'], $r['alias']);
-                $this->mailer->send();
+                $mailer = $this->mailer;
+                if (!$mailer instanceof PHPMailer) {
+                    throw new \RuntimeException('PHPMailer failed to initialise');
+                }
+                $mailer->Body = str_replace('___', $r['alias'], $this->message);
+                $mailer->addAddress($r['address'], $r['alias']);
+                $mailer->send();
             }
         } catch (Exception $e) {
             $this->result = 0;
-            throw new \Exception("{$this->mailer->ErrorInfo}");
+            $errorInfo = $this->mailer->ErrorInfo;
+            throw new \Exception($errorInfo !== '' ? $errorInfo : $e->getMessage());
         }
     }
 }

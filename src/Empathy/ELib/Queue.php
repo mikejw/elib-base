@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Empathy\ELib;
 
+use Empathy\ELib\Queue\Driver;
 use Empathy\ELib\Queue\DriverManager;
 use Empathy\ELib\Queue\Job;
 use Empathy\ELib\Queue\Stats;
@@ -12,29 +13,34 @@ class Queue
 {
     public const DEFAULT_DRIVER = 'pheanstalk';
 
-    private $driver;
-    private $tube;
+    private Driver $driver;
 
-    public function __construct($host, $tube = null, $driver_name = null)
+    private ?string $tube = null;
+
+    public function __construct(string $host, ?string $tube = null, ?string $driver_name = null)
     {
         $this->tube = $tube;
-        $this->driver = DriverManager::load($host, $driver_name);
+        $driver = DriverManager::load($host, $driver_name);
+        if ($driver === null) {
+            throw new \RuntimeException('Queue driver could not be loaded');
+        }
+        $this->driver = $driver;
     }
 
-    public function setTube($tube)
+    public function setTube(string $tube): self
     {
         $this->tube = $tube;
 
         return $this;
     }
 
-    public function put($job_data)
+    public function put(mixed $job_data): void
     {
         $j = new Job([$job_data, $this->tube]);
         $this->driver->put($j);
     }
 
-    public static function getStats()
+    public static function getStats(): mixed
     {
         return Stats::retrieve('stats');
     }
