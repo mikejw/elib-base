@@ -20,7 +20,7 @@ class EController extends CustomController
 
         if (isset($this->elib_tpl_dirs) && sizeof($this->elib_tpl_dirs) > 1) {
             $this->assign('elibtpl_arr', $this->elib_tpl_dirs);
-        } else {
+        } else if (count($this->elib_tpl_dirs) === 1) {
             $this->assign('elibtpl', $this->elib_tpl_dirs[0]);
         }
 
