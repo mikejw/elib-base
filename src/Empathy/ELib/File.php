@@ -34,8 +34,6 @@ class File
     public $quality;
     public $gallery;
     private $fs_depth;
-    private $fs_dpeth_prefix;
-
 
     // taken from http://php.net/manual/en/features.file-upload.multiple.php
     public static function reArrayFiles(&$file_post)
@@ -194,6 +192,7 @@ class File
         return $imgInfo['mime'];
     }
 
+    /** @phpstan-impure */
     public function upload()
     {
         if ($_FILES['file']['name'] === '' || $_FILES['file']['error'] === 1) {

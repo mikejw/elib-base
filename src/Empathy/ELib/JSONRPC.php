@@ -16,8 +16,8 @@ class JSONRPC extends Curl
         }
 
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->post_fields);
-        curl_setopt($this->ch, CURLOPT_POST, 1);
+        curl_setopt($this->ch, CURLOPT_POST, true);
         curl_setopt($this->ch, CURLOPT_URL, $this->url);
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 }

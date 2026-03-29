@@ -13,9 +13,9 @@ class REST extends Curl
             curl_setopt($this->ch, CURLOPT_USERPWD, $auth_string);
         }
 
-        curl_setopt($this->ch, CURLOPT_POST, 0);
+        curl_setopt($this->ch, CURLOPT_POST, false);
         curl_setopt($this->ch, CURLOPT_URL, $this->url);
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
     private function assign_post_params()
@@ -26,7 +26,7 @@ class REST extends Curl
 
     public function configure_post()
     {
-        curl_setopt($this->ch, CURLOPT_POST, 1);
+        curl_setopt($this->ch, CURLOPT_POST, true);
         $this->assign_post_params();
     }
 

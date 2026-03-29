@@ -51,8 +51,7 @@ class VCache
         } else {
             $data = call_user_func_array($callback, $callback_params);
             if ($setOnFail) {
-                if ($data !== false ||
-                    ($data === false && $setOnFalse === true)) {
+                if ($data !== false || $setOnFalse) {
                     $this->set($key, $data);
                 }
             }

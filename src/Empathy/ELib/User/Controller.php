@@ -88,8 +88,8 @@ class Controller extends EController
             $username = strtolower($username);
             $email = $_POST['email'] ?? '';
             $fullname = $_POST['fullname'] ?? '';
-            $first_name = $_POST['first_name'] ?? '';
-            $last_name = $_POST['last_name'] ?? '';
+            $first_name = $_POST['first_name'];
+            $last_name = $_POST['last_name'];
             $address1 = $_POST['address1'] ?? '';
             $address2 = $_POST['address2'] ?? '';
             $city = $_POST['city'] ?? '';

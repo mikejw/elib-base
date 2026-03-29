@@ -58,6 +58,21 @@ class CurrentUser
         return $entity;
     }
 
+    /**
+     * @param class-string<UserItem>|null $override When null, use the DI container default
+     *
+     * @return class-string<UserItem>
+     */
+    private static function resolveUserModelClass(?string $override = null): string
+    {
+        $resolved = $override ?? DI::getContainer()->get('UserModel');
+        if (!is_string($resolved) || !is_a($resolved, UserItem::class, true)) {
+            throw new TypeError('UserModel must be a class-string referring to '.UserItem::class);
+        }
+
+        return $resolved;
+    }
+
     public function detectUser($ctrl = null)
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
@@ -65,13 +80,8 @@ class CurrentUser
             return;
         }
 
-        $model = DI::getContainer()->get('UserModel');
-        if (!is_string($model)) {
-            throw new TypeError('UserModel must be a class-string');
-        }
-
         $user_id = Session::get('user_id');
-        $this->u = self::assertUserItem(Model::load($model));
+        $this->u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
@@ -150,13 +160,10 @@ class CurrentUser
     public function doLogin($username, $password, $initSession = true, $model = null)
     {
         $user_id = 0;
-        if ($model === null) {
-            $model = DI::getContainer()->get('UserModel');
+        if ($model !== null && !is_string($model)) {
+            throw new TypeError('UserModel must be a class-string referring to '.UserItem::class);
         }
-        if (!is_string($model)) {
-            throw new TypeError('UserModel must be a class-string');
-        }
-        $user = self::assertUserItem(Model::load($model));
+        $user = self::assertUserItem(Model::load(self::resolveUserModelClass($model)));
         $user->username = $username;
         $user->password = $password;
 
@@ -243,12 +250,7 @@ class CurrentUser
         $country
     ) {
         $errors = [];
-        $model = DI::getContainer()->get('UserModel');
-        if (!is_string($model)) {
-            throw new TypeError('UserModel must be a class-string');
-        }
-
-        $u = self::assertUserItem(Model::load($model));
+        $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $u->username = $username;
         $u->email = $email;
 
@@ -317,11 +319,7 @@ class CurrentUser
 
     public function doConfirmReg($reg_code)
     {
-        $model = DI::getContainer()->get('UserModel');
-        if (!is_string($model)) {
-            throw new TypeError('UserModel must be a class-string');
-        }
-        $u = self::assertUserItem(Model::load($model));
+        $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $id = $u->findUserForActivation($reg_code);
 
         if ($id > 0) {
@@ -370,11 +368,7 @@ class CurrentUser
         $password2
     ) {
         $errors = [];
-        $model = DI::getContainer()->get('UserModel');
-        if (!is_string($model)) {
-            throw new TypeError('UserModel must be a class-string');
-        }
-        $u = self::assertUserItem(Model::load($model));
+        $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $u->load(Session::get('user_id'));
 
         if (!password_verify($old_password, $u->password)) {

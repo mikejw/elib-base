@@ -64,8 +64,8 @@ class Mailer
                 $this->mailer->send();
             }
         } catch (Exception $e) {
-            throw new \Exception("{$this->mailer->ErrorInfo}");
             $this->result = 0;
+            throw new \Exception("{$this->mailer->ErrorInfo}");
         }
     }
 }

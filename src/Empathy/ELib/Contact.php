@@ -10,7 +10,6 @@ use Empathy\MVC\Model;
 class Contact
 {
     private $entity;
-    private $controller;
 
     public function __construct()
     {
