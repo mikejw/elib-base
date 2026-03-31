@@ -133,12 +133,6 @@ class CurrentUser
         return ($this->getUserID() > 0);
     }
 
-    #[\Deprecated(message: 'no longer standard property', since: '4.0.2')]
-    public function getProfileID(): ?int
-    {
-        return $this->u?->user_profile_id;
-    }
-
     public function getUser(): ?UserItem
     {
         return $this->u;
