@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class Tree
 {
-    protected $markup;
-    protected $url;
+    protected string $markup = '';
 
-    public function getMarkup()
+    protected string $url = '';
+
+    public function getMarkup(): string
     {
         return $this->markup;
     }
 
     // taken from news controller
-    protected function truncate($desc, $max_length)
+    protected function truncate(string $desc, int $max_length): string
     {
         if (strlen($desc) > $max_length) {
             $char = 'A';
@@ -24,7 +27,7 @@ class Tree
                     $max_length--;
                 }
                 //echo $max_length;
-                $desc = substr($desc, 0, $max_length+1);
+                $desc = substr($desc, 0, $max_length + 1);
                 $desc = preg_replace('/\W$/', '', $desc).'...';
             }
         }

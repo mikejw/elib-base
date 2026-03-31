@@ -1,8 +1,11 @@
 <?php
 
-namespace Empathy\ELib;
-use Empathy\MVC\DI;
+declare(strict_types=1);
 
+namespace Empathy\ELib;
+
+use Empathy\MVC\Bootstrap;
+use Empathy\MVC\DI;
 
 /*
   user has logged in to be here...
@@ -10,7 +13,7 @@ use Empathy\MVC\DI;
 
 class AuthedController extends EController
 {
-    public function __construct($boot)
+    public function __construct(Bootstrap $boot)
     {
         parent::__construct($boot);
         if (!DI::getContainer()->get('CurrentUser')->loggedIn()) {
@@ -18,8 +21,8 @@ class AuthedController extends EController
         }
     }
 
-    protected function authFailed()
-    {       
+    protected function authFailed(): void
+    {
         $this->redirect('');
     }
 

@@ -1,26 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\VCache;
 
 abstract class Driver
 {
-    const DEF_D = 'memcached';
-    protected $host;
-    protected $port;
-    protected $name;
+    public const DEF_D = 'memcached';
 
-    public function __construct($name)
+    protected string $host = '';
+
+    protected int $port = 0;
+
+    protected string $name = '';
+
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    abstract public function load($h, $p);
+    abstract public function load(string $h, int $p): void;
 
-    abstract public function get($key);
+    abstract public function get(string $key): mixed;
 
-    abstract public function set($key, $value);
+    abstract public function set(string $key, mixed $value): bool;
 
-    abstract public function delete($key);
+    abstract public function delete(string $key): mixed;
+
+    abstract public function init(): void;
 
 
     /*

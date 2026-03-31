@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Country;
 
-define('SOURCE', dirname(realpath(__FILE__)).'/countries.html');
+define('SOURCE', __DIR__.'/countries.html');
 
 class Country
 {
-    private static $europeanCountryCodes = [
+    /** @var list<string> */
+    private static array $europeanCountryCodes = [
         'AL', // Albania
         'AD', // Andorra
         'AM', // Armenia
@@ -59,76 +62,84 @@ class Country
         'VA', // Holy See
     ];
 
-    public static function isEurope($code) {
-        return in_array($code, self::$europeanCountryCodes);
+    public static function isEurope(string $code): bool
+    {
+        return in_array($code, self::$europeanCountryCodes, true);
     }
 
-    public static function build()
+    /**
+     * @return array<string, string>
+     */
+    public static function build(): array
     {
         //$pathToEmp = explode('empathy', __FILE__);
         //if(($fp = @fopen($pathToEmp[0].SOURCE, 'r')) == false)
-        if (($fp = @fopen(SOURCE, 'r')) == false) {
+        if (($fp = @fopen(SOURCE, 'r')) === false) {
             echo 'Could not open source file.';
-        } else {
-            $i = 0;
-            $j = 0;
-            $k = 1;
-            while (($line = fgets($fp)) == true) {
-                if(!(
-                       preg_match('/^<table/', $line)
-                       ||
-                       preg_match('/<tr>/', $line)
-                       ||
-                       preg_match('/<\/td>/', $line)
-                       ||
-                       preg_match('/<\/tr>/', $line)
-                       ||
-                       preg_match('/<td/', $line)
-                       ||
-                       preg_match('/<tr/', $line)
-                       ||
-                       preg_match('/<\/table/', $line)
-                       ||
-                       preg_match('/^\n/', $line)
-                       ||
-                       preg_match('/\ see\ /', $line)
-                       ||
-                       preg_match('/\t\t/', $line)
-                       ))
 
-                {
-                    $format = strip_tags($line);
+            return [];
+        }
+        $country = ['code' => [], 'name' => []];
+        $i = 0;
+        $j = 0;
+        $k = 1;
+        while (($line = fgets($fp))) {
+            if (!(
+                preg_match('/^<table/', $line)
+                   ||
+                   preg_match('/<tr>/', $line)
+                   ||
+                   preg_match('/<\/td>/', $line)
+                   ||
+                   preg_match('/<\/tr>/', $line)
+                   ||
+                   preg_match('/<td/', $line)
+                   ||
+                   preg_match('/<tr/', $line)
+                   ||
+                   preg_match('/<\/table/', $line)
+                   ||
+                   preg_match('/^\n/', $line)
+                   ||
+                   preg_match('/\ see\ /', $line)
+                   ||
+                   preg_match('/\t\t/', $line)
+            )) {
+                $format = strip_tags($line);
 
-                    if ((($k+1) % 2) == 0) {
-                        $format = strtolower($format);
-                        $format_arr = explode(' ', $format);
-                        for ($l = 0; $l < sizeof($format_arr); $l++) {
-                            if ($format_arr[$l] !=  'and') {
-                                $format_arr[$l] = ucfirst($format_arr[$l]);
-                            }
+                if ((($k + 1) % 2) === 0) {
+                    $format = strtolower($format);
+                    $format_arr = explode(' ', $format);
+                    for ($l = 0; $l < sizeof($format_arr); $l++) {
+                        if ($format_arr[$l] !==  'and') {
+                            $format_arr[$l] = ucfirst($format_arr[$l]);
                         }
-                        $format = implode(' ', $format_arr);
-                        $format = str_replace('\n', '', $format);
-                        $format = preg_replace('/ $/', '', $format);
-                        $format = preg_replace('/^ */', '', $format);
-                        $country['name'][$j] = $format;
-                        $k++;
-                    } else {
-                        $format = str_replace(' ', '', $format);
-                        $format = str_replace('\n', '', $format);
-                        $country['code'][$j] = $format;
-                        $j++;
-                        $k++;
                     }
+                    $format = implode(' ', $format_arr);
+                    $format = str_replace('\n', '', $format);
+                    $format = (string) preg_replace('/ $/', '', $format);
+                    $format = (string) preg_replace('/^ */', '', $format);
+                    $country['name'][$j] = $format;
+                    $k++;
+                } else {
+                    $format = str_replace(' ', '', $format);
+                    $format = str_replace('\n', '', $format);
+                    $country['code'][$j] = $format;
+                    $j++;
+                    $k++;
                 }
-                $i++;
             }
-            fclose($fp);
+            $i++;
+        }
+        fclose($fp);
+
+        $built = [];
+        foreach ($country['code'] as $index => $value) {
+            $codeKey = (string) preg_replace('/[^\w]/', '', $value);
+            $name = $country['name'][$index] ?? '';
+            $built[$codeKey] = trim((string) $name);
         }
 
-        foreach ($country['code'] as $index => $value) {
-            $built[preg_replace('/[^\w]/', '', $value)] = trim($country['name'][$index]);
-        }
         return $built;
     }
 }

@@ -1,51 +1,89 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\User;
 
-use Empathy\MVC\Model;
-use Empathy\ELib\Storage\UserAccess;
-use Empathy\ELib\Storage\ShippingAddress;
-use Empathy\MVC\Session;
-use Empathy\MVC\DI;
 use Empathy\ELib\Config as ELibConfig;
+use Empathy\ELib\Storage\ShippingAddress;
+use Empathy\ELib\Storage\UserAccess;
+use Empathy\ELib\Storage\UserItem;
 use Empathy\MVC\Config;
+use Empathy\MVC\DI;
+use Empathy\MVC\Entity;
+use Empathy\MVC\Model;
 use Empathy\MVC\RequestException;
-
+use Empathy\MVC\Session;
+use LogicException;
+use TypeError;
 
 class CurrentUser
 {
-    protected $u;
-    protected $user_id;
-    protected $loaded = false;
+    protected ?UserItem $u = null;
+
+    protected mixed $user_id = null;
+
+    protected bool $loaded = false;
 
     // must return true
     // to carry on with default behaviour
-    protected function loginSuccess($u)
+    protected function loginSuccess(UserItem $u): bool
     {
         return true;
     }
 
-    protected function logoutSuccess($u)
+    protected function logoutSuccess(?UserItem $u): bool
     {
         return true;
     }
 
-    protected function postRegister($u)
+    protected function postRegister(UserItem $u): bool
     {
         return true;
     }
 
-    public function detectUser($ctrl = null)
+    private static function assertUserItem(Entity $entity): UserItem
+    {
+        if (!$entity instanceof UserItem) {
+            throw new LogicException('User model must be an instance of '.UserItem::class);
+        }
+
+        return $entity;
+    }
+
+    private static function assertShippingAddress(Entity $entity): ShippingAddress
+    {
+        if (!$entity instanceof ShippingAddress) {
+            throw new LogicException('Expected '.ShippingAddress::class);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param class-string<UserItem>|null $override When null, use the DI container default
+     *
+     * @return class-string<UserItem>
+     */
+    private static function resolveUserModelClass(?string $override = null): string
+    {
+        $resolved = $override ?? DI::getContainer()->get('UserModel');
+        if (!is_string($resolved) || !is_a($resolved, UserItem::class, true)) {
+            throw new TypeError('UserModel must be a class-string referring to '.UserItem::class);
+        }
+
+        return $resolved;
+    }
+
+    public function detectUser(mixed $ctrl = null): void
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
         if ($this->loaded) {
             return;
         }
 
-        $model = DI::getContainer()->get('UserModel');
-
         $user_id = Session::get('user_id');
-        $this->u = Model::load($model);
+        $this->u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $this->user_id = $user_id;
 
         if (is_numeric($this->user_id) && $this->user_id > 0) {
@@ -56,17 +94,17 @@ class CurrentUser
         }
     }
 
-    public function assertAdmin($ctrl = null)
+    public function assertAdmin(mixed $ctrl = null): void
     {
         $controller = $ctrl ?? DI::getContainer()->get('Controller');
         $ua = new UserAccess();
         if ($this->u === null || $this->u->id < 1 || $this->u->getAuth($this->u->id) < $ua->getLevel('admin')) {
             Session::down();
-            $controller->redirect("user/login");
+            $controller->redirect('user/login');
         }
     }
 
-    public function isAdmin($u)
+    public function isAdmin(UserItem $u): bool
     {
         $admin = false;
         $ua = new UserAccess();
@@ -76,7 +114,7 @@ class CurrentUser
         return $admin;
     }
 
-    public function getUserID()
+    public function getUserID(): int
     {
         if ($this->u === null) {
             return 0;
@@ -84,54 +122,57 @@ class CurrentUser
         return $this->u->id;
     }
 
-    #[Deprecated(message: "use isLoggedIn() instead", since: "1.0.1")]
-    public function loggedIn()
+    #[\Deprecated(message: 'use isLoggedIn() instead', since: '1.0.1')]
+    public function loggedIn(): bool
     {
         return $this->isLoggedIn();
     }
 
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return ($this->getUserID() > 0);
     }
 
-    #[Deprecated(message: "no longer standard property", since: "4.0.2")]
-    public function getProfileID()
-    {
-        return $this->u->user_profile_id;
-    }
-
-    public function getUser()
+    public function getUser(): ?UserItem
     {
         return $this->u;
     }
 
-    public function setUser($user)
+    public function setUser(UserItem $user): void
     {
         $this->u = $user;
     }
 
-    public function isAuthLevel($level)
+    public function isAuthLevel(int $level): bool
     {
-        return ($this->u->auth >= $level);
+        return $this->u !== null && $this->u->auth >= $level;
     }
 
-    public function setUserID($id)
+    public function setUserID(int $id): void
     {
+        if ($this->u === null) {
+            throw new LogicException('No user loaded');
+        }
         $this->u->id = $id;
     }
 
-    public function doLogin($username, $password, $initSession = true, $model = null)
+    /**
+     * @return array{array<int|string, string>, UserItem}
+     */
+    public function doLogin(string $username, string $password, bool $initSession = true, mixed $model = null): array
     {
-        if ($model === null) {
-            $model = DI::getContainer()->get('UserModel');
+        $user_id = 0;
+        if ($model !== null && !is_string($model)) {
+            throw new TypeError('UserModel must be a class-string referring to '.UserItem::class);
         }
-        $user = Model::load($model);
+        /** @var class-string<UserItem>|null $modelClass */
+        $modelClass = is_string($model) ? $model : null;
+        $user = self::assertUserItem(Model::load(self::resolveUserModelClass($modelClass)));
         $user->username = $username;
         $user->password = $password;
 
         $user->validateLogin();
-        $errors = array();
+        $errors = [];
 
         if (!$user->hasValErrors()) {
             $user_id = $user->login();
@@ -155,10 +196,10 @@ class CurrentUser
         if ($user->hasValErrors() || $user_id < 1) {
             $errors = $user->getValErrors();
         }
-        return array($errors, $user);
+        return [$errors, $user];
     }
 
-    public function doLogout()
+    public function doLogout(): bool
     {
         $user = $this->getUser();
         Session::down();
@@ -169,17 +210,17 @@ class CurrentUser
         }
     }
 
-    public function sendConfirmationEmail($u, $reg_code)
+    public function sendConfirmationEmail(UserItem $u, string $reg_code): ?bool
     {
         if (
             ELibConfig::get('EMAIL_ORGANISATION') &&
             ELibConfig::get('EMAIL_FROM')
         ) {
             $_POST['body'] = "\nHi ___,\n\n"
-                . "Thanks for registering with " . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
-                . " know your password for using the site, please confirm your email address"
+                . 'Thanks for registering with ' . ELibConfig::get('EMAIL_ORGANISATION') . "\n\nBefore we can let you"
+                . ' know your password for using the site, please confirm your email address'
                 . " by clicking the following link:\n\n"
-                . "http://" . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . "/user/confirm_reg/?code=" . $reg_code
+                . 'http://' . Config::get('WEB_ROOT') . Config::get('PUBLIC_DIR') . '/user/confirm_reg/?code=' . $reg_code
                 . "\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
@@ -188,41 +229,43 @@ class CurrentUser
                 $u->fullname = $u->email;
             }
 
-            $_POST['subject'] = "Registration with " . ELibConfig::get('EMAIL_ORGANISATION');
+            $_POST['subject'] = 'Registration with ' . ELibConfig::get('EMAIL_ORGANISATION');
             $service = DI::getContainer()->get('Contact');
             if ($service->prepareDispatch($u->id)) {
-                $service->dispatchEmail($u->fullname);
+                $service->dispatchEmail((string) $u->fullname);
                 $service->persist();
                 return true;
             }
         }
+
+        return null;
     }
 
+    /**
+     * @return array{array<int|string, string>, UserItem, ShippingAddress|\stdClass}
+     */
     public function doRegister(
-        $supply_address,
-        $username,
-        $email,
-        $fullname,
-        $first_name,
-        $last_name,
-        $address1,
-        $address2,
-        $city,
-        $state,
-        $zip,
-        $country
-    )
-    {
-        $errors = array();
-        $model = DI::getContainer()->get('UserModel');
-
-        $u = Model::load($model);
+        bool $supply_address,
+        string $username,
+        string $email,
+        string $fullname,
+        string $first_name,
+        string $last_name,
+        string $address1,
+        string $address2,
+        string $city,
+        string $state,
+        string $zip,
+        string $country
+    ): array {
+        $errors = [];
+        $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $u->username = $username;
         $u->email = $email;
 
         if ($supply_address) {
-            $s = Model::load(ShippingAddress::class);
-            if ($fullname != '') {
+            $s = self::assertShippingAddress(Model::load(ShippingAddress::class));
+            if ($fullname !== '') {
                 $fullname_arr = explode(' ', $fullname);
                 if (sizeof($fullname_arr) > 1) {
                     $s->last_name = $fullname_arr[sizeof($fullname_arr) - 1];
@@ -256,8 +299,14 @@ class CurrentUser
             }
 
         } else {
-            $password = exec(MAKEPASSWD . ' --chars=8');
-            $reg_code = exec(MAKEPASSWD . ' --chars=16');
+            $makePasswd = \defined('MAKEPASSWD') ? (string) \constant('MAKEPASSWD') : 'mkpasswd';
+            exec($makePasswd.' --chars=8', $pwOut);
+            exec($makePasswd.' --chars=16', $regOut);
+            $password = $pwOut[0] ?? '';
+            $reg_code = $regOut[0] ?? '';
+            if ($reg_code === '') {
+                throw new \RuntimeException('Could not generate registration code');
+            }
             $u->password = $password;
             $u->reg_code = md5($reg_code);
             $u->auth = 0;
@@ -279,15 +328,14 @@ class CurrentUser
                 throw new \Exception('Could not complete registration');
             }
         }
-        return array($errors, $u, $s ?? new \stdClass());
+        return [$errors, $u, $s ?? new \stdClass()];
     }
 
-    public function doConfirmReg($reg_code)
+    public function doConfirmReg(string $reg_code): ?bool
     {
-        $model = DI::getContainer()->get('UserModel');
-        $u = Model::load($model);
+        $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $id = $u->findUserForActivation($reg_code);
-        
+
         if ($id > 0) {
             $u->load($id);
             $password = $u->password;
@@ -299,17 +347,17 @@ class CurrentUser
             Session::set('user_id', $u->id);
 
             $_POST['body'] = "\nHi ___,\n\n"
-                ."Thanks for confirming your registration. You can now log in to the ".ELibConfig::get('EMAIL_ORGANISATION')." website using your username "
+                .'Thanks for confirming your registration. You can now log in to the '.ELibConfig::get('EMAIL_ORGANISATION').' website using your username '
                 ." '___' and the password '".$password."'.\n\nCheers\n\n";
-                //. "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
-                //. " and the password '" . $password . "'.\n\nCheers\n\n";
+            //. "Thanks for confirming your registration. You can now log in to the " . ELibConfig::get('EMAIL_ORGANISATION') . " website using your email address"
+            //. " and the password '" . $password . "'.\n\nCheers\n\n";
             if ($u->fullname === 'Not provided Not provided') {
                 $_POST['body'] = str_replace('Hi ___,', 'Hi,', $_POST['body']);
                 $_POST['first_name'] = 'Not provided';
                 $_POST['last_name'] = 'Not provided';
                 $u->fullname = $u->email;
             } else {
-                $s = Model::load(ShippingAddress::class);
+                $s = self::assertShippingAddress(Model::load(ShippingAddress::class));
                 $s->load($s->getDefault($u->id));
                 $_POST['first_name'] = $s->first_name;
                 $_POST['last_name'] = $s->last_name;
@@ -322,30 +370,33 @@ class CurrentUser
             $service = DI::getContainer()->get('Contact');
 
             if ($this->postRegister($u) && $service->prepareDispatch($u->id)) {
-                $service->dispatchEmail($u->fullname);
+                $service->dispatchEmail((string) $u->fullname);
                 return true;
             }
         }
+
+        return null;
     }
 
+    /**
+     * @return array<int|string, string>
+     */
     public function doChangePassword(
-        $old_password,
-        $password1,
-        $password2
-    )
-    {
-        $errors = array();
-        $model = DI::getContainer()->get('UserModel');
-        $u = Model::load($model);
+        string $old_password,
+        string $password1,
+        string $password2
+    ): array {
+        $errors = [];
+        $u = self::assertUserItem(Model::load(self::resolveUserModelClass()));
         $u->load(Session::get('user_id'));
 
         if (!password_verify($old_password, $u->password)) {
             $u->addValError('The existing password you have entered is not correct', 'old_password');
         }
 
-        if ($password2 == '') {
+        if ($password2 === '') {
             $u->addValError('This is a required field', 'password2');
-        } else if ($password1 != $password2) {
+        } elseif ($password1 !== $password2) {
             $u->addValError('The new password entered does not match the confirmation', 'password1');
             $u->addValError('The new password entered does not match the confirmation', 'password2');
         }
@@ -366,12 +417,11 @@ class CurrentUser
         return $errors;
     }
 
-    public function denyNotAdmin()
+    public function denyNotAdmin(): void
     {
         $ua = new UserAccess();
-        if ($this->u->auth < $ua->getLevel('admin')) {
+        if ($this->u === null || $this->u->auth < $ua->getLevel('admin')) {
             throw new RequestException('Denied', RequestException::NOT_AUTHORIZED);
         }
     }
 }
-

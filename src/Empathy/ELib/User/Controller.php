@@ -1,41 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\User;
 
-
-use Empathy\ELib\EController;
-use Empathy\MVC\Model;
 use Empathy\ELib\Country\Country;
-use Empathy\ELib\Mailer;
-use Empathy\MVC\Session;
-use Empathy\MVC\Config;
-use Empathy\ELib\Config as ELibConfig;
+use Empathy\ELib\EController;
+use Empathy\MVC\Bootstrap;
 use Empathy\MVC\DI;
-
+use Empathy\MVC\Session;
 
 class Controller extends EController
 {
-    private $currentUser;
-    protected $userModel;
+    private CurrentUser $currentUser;
 
-    public function __construct($boot) 
+    protected mixed $userModel;
+
+    public function __construct(Bootstrap $boot)
     {
         parent::__construct($boot);
         $this->currentUser = DI::getContainer()->get('CurrentUser');
         $this->userModel = DI::getContainer()->get('UserModel');
     }
 
-    public function default_event()
+    public function default_event(): void
     {
         $this->redirect('');
     }
 
 
-    public function login()
+    public function login(): void
     {
         $this->assign('centerpage', true);
         $this->setTemplate('elib:/login.tpl');
-        $errors = array();
+        $errors = [];
 
         if (isset($_POST['login']) && isset($_POST['csrf_token']) && $_POST['csrf_token'] === Session::get('csrf_token')) {
             list($errors, $user) = $this->currentUser->doLogin($_POST['username'], $_POST['password'], true, $this->userModel);
@@ -45,40 +43,39 @@ class Controller extends EController
                     $this->redirect('admin');
                 } else {
                     $this->redirect('');
-                }    
+                }
             } else {
-                $this->presenter->assign('errors', $user->getValErrors());
-                $this->presenter->assign("username", $_POST['username']);
-                $this->presenter->assign("password", $_POST['password']);    
+                $this->assign('errors', $user->getValErrors());
+                $this->assign('username', $_POST['username']);
+                $this->assign('password', $_POST['password']);
             }
         }
         $this->assignCSRFToken();
     }
 
-    public function logout()
+    public function logout(): void
     {
         if (!$this->currentUser->doLogout()) {
             throw new \Exception('Could not logout');
-        } else {
-            $this->redirect('');
-            return false;    
         }
+        $this->redirect('');
     }
 
-    private function nullify(&$var) {
+    private function nullify(mixed &$var): void
+    {
         if (isset($var) && $var === '') {
             $var = null;
         }
     }
 
-    public function register()
-    {   
-        $errors = array();
+    public function register(): void
+    {
+        $errors = [];
         $submitted = false;
         $supply_address = false;
 
         if (isset($_POST['submit'])) {
-            $submitted = true; 
+            $submitted = true;
             $this->nullify($_POST['first_name']);
             $this->nullify($_POST['last_name']);
 
@@ -86,13 +83,13 @@ class Controller extends EController
             $_POST['last_name'] = $_POST['last_name'] ?? 'Not provided';
 
             $supply_address = (isset($_POST['supply_address']) && $_POST['supply_address'] === 'on') ? true : false;
-            
+
             $username = $_POST['username'] ?? '';
             $username = strtolower($username);
             $email = $_POST['email'] ?? '';
             $fullname = $_POST['fullname'] ?? '';
-            $first_name = $_POST['first_name'] ?? '';
-            $last_name = $_POST['last_name'] ?? '';
+            $first_name = $_POST['first_name'];
+            $last_name = $_POST['last_name'];
             $address1 = $_POST['address1'] ?? '';
             $address2 = $_POST['address2'] ?? '';
             $city = $_POST['city'] ?? '';
@@ -113,26 +110,26 @@ class Controller extends EController
                 $state,
                 $zip,
                 $country
-            );            
+            );
 
             if (!sizeof($errors)) {
-               $this->redirect('user/thanks/1'); 
+                $this->redirect('user/thanks/1');
             } else {
                 $address->first_name = (
-                    isset($address->first_name) && 
+                    isset($address->first_name) &&
                     $address->first_name === 'Not provided'
                 ) ? '' : $address->first_name ?? '';
                 $address->last_name = (
-                    isset($address->last_name) && 
+                    isset($address->last_name) &&
                     $address->last_name === 'Not provided'
                 ) ? '' : $address->last_name ?? '';
 
                 $this->assign('user', $user);
-                $this->assign('address', $address);       
+                $this->assign('address', $address);
             }
         }
 
-        $titles = array('Mr', 'Mrs', 'Miss', 'Ms', 'Dr');
+        $titles = ['Mr', 'Mrs', 'Miss', 'Ms', 'Dr'];
         $countries = Country::build();
         $this->assign('errors', $errors);
         $this->assign('titles', $titles);
@@ -143,7 +140,7 @@ class Controller extends EController
         $this->assign('supply_address', $supply_address);
     }
 
-    public function confirm_reg()
+    public function confirm_reg(): void
     {
         $reg_code = $_GET['code'];
         if ($this->currentUser->doConfirmReg($reg_code)) {
@@ -153,9 +150,9 @@ class Controller extends EController
         }
     }
 
-    public function thanks()
+    public function thanks(): void
     {
-        $this->presenter->assign('id', $_GET['id']);
+        $this->assign('id', $_GET['id']);
         $this->setTemplate('elib://thanks.tpl');
     }
 

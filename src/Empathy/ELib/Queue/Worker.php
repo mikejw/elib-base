@@ -1,39 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 use Empathy\MVC\Config;
 
 class Worker
 {
-    const DEF_MEM_LIMIT = 10000000;
-    const DEF_SLEEP_INTERVAL = 10;
+    public const DEF_MEM_LIMIT = 10000000;
+    public const DEF_SLEEP_INTERVAL = 10;
 
-    private $tube;
-    private $driver;
-    private $memory_limit;
-    private $sleep_interval;
+    private ?string $tube = null;
 
-    public function __construct($host, $tube = null, $display_log = null,
-                                $sleep_interval = null,
-                                $memory_limit = null,
-                                $driver_name = null)
-    {
+    private Driver $driver;
+
+    private int $memory_limit;
+
+    private int $sleep_interval;
+
+    private bool $display_log;
+
+    public function __construct(
+        string $host,
+        ?string $tube = null,
+        ?bool $display_log = null,
+        ?int $sleep_interval = null,
+        ?int $memory_limit = null,
+        ?string $driver_name = null
+    ) {
         $this->tube = $tube;
-        $this->display_log = ($display_log === true)? true: false;
-        $this->memory_limit = ($memory_limit === null)? self::DEF_MEM_LIMIT: $memory_limit;
-        $this->sleep_interval = ($sleep_interval === null)? self::DEF_SLEEP_INTERVAL: $sleep_interval;
-        $this->driver = DriverManager::load($host, $driver_name);
+        $this->display_log = ($display_log === true) ? true : false;
+        $this->memory_limit = ($memory_limit === null) ? self::DEF_MEM_LIMIT : $memory_limit;
+        $this->sleep_interval = ($sleep_interval === null) ? self::DEF_SLEEP_INTERVAL : $sleep_interval;
+        $driver = DriverManager::load($host, $driver_name);
+        if ($driver === null) {
+            throw new \RuntimeException('Queue driver could not be loaded');
+        }
+        $this->driver = $driver;
     }
 
-    public function setTube($tube)
+    public function setTube(string $tube): self
     {
         $this->tube = $tube;
 
         return $this;
     }
 
-    public function log($txt)
+    public function log(string $txt): void
     {
         if ($this->display_log) {
             echo $txt."\n";
@@ -42,7 +56,7 @@ class Worker
         }
     }
 
-    public function nextJob()
+    public function nextJob(): Job
     {
         $job = $this->driver->getNext($this->tube);
         $this->updateStats();
@@ -50,19 +64,19 @@ class Worker
         return $job;
     }
 
-    public function removeJob()
+    public function removeJob(): void
     {
         $this->driver->clear();
         $this->checkMemory();
         $this->sleep();
     }
 
-    public function sleep()
+    public function sleep(): void
     {
         usleep($this->sleep_interval * 1000000);
     }
 
-    public function checkMemory()
+    public function checkMemory(): void
     {
         $memory = memory_get_usage();
         if ($memory > $this->memory_limit) {
@@ -70,7 +84,7 @@ class Worker
         }
     }
 
-    public function updateStats()
+    public function updateStats(): void
     {
         $stats = $this->driver->info();
         //Stats::store('stats', $stats);

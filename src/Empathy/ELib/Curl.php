@@ -1,27 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
 class Curl
 {
-    private $response;
-    protected $ch;
+    private mixed $response = null;
 
-    protected $url;
-    protected $user;
-    protected $pass;
-    protected $header;
-    protected $post_fields;
-    protected $auth;
-    protected $success;
+    protected \CurlHandle $ch;
 
-    public function getResponse()
+    /** @var non-empty-string */
+    protected string $url;
+
+    protected string $user;
+
+    protected string $pass;
+
+    protected mixed $header;
+
+    protected mixed $post_fields;
+
+    protected bool $auth;
+
+    protected bool $success = false;
+
+    public function getResponse(): mixed
     {
         return $this->response;
     }
 
-    public function __construct($url, $header, $post_fields, $user, $pass, $auth)
+    public function __construct(string $url, mixed $header, mixed $post_fields, string $user, string $pass, bool $auth)
     {
+        if ($url === '') {
+            throw new \InvalidArgumentException('CURL URL must not be empty');
+        }
         $this->ch = curl_init();
         $this->url = $url;
         $this->header = $header;
@@ -32,10 +45,10 @@ class Curl
         $this->configure();
     }
 
-    public function configure()
+    public function configure(): void
     {
         curl_setopt($this->ch, CURLOPT_URL, $this->url);
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
 
 
 
@@ -51,18 +64,18 @@ class Curl
         //curl_setopt($this->ch, CURLOPT_POSTFIELDS, $b);
     }
 
-    public function fetch($disconnect=true)
+    public function fetch(bool $disconnect = true): bool
     {
         $this->response = curl_exec($this->ch);
         $code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-        $this->success = ($code == 200);
-        if($disconnect === true) {
+        $this->success = ($code === 200);
+        if ($disconnect === true) {
             curl_close($this->ch);
         }
         return $this->success;
     }
 
-    public function getSuccess()
+    public function getSuccess(): bool
     {
         return $this->success;
     }

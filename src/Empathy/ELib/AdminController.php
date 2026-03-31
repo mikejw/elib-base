@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib;
 
-use Empathy\MVC\Model;
-use Empathy\MVC\Session;
+use Composer\InstalledVersions;
+use Empathy\ELib\Util\Libs;
+use Empathy\MVC\Bootstrap;
 use Empathy\MVC\Config as EmpConfig;
 use Empathy\MVC\DI;
-use Empathy\ELib\Util\Libs;
-use Composer\InstalledVersions;
+use Empathy\MVC\Session;
 
 class AdminController extends EController
 {
-    public function __construct($boot, $assertAdmin = true)
+    public function __construct(Bootstrap $boot, bool $assertAdmin = true)
     {
         parent::__construct($boot);
         if ($assertAdmin) {
             DI::getContainer()->get('CurrentUser')->assertAdmin($this);
         }
-        
+
         $this->detectHelp();
 
         $cache = null;
@@ -28,47 +30,63 @@ class AdminController extends EController
         } catch (\Exception $e) {
             //
         }
-        
+
         if ($cache && $cacheEnabled) {
-            $this->assign('installed', $cache->cachedCallback('installed_lib_info', array($this, 'getInstalledLibInfo')));
+            $this->assign('installed', $cache->cachedCallback('installed_lib_info', [$this, 'getInstalledLibInfo']));
         } else {
             $this->assign('installed', $this->getInstalledLibInfo());
         }
     }
 
-    public function getInstalledLibInfo() {
+    /**
+     * @return array<string, array{name: string, version: string}>
+     */
+    public function getInstalledLibInfo(): array
+    {
         Libs::findAll();
         $libs = Libs::getInstalled();
         $installed = [];
         foreach ($libs as $lib) {
             if (InstalledVersions::isInstalled($lib)) {
+                $pretty = InstalledVersions::getPrettyVersion($lib);
                 $installed[$lib] = [
-                    //'version' => InstalledVersions::getVersion($lib)
-                    'version' => InstalledVersions::getPrettyVersion($lib)
+                    'version' => (string) ($pretty ?? ''),
+                    'name' => 'No description',
                 ];
                 $path = InstalledVersions::getInstallPath($lib);
-                $composerJson = json_decode(file_get_contents($path . '/composer.json'), true);
-                $installed[$lib]['name'] = $composerJson['description'] ?? 'No description';
+                $jsonRaw = @file_get_contents($path.'/composer.json');
+                if ($jsonRaw === false) {
+                    continue;
+                }
+                $composerJson = json_decode($jsonRaw, true);
+                if (is_array($composerJson)) {
+                    $installed[$lib]['name'] = (string) ($composerJson['description'] ?? 'No description');
+                }
             }
         }
         return $installed;
     }
 
-    private function tplInLib($help_file) {
-        $exists = false;
-        $i = 0;
-        while(!$exists && $i < sizeof($this->elib_tpl_dirs)) {
-            $file = $this->elib_tpl_dirs[$i].'/'.$help_file;
-            if(file_exists($file)) {
-                $exists = true;
-            }
-            $i++;
+    private function tplInLib(string $help_file): bool
+    {
+        $dirs = $this->elib_tpl_dirs;
+        if ($dirs === null) {
+            return false;
         }
-        return $exists;
+        foreach ($dirs as $dir) {
+            $file = $dir.'/'.$help_file;
+            if (file_exists($file)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
-    protected function findHelp()
+    /**
+     * @return string|false
+     */
+    protected function findHelp(): string|false
     {
         $help_file = 'admin_help/'.$this->class.'_'.$this->event.'.tpl';
         if (
@@ -92,25 +110,25 @@ class AdminController extends EController
     }
 
 
-    protected function detectHelp()
+    protected function detectHelp(): void
     {
         $help_file = $this->findHelp();
         if ($help_file) {
-            $this->presenter->assign('help_file', 'elib:/'.$help_file);
+            $this->assign('help_file', 'elib:/'.$help_file);
         }
     }
 
-    public function default_event()
+    public function default_event(): void
     {
         $this->setTemplate('elib:/admin/admin.tpl');
     }
 
-    public function store()
+    public function store(): void
     {
         $this->setTemplate('elib:/admin/store.tpl');
     }
 
-    public function password()
+    public function password(): void
     {
         $currentUser = DI::getContainer()->get('CurrentUser');
         $this->setTemplate('elib:/admin/password.tpl');
@@ -124,22 +142,22 @@ class AdminController extends EController
             if (sizeof($errors) < 1) {
                 $this->redirect('admin');
             } else {
-                $this->presenter->assign('errors', $errors);
+                $this->assign('errors', $errors);
             }
         } elseif (isset($_POST['cancel'])) {
             $this->redirect('admin');
         }
     }
 
-    public function toggle_help()
+    public function toggle_help(): void
     {
-        if($this->isXMLHttpRequest()) {
+        if ($this->isXMLHttpRequest()) {
             $help_shown = Session::get('help_shown');
             if ($help_shown) {
                 Session::set('help_shown', false);
             } else {
                 Session::set('help_shown', true);
-            }           
+            }
             header('Content-type: application/json');
             echo json_encode(1);
             exit();

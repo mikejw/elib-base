@@ -1,9 +1,11 @@
 <?php
 
-namespace Empathy\ELib;
-use Empathy\MVC\FileContentsCache;
-use Empathy\MVC\DI;
+declare(strict_types=1);
 
+namespace Empathy\ELib;
+
+use Empathy\MVC\DI;
+use Empathy\MVC\FileContentsCache;
 
 /*
  * Modified to have the same "static interface"
@@ -13,51 +15,51 @@ class Config
 {
     /**
      * Initialise empty config;
+     *
+     * @var array<string, mixed>
      */
-    private static $items = array();
+    private static array $items = [];
 
     /**
      * Return a piece of config.
      *
      * @param string $key The config key.
-     * @return string Config.
+     * @return mixed Config value, or false when the key is not set.
      */
-    public static function get($key)
+    public static function get($key): mixed
     {
         if (!isset(self::$items[$key])) {
             return false;
-        } else {
-            return self::$items[$key];
         }
+
+        return self::$items[$key];
     }
 
     /**
      * Store some config.
      *
      * @param string $key The config key.
-     * @param mixed Data to store against key.
-     * @return null
+     * @param mixed $data Data to store against key.
      */
-    public static function store($key, $data)
+    public static function store($key, $data): void
     {
         self::$items[$key] = $data;
     }
 
     /**
      * Simple dump of config.
-     * @return null
      */
-    public static function dump()
+    public static function dump(): void
     {
         print_r(self::$items);
     }
 
 
-    public static function load($config_dir)
+    public static function load(string $config_dir): void
     {
         $config_file = $config_dir.'/elib.yml';
-        
-        $config = FileContentsCache::cachedCallback($config_file, function($data) {
+
+        $config = FileContentsCache::cachedCallback($config_file, function ($data) {
             return DI::getContainer()->get('Spyc')->YamlLoadString($data);
         });
 

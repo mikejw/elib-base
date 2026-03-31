@@ -1,27 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 abstract class Driver
 {
-    const DEF_D = 'pheanstalk';
-    protected $host;
-    protected $name;
-    protected $d;
+    public const DEF_D = 'pheanstalk';
 
-    public function __construct($name)
+    protected string $host = '';
+
+    protected string $name = '';
+
+    protected mixed $d = null;
+
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    abstract public function load($h);
+    abstract public function load(string $h): void;
 
-    abstract public function put($job);
+    abstract public function put(Job $job): void;
 
-    abstract public function getNext($tube);
+    abstract public function getNext(?string $tube): Job;
 
-    abstract public function clear();
+    abstract public function clear(): void;
 
-    abstract public function info();
+    /**
+     * @return mixed
+     */
+    abstract public function info(): mixed;
 
 }

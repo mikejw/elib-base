@@ -1,30 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Storage;
 
-use Empathy\MVC\Model;
 use Empathy\MVC\Entity;
 use Empathy\MVC\Validate;
 
-
 class UserItem extends Entity
 {
-    const TABLE = 'user';
+    public const TABLE = 'user';
 
     public int $id;
-    public $email;
-    public $auth;
-    public $username;
-    public $password;
-    public $reg_code;
-    public $active;
-    public $registered;
-    public $activated;
-    public $fullname;
-    public $picture;
-    public $about;
 
-    public function validates($email_check=true)
+    public mixed $email = null;
+
+    public mixed $auth = null;
+
+    public mixed $username = null;
+
+    public mixed $password = null;
+
+    public mixed $reg_code = null;
+
+    public mixed $active = null;
+
+    public mixed $registered = null;
+
+    public mixed $activated = null;
+
+    public mixed $fullname = null;
+
+    public mixed $picture = null;
+
+    public mixed $about = null;
+
+    public function validates(bool $email_check = true): void
     {
         if ($this->doValType(Validate::USERNAME, 'username', $this->username, false)) {
             if ($this->usernameExists()) {
@@ -47,20 +58,20 @@ class UserItem extends Entity
         $this->doValType(Validate::TEXT, 'about', $this->about, true);
     }
 
-    public function validateLogin()
+    public function validateLogin(): void
     {
         $this->doValType(Validate::USERNAME, 'username', $this->username, false);
         $this->validatePassword();
     }
 
 
-    public function validatePassword()
+    public function validatePassword(): void
     {
         $this->doValType(Validate::TEXT, 'password', $this->password, false);
     }
 
 
-    public function getUsername($id)
+    public function getUsername(int|string $id): mixed
     {
         $table = $this::TABLE;
         $params = [];
@@ -73,14 +84,14 @@ class UserItem extends Entity
         return $row['username'];
     }
 
-    public function buildInvalid($username, $password)
+    public function buildInvalid(string $username, string $password): void
     {
         $this->id = 0;
         $this->username = $username;
         $this->password = $password;
     }
 
-    public function getID($username, $password=null)
+    public function getID(string $username, ?string $password = null): int
     {
         $table = $this::TABLE;
         $params = [];
@@ -92,7 +103,7 @@ class UserItem extends Entity
         }
         $error = 'Could not verify user.';
         $result = $this->query($sql, $error, $params);
-        if (1 == $result->rowCount()) {
+        if (1 === $result->rowCount()) {
             $row =  $result->fetch();
             return $row['id'];
         } else {
@@ -100,14 +111,14 @@ class UserItem extends Entity
         }
     }
 
-    public function oAuthSignIn($username, $name, $image)
+    public function oAuthSignIn(string $username, string $name, string $image): int
     {
         $user_id = 0;
         if (($this->id = $this->getID($username))) {
             $this->load($this->id);
             $user_id = $this->id;
         } else {
-            unset($this->id);
+            $this->id = 0;
             $this->email = 'twitter_user@example.com';
             $this->auth = 'DEFAULT';
             $this->username = $username;
@@ -135,9 +146,9 @@ class UserItem extends Entity
     /**
      * Do login.
      * User should not need to know exact casing of username (like twitter).
-     * This is handled by DB.  
+     * This is handled by DB.
      */
-    public function login()
+    public function login(): int
     {
         $table = $this::TABLE;
         $user_id = 0;
@@ -151,16 +162,16 @@ class UserItem extends Entity
         $error = 'Could not get user for login.';
         $result = $this->query($sql, $error, $params);
         $rows = $result->rowCount();
-        if ($rows == 1) {
+        if ($rows === 1) {
             $row = $result->fetch();
             if (password_verify($this->password, $row['password'])) {
-                $user_id = $row['id'];    
+                $user_id = $row['id'];
             }
         }
         return $user_id;
     }
 
-    public function getAuth($id)
+    public function getAuth(int|string $id): mixed
     {
         $table = $this::TABLE;
         $params = [];
@@ -169,7 +180,7 @@ class UserItem extends Entity
         $params[] = $id;
         $error = 'Could not get auth code.';
         $result = $this->query($sql, $error, $params);
-        if ($result->rowCount() == 1) {
+        if ($result->rowCount() === 1) {
             $row = $result->fetch();
             $auth = $row['auth'];
         }
@@ -177,7 +188,7 @@ class UserItem extends Entity
         return $auth;
     }
 
-    public function findUserForActivation($reg_code)
+    public function findUserForActivation(string $reg_code): int
     {
         $table = $this::TABLE;
         $params = [];
@@ -186,9 +197,9 @@ class UserItem extends Entity
             .' AND active = 0';
         $params[] = md5($reg_code);
         $error = 'Could not get user based on registation code.';
-        
+
         $result = $this->query($sql, $error, $params);
-        if ($result->rowCount() == 1) {
+        if ($result->rowCount() === 1) {
             $row = $result->fetch();
             $user_id = $row['id'];
         }
@@ -196,7 +207,7 @@ class UserItem extends Entity
         return $user_id;
     }
 
-    protected function activeUser()
+    protected function activeUser(): int
     {
         $table = $this::TABLE;
         $params = [];
@@ -217,7 +228,7 @@ class UserItem extends Entity
         return $active;
     }
 
-    protected function usernameExists()
+    protected function usernameExists(): int
     {
         $table = $this::TABLE;
         $params = [];

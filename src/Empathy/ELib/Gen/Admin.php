@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Gen;
 
 class Admin extends \Empathy\MVC\Util\ControllerGen
@@ -8,4 +10,3 @@ class Admin extends \Empathy\MVC\Util\ControllerGen
     protected string $module = 'admin';
     protected string $parent = '\Empathy\ELib\AdminController';
 }
-

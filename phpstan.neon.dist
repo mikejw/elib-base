@@ -1,0 +1,12 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    tmpDir: var/phpstan
+    scanDirectories:
+        - vendor/mikejw/elibs/Smarty/libs
+    scanFiles:
+        - phpstan.stub.php
+    universalObjectCratesClasses:
+        - PHPUnit\Framework\TestCase

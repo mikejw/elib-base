@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Queue;
 
 class Stats
 {
-    const SEMAPHORE_ID = 100;
-    const SEGMENT_ID = 200;
+    public const SEMAPHORE_ID = 100;
+    public const SEGMENT_ID = 200;
 
-    private static $handle;
-    private static $semaphore;
-    private static $shared_vars = array('stats' => 1);
+    private static mixed $handle = null;
 
-    public static function getVarKey($var_name)
+    private static mixed $semaphore = null;
+
+    /** @var array<string, int> */
+    private static array $shared_vars = ['stats' => 1];
+
+    public static function getVarKey(string $var_name): int
     {
         //echo $var_name;
         //print_r(self::$shared_vars);
@@ -19,7 +24,7 @@ class Stats
         return self::$shared_vars[$var_name];
     }
 
-    public static function getHandle()
+    public static function getHandle(): void
     {
         self::$semaphore = \sem_get(self::SEMAPHORE_ID, 1, 0644);
 
@@ -37,13 +42,13 @@ class Stats
         }
     }
 
-    public static function release()
+    public static function release(): void
     {
         \shm_detach(self::$handle);
         \sem_release(self::$semaphore);
     }
 
-    public static function store($key, $value)
+    public static function store(string $key, mixed $value): void
     {
         self::getHandle();
         if (!\shm_put_var(self::$handle, self::getVarKey($key), $value)) {
@@ -54,7 +59,7 @@ class Stats
         self::release();
     }
 
-    public static function retrieve($key)
+    public static function retrieve(string $key): mixed
     {
         self::getHandle();
         $data = \shm_get_var(self::$handle, self::getVarKey($key));

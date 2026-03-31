@@ -1,6 +1,9 @@
+
+.DS_Store
 /.idea
 /build
 /vendor
-/t/tmp
+/tests/tmp
+/var
 *~
 

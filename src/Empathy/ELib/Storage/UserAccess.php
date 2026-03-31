@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Empathy\ELib\Storage;
 
 class UserAccess
 {
-    const REGULAR = 0;
-    const LOGGED_IN = 1;
-    const ADMIN = 2;
-    const SUPER_ADMIN = 3;
+    public const REGULAR = 0;
+    public const LOGGED_IN = 1;
+    public const ADMIN = 2;
+    public const SUPER_ADMIN = 3;
 
-    public function getLevel($name)
+    public function getLevel(string $name): int
     {
         $c = get_class($this);
         $level = @constant($c.'::'.strtoupper($name));
