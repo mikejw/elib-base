@@ -12,9 +12,7 @@ class UserItem extends Entity
     public const TABLE = 'user';
 
     public int $id;
-
-    public ?int $user_profile_id = null;
-
+    
     public mixed $email = null;
 
     public mixed $auth = null;
