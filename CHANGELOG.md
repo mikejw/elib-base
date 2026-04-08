@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.2.1] = 2026-04-08
+
+### Fixed
+
+- Extend CustomController
+
+
 ## [4.2.0] = 2026-03-31
 
 ### Changed
