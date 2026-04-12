@@ -2,6 +2,13 @@
 # Changelog
 
 
+## [4.2.2] = 2026-04-12
+
+### Fixed
+
+- Contact name validation
+
+
 ## [4.2.1] = 2026-04-08
 
 ### Fixed
