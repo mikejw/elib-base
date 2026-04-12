@@ -34,8 +34,8 @@ class Contact extends Entity
         if (!isset($this->message) || !($this->message === 0 || $this->message === 1)) {
             $this->addValError('Message field should be boolean, 1 or 0.');
         }
-        $this->doValType(Validate::TEXT, 'first_name', $this->first_name, false);
-        $this->doValType(Validate::TEXT, 'last_name', $this->last_name, false);
+        $this->doValType(Validate::NAME, 'first_name', $this->first_name, false);
+        $this->doValType(Validate::NAME, 'last_name', $this->last_name, false);
         $this->doValtype(Validate::EMAIL, 'email', $this->email, false);
 
         if ($this->message === 1) {
